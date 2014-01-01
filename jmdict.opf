@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package unique-identifier="uid">
+
+	<metadata>
+		<dc-metadata xmlns:dc="http://purl.org/metadata/dublin_core">
+			<dc:Identifier id="uid">8FC8AF2ED7</dc:Identifier>
+			<dc:Title><h2>JMdict Japanese-English Dictionary</h2></dc:Title>
+			<dc:Language>ja</dc:Language>
+			<dc:Creator>Electronic Dictionary Research &amp; Development Group</dc:Creator>
+			<dc:Date>2013-12-29</dc:Date>
+			<dc:Copyrights>2013 Electronic Dictionary Research &amp; Development Group</dc:Copyrights>
+		</dc-metadata>
+		<x-metadata>
+			<output encoding="UTF-8" flatten-dynamic-dir="yes"/>
+			<DictionaryInLanguage>ja</DictionaryInLanguage>
+			<DictionaryOutLanguage>en</DictionaryOutLanguage>
+		</x-metadata>
+	</metadata>
+
+	<manifest>
+		<item id="cover" href="cover.jpg" media-type="image/jpeg" properties="cover-image"/>
+        <item id="css" href="style.css" media-type="text/css"/>
+		<item id="frontmatter" href="frontmatter.html" media-type="text/x-oeb1-document"/>
+		<item id="definitions" href="definitions.html" media-type="text/x-oeb1-document"/>
+	</manifest>
+
+	<spine>
+		<itemref idref="frontmatter"/>
+		<itemref idref="definitions"/>
+	</spine>
+
+	<tours/>
+
+	<guide>
+	</guide>
+</package>
