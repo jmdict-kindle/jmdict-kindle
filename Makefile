@@ -19,3 +19,6 @@ cover.jpg: cover.py
 # XXX: Should be -c2 but it is very slow
 jmdict.mobi: jmdict.opf cover.jpg style.css frontmatter.html definitions.html
 	kindlegen jmdict.opf -c1 -verbose
+
+publish: jmdict.mobi
+	scp -p jmdict.mobi annarchy.freedesktop.org:public_html/jmdict/
