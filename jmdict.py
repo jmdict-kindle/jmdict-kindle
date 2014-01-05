@@ -240,16 +240,13 @@ class JMdictParser(XmlParser):
         readings = []
         senses = []
         self.element_start('entry')
-        rank = sys.maxint
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'k_ele':
-                kanji, kanji_rank = self.parse_kanji()
+                kanji = self.parse_kanji()
                 kanjis.append(kanji)
-                rank = min(rank, kanji_rank)
             elif self.token.name_or_data == 'r_ele':
-                reading, reading_rank = self.parse_reading()
+                reading = self.parse_reading()
                 readings.append(reading)
-                rank = min(rank, reading_rank)
             elif self.token.name_or_data == 'sense':
                 sense = self.parse_sense()
                 senses.append(sense)
@@ -261,12 +258,12 @@ class JMdictParser(XmlParser):
 
         assert readings
         if kanjis:
-            label = u';'.join(kanjis)
+            label = u';'.join([kanji.value for kanji in kanjis])
             if readings:
-                label += u'【' + u';'.join(readings) + u'】'
+                label += u'【' + u';'.join([reading.value for reading in readings]) + u'】'
         else:
             assert readings
-            label = u';'.join(readings)
+            label = u';'.join([reading.value for reading in readings])
 
         orthos = kanjis + readings
 
@@ -277,20 +274,16 @@ class JMdictParser(XmlParser):
                 posses.add(pos)
 
 
-        orthos = []
-        for reading in kanjis + readings:
-            inflgrps = {}
-
+        orthos = kanjis + readings
+        for ortho in orthos:
             # Don't try to inflect katakana words
-            if not is_katakana(reading):
+            if not is_katakana(ortho.value):
                 for pos in posses:
-                    infl_dict = inflect(reading, pos)
+                    infl_dict = inflect(ortho.value, pos)
                     if infl_dict:
-                        inflgrps[pos] = infl_dict.values()
-            ortho = Ortho(reading, inflgrps)
-            orthos.append(ortho)
+                        ortho.inflgrps[pos] = infl_dict.values()
 
-        entry = Entry(label, senses, orthos, rank)
+        entry = Entry(label, senses, orthos)
 
         if 0:
             print label
@@ -313,7 +306,9 @@ class JMdictParser(XmlParser):
             else:
                 self.skip_element()
         self.element_end('k_ele')
-        return keb, rank
+
+        assert keb is not None
+        return Ortho(keb, rank, {})
     
     def parse_reading(self):
         reb = None
@@ -327,7 +322,8 @@ class JMdictParser(XmlParser):
             else:
                 self.skip_element()
         self.element_end('r_ele')
-        return reb, rank
+        assert reb is not None
+        return Ortho(reb, rank, {})
 
     def parse_rank(self):
         re_pri = self.element_character_data('re_pri')

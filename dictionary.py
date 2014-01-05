@@ -28,7 +28,7 @@ import sys
 from collections import namedtuple
 
 
-Ortho = namedtuple('Ortho', ['value', 'inflgrps'])
+Ortho = namedtuple('Ortho', ['value', 'rank', 'inflgrps'])
 
 
 Sense = namedtuple('Sense', ['pos', 'gloss'])
@@ -42,11 +42,10 @@ def escape(s, quote=None):
 
 class Entry:
 
-    def __init__(self, label, senses, orthos, rank):
+    def __init__(self, label, senses, orthos):
         self.label = label
         self.senses = senses
         self.orthos = orthos
-        self.rank = rank
 
     def remove(self, reading):
         assert isinstance(reading, unicode)
@@ -66,23 +65,25 @@ class Entry:
 def prune(entries):
     sys.stderr.write('%u entries in\n' % len(entries))
 
-    ortho_entry = {}
+    # ortho.value -> (entry, ortho)
+    ortho_map = {}
+
     for entry in entries:
-        orthos = list(entry.orthos)
-        for ortho in orthos:
+        entry_orthos = list(entry.orthos)
+        for ortho in entry_orthos:
             try:
-                prev_entry = ortho_entry[ortho.value]
+                prev_entry, prev_ortho = ortho_map[ortho.value]
             except KeyError:
                 pass
             else:
-                if entry.rank == 0 and prev_entry.rank == 0:
-                    sys.stderr.write('warning: ambiguous orthography `%s`, rank %i\n' % (ortho.value.encode('utf-8'), entry.rank))
-                if entry.rank < prev_entry.rank:
+                if ortho.rank == 0 and prev_ortho.rank == 0:
+                    sys.stderr.write('warning: ambiguous orthography `%s`, rank %i\n' % (ortho.value.encode('utf-8'), ortho.rank))
+                if ortho.rank < prev_ortho.rank:
                     prev_entry.remove(ortho.value)
                 else:
                     entry.remove(ortho.value)
                     continue
-            ortho_entry[ortho.value] = entry
+            ortho_map[ortho.value] = (entry, ortho)
 
     # prune entries without orthographies
     # TODO: squash conflicting entries instead of pruning them
