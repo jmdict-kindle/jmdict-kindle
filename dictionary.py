@@ -49,10 +49,12 @@ class Entry:
         self.rank = rank
 
     def remove(self, reading):
+        assert isinstance(reading, unicode)
         for i in range(len(self.orthos)):
             ortho = self.orthos[i]
             if ortho.value == reading:
                 self.orthos.pop(i)
+                return
             else:
                 for inflgrp_name, inflgrp_values in ortho.inflgrps.items():
                     if reading in inflgrp_values:
@@ -76,9 +78,9 @@ def prune(entries):
                 if entry.rank == 0 and prev_entry.rank == 0:
                     sys.stderr.write('warning: ambiguous orthography `%s`, rank %i\n' % (ortho.value.encode('utf-8'), entry.rank))
                 if entry.rank < prev_entry.rank:
-                    prev_entry.remove(ortho)
+                    prev_entry.remove(ortho.value)
                 else:
-                    entry.remove(ortho)
+                    entry.remove(ortho.value)
                     continue
             ortho_entry[ortho.value] = entry
 
