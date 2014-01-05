@@ -257,13 +257,9 @@ class JMdictParser(XmlParser):
 
 
         assert readings
+        label = u';'.join([reading.value for reading in readings])
         if kanjis:
-            label = u';'.join([kanji.value for kanji in kanjis])
-            if readings:
-                label += u'【' + u';'.join([reading.value for reading in readings]) + u'】'
-        else:
-            assert readings
-            label = u';'.join([reading.value for reading in readings])
+            label += u'【' + u';'.join([kanji.value for kanji in kanjis]) + u'】'
 
         orthos = kanjis + readings
 
