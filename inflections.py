@@ -79,7 +79,7 @@ def inflect(dict_form, pos):
             infl['past'] = root + u'った'
             infl['negative'] = root + u'たない'
             infl['participle'] = root + u'って'
-            infl['provisional-conditional'] = infl['nominal'] + u'てば'
+            infl['provisional-conditional'] = root + u'てば'
 
         elif pos == 'v5k':
             assert dict_form[-1:] == u'く'
@@ -88,7 +88,7 @@ def inflect(dict_form, pos):
             infl['past'] = root + u'いた'
             infl['negative'] = root + u'かない'
             infl['participle'] = root + u'いて'
-            infl['provisional-conditional'] = infl['nominal'] + u'けば'
+            infl['provisional-conditional'] = root + u'けば'
 
         elif pos == 'v5g':
             assert dict_form[-1:] == u'ぐ'
@@ -97,7 +97,7 @@ def inflect(dict_form, pos):
             infl['past'] = root + u'いた'
             infl['negative'] = root + u'がない'
             infl['participle'] = root + u'いで'
-            infl['provisional-conditional'] = infl['nominal'] + u'げば'
+            infl['provisional-conditional'] = root + u'げば'
 
         elif pos == 'v5s':
             assert dict_form[-1:] == u'す'
@@ -106,7 +106,7 @@ def inflect(dict_form, pos):
             infl['past'] = infl['nominal'] + u'た'
             infl['negative'] = root + u'さない'
             infl['participle'] = infl['nominal'] + u'て'
-            infl['provisional-conditional'] = infl['nominal'] + u'せば'
+            infl['provisional-conditional'] = root + u'せば'
 
         elif pos == 'v5n':
             assert dict_form[-1:] == u'ぬ'
@@ -115,7 +115,7 @@ def inflect(dict_form, pos):
             infl['past'] = root + u'んだ'
             infl['negative'] = root + u'なない'
             infl['participle'] = root + u'んで'
-            infl['provisional-conditional'] = infl['nominal'] + u'ねば'
+            infl['provisional-conditional'] = root + u'ねば'
 
         elif pos == 'v5b':
             assert dict_form[-1:] == u'ぶ'
@@ -124,7 +124,7 @@ def inflect(dict_form, pos):
             infl['past'] = root + u'んだ'
             infl['negative'] = root + u'ばない'
             infl['participle'] = root + u'んで'
-            infl['provisional-conditional'] = infl['nominal'] + u'べば'
+            infl['provisional-conditional'] = root + u'べば'
 
         elif pos == 'v5m':
             assert dict_form[-1:] == u'む'
@@ -133,7 +133,7 @@ def inflect(dict_form, pos):
             infl['past'] = root + u'んだ'
             infl['negative'] = root + u'まない'
             infl['participle'] = root + u'んで'
-            infl['provisional-conditional'] = infl['nominal'] + u'めば'
+            infl['provisional-conditional'] = root + u'めば'
 
         elif pos == 'v5r':
             assert dict_form[-1:] == u'る'
@@ -142,7 +142,7 @@ def inflect(dict_form, pos):
             infl['past'] = root + u'った'
             infl['negative'] = root + u'らない'
             infl['participle'] = root + u'って'
-            infl['provisional-conditional'] = infl['nominal'] + u'れば'
+            infl['provisional-conditional'] = root + u'れば'
 
         elif pos == 'v5u':
             assert dict_form[-1:] == u'う'
@@ -151,7 +151,7 @@ def inflect(dict_form, pos):
             infl['past'] = root + u'った'
             infl['negative'] = root + u'わない'
             infl['participle'] = root + u'って'
-            infl['provisional-conditional'] = infl['nominal'] + u'えば'
+            infl['provisional-conditional'] = root + u'えば'
 
         else:
             assert False
