@@ -240,13 +240,16 @@ class JMdictParser(XmlParser):
         readings = []
         senses = []
         self.element_start('entry')
+        rank = sys.maxint
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'k_ele':
-                kanji, rank = self.parse_kanji()
+                kanji, kanji_rank = self.parse_kanji()
                 kanjis.append(kanji)
+                rank = min(rank, kanji_rank)
             elif self.token.name_or_data == 'r_ele':
-                reading, rank = self.parse_reading()
+                reading, reading_rank = self.parse_reading()
                 readings.append(reading)
+                rank = min(rank, reading_rank)
             elif self.token.name_or_data == 'sense':
                 sense = self.parse_sense()
                 senses.append(sense)
@@ -300,7 +303,7 @@ class JMdictParser(XmlParser):
 
     def parse_kanji(self):
         keb = None
-        rank = 1
+        rank = sys.maxint
         self.element_start('k_ele')
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'keb':
