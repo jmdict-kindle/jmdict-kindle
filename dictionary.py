@@ -112,12 +112,19 @@ def write_index(entries, stream):
 
     for entry in entries:
         stream.write('<idx:entry>\n')
-        stream.write(' <p><b>' + escape(entry.label) + '</b></p>\n')
+        
+        stream.write(' <p class=label>' + escape(entry.label) + '</p>\n')
+        assert entry.senses
+        
+        stream.write(' <ul>\n')
         for sense in entry.senses:
-            s = '; '.join(sense.gloss)
+            stream.write(' <li>')
             if sense.pos:
-                s = '(' + ','.join(sense.pos) + ') ' + s
-            stream.write(' <p>' + escape(s) + '</p>\n')
+                stream.write('<span class=pos>' + ','.join(sense.pos) + '</span> ')
+            stream.write(escape('; '.join(sense.gloss)))
+            stream.write('</li>\n')
+        stream.write(' </ul>\n')
+
         for ortho in entry.orthos:
             stream.write(' <idx:orth value="%s"' % escape(ortho.value, quote=True))
             if ortho.inflgrps:
@@ -133,7 +140,9 @@ def write_index(entries, stream):
                 stream.write(' </idx:orth>\n')
             else:
                 stream.write('/>\n')
+        
         stream.write('</idx:entry>\n')
+        
         stream.write('<hr/>\n')
 
     stream.write('</body>\n')
