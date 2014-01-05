@@ -23,6 +23,7 @@
 
 
 import cgi
+import sys
 
 from collections import namedtuple
 
@@ -61,6 +62,7 @@ class Entry:
 
 
 def prune(entries):
+    sys.stderr.write('%u entries in\n' % len(entries))
 
     ortho_entry = {}
     for entry in entries:
@@ -71,6 +73,8 @@ def prune(entries):
             except KeyError:
                 pass
             else:
+                if entry.rank == 0 and prev_entry.rank == 0:
+                    sys.stderr.write('warning: ambiguous orthography `%s`, rank %i\n' % (ortho.value.encode('utf-8'), entry.rank))
                 if entry.rank < prev_entry.rank:
                     prev_entry.remove(ortho)
                 else:
@@ -81,6 +85,8 @@ def prune(entries):
     # prune entries without orthographies
     # TODO: squash conflicting entries instead of pruning them
     entries = [entry for entry in entries if len(entry.orthos)]
+
+    sys.stderr.write('%u entries out\n' % len(entries))
 
     return entries
 
