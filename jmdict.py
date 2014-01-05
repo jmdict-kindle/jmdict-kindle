@@ -34,6 +34,11 @@ from dictionary import *
 from inflections import *
 
 
+# limit the number of entries for quick experiments
+MAX_ENTRIES = sys.maxint
+
+
+
 XML_ELEMENT_START, XML_ELEMENT_END, XML_CHARACTER_DATA, XML_EOF = range(4)
 
 
@@ -229,8 +234,8 @@ class JMdictParser(XmlParser):
         while self.token.type == XML_ELEMENT_START:
             entry = self.parse_entry()
             entries.append(entry)
-            #if len(entries) == 100:
-            #    return entries
+            if len(entries) >= MAX_ENTRIES:
+                return entries
         self.element_end('JMdict')
 
         return entries
@@ -239,6 +244,7 @@ class JMdictParser(XmlParser):
         kanjis = []
         readings = []
         senses = []
+
         self.element_start('entry')
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'k_ele':
@@ -252,16 +258,15 @@ class JMdictParser(XmlParser):
                 senses.append(sense)
             else:
                 self.skip_element()
-
         self.element_end('entry')
 
+        orthos = kanjis + readings
 
+        # Label
         assert readings
         label = u';'.join([reading.value for reading in readings])
         if kanjis:
             label += u'【' + u';'.join([kanji.value for kanji in kanjis]) + u'】'
-
-        orthos = kanjis + readings
 
         # Aggregate the POS of all senses
         posses = set()
@@ -365,8 +370,8 @@ class JMnedictParser(JMdictParser):
         while self.token.type == XML_ELEMENT_START:
             entry = self.parse_entry()
             entries.append(entry)
-            #if len(entries) == 100:
-            #    return entries
+            if len(entries) >= MAX_ENTRIES:
+                return entries
         self.element_end('JMnedict')
 
         return entries
