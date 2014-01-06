@@ -75,9 +75,18 @@ def write_index(entries, stream):
     stream.write('<link rel="stylesheet" type="text/css" href="style.css"/>\n')
     stream.write('</head>\n')
     stream.write('<body topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0">\n')
-    stream.write('<mbp:pagebreak/>\n')
+
+    entries.sort(lambda x, y: cmp(x.orthos[0].value, y.orthos[0].value))
+
+    prev_char = None
 
     for entry in entries:
+        char = entry.orthos[0].value[0]
+
+        if char != prev_char:
+            stream.write('<mbp:pagebreak/>\n')
+            prev_char = char
+
         stream.write('<idx:entry>\n')
         
         stream.write(' <p class=label>' + escape(entry.label) + '</p>\n')
@@ -111,6 +120,8 @@ def write_index(entries, stream):
         stream.write('</idx:entry>\n')
         
         stream.write('<hr/>\n')
+
+    stream.write('<mbp:pagebreak/>\n')
 
     stream.write('</body>\n')
     stream.write('</html>\n')

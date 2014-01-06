@@ -275,7 +275,7 @@ class JMdictParser(XmlParser):
                 posses.add(pos)
 
 
-        orthos = kanjis + readings
+        orthos = readings + kanjis
         for ortho in orthos:
             # Don't try to inflect katakana words
             if not is_katakana(ortho.value):
@@ -380,7 +380,5 @@ class JMnedictParser(JMdictParser):
 parser = JMdictParser('JMdict_e.gz')
 #parser = JMnedictParser('JMnedict.xml.gz')
 entries = parser.parse()
-
-entries.sort(lambda x, y: cmp(x.orthos[0], y.orthos[0]))
 
 write_index(entries, sys.stdout)
