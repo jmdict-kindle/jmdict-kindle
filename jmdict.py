@@ -381,8 +381,6 @@ parser = JMdictParser('JMdict_e.gz')
 #parser = JMnedictParser('JMnedict.xml.gz')
 entries = parser.parse()
 
-entries = prune(entries)
-
 entries.sort(lambda x, y: cmp(x.orthos[0], y.orthos[0]))
 
 write_index(entries, sys.stdout)

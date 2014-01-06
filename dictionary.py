@@ -62,39 +62,6 @@ class Entry:
                             del ortho.inflgrps[inflgrp_name]
 
 
-def prune(entries):
-    sys.stderr.write('%u entries in\n' % len(entries))
-
-    # ortho.value -> (entry, ortho)
-    ortho_map = {}
-
-    for entry in entries:
-        entry_orthos = list(entry.orthos)
-        for ortho in entry_orthos:
-            try:
-                prev_entry, prev_ortho = ortho_map[ortho.value]
-            except KeyError:
-                pass
-            else:
-                if ortho.rank == 0 and prev_ortho.rank == 0:
-                    sys.stderr.write('warning: ambiguous orthography `%s`, rank %i\n' % (ortho.value.encode('utf-8'), ortho.rank))
-                if ortho.rank < prev_ortho.rank:
-                    prev_entry.remove(ortho.value)
-                else:
-                    entry.remove(ortho.value)
-                    continue
-            ortho_map[ortho.value] = (entry, ortho)
-
-    # prune entries without orthographies
-    # TODO: squash conflicting entries instead of pruning them
-    entries = [entry for entry in entries if len(entry.orthos)]
-
-    sys.stderr.write('%u entries out\n' % len(entries))
-
-    return entries
-
-
-
 def write_index(entries, stream):
     # http://www.mobipocket.com/dev/article.asp?basefolder=prcgen&file=indexing.htm
     # http://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf

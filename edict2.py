@@ -91,8 +91,6 @@ def parse_edict2():
 
 entries = parse_edict2()
 
-entries = prune(entries)
-
 write_index(entries, sys.stdout)
 
 

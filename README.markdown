@@ -5,7 +5,6 @@ This is a Japanese-English dictionary for Kindle Paperwhite based on the JMdict 
 
 Features:
 
-* on ambiguity, precedence is given to most common entries
 
 * inflection of verbs
 
@@ -13,7 +12,29 @@ Features:
 Download
 ========
 
-You can download the latest version from [here](http://people.freedesktop.org/~jrfonseca/jmdict/).
+You can download the latest version of the dictionary from
+[here](http://people.freedesktop.org/~jrfonseca/jmdict/).
+
+
+Install
+=======
+
+To install the dictionary into your device follow these steps:
+
+* for 1st-generation Kindle Paperwhite devices, ensure you have 
+  [firmware version 5.3.9 or higher](http://www.amazon.com/gp/help/customer/display.html/ref=hp_left_cn?ie=UTF8&nodeId=201064850)
+  as it includes improved homonym lookup for Japanese;
+
+* connect your Kindle device via USB;
+
+* copy the `jmdict.mobi` to the `documents` sub-folder;
+
+* eject the USB device;
+
+* on your device go to
+  _Home > Settings > Device Options > Language and Dictionaries > Dictionaries_ 
+  and set _JMdict Japanese-English Dictionary_ as the default dictionary for
+  Japanese.
 
 
 Building from source
@@ -44,13 +65,7 @@ To do
 
   * cross references
 
-  * more accurate word frequency modelling
-
-* Merge ambiguous entries (as opposed to remove the less frequent ones)
-
-* More effective inflections.
-
-* Add examples from [Tanaka Corpus](http://www.edrdg.org/wiki/index.php/Tanaka_Corpus#Downloads) or [Tatoeba project](http://tatoeba.org/eng/downloads)
+* Add examples from [Tanaka Corpus](http://www.edrdg.org/wiki/index.php/Tanaka_Corpus#Downloads) or [Tatoeba project](http://tatoeba.org/eng/downloads).
 
 * Include a subset of Japanese proper names from [ENAMDICT/JMnedict](http://www.csse.monash.edu.au/~jwb/enamdict_doc.html).
 
