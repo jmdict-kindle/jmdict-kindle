@@ -1,12 +1,14 @@
 About
 =====
 
-This is a Japanese-English dictionary for Kindle Paperwhite based on the JMdict database.
+This is a Japanese-English dictionary for Kindle Paperwhite devices based on
+the [JMdict](http://www.edrdg.org/jmdict/j_jmdict.html) database.
 
 Features:
 
+* lookup of inflected verbs.
 
-* inflection of verbs
+![Screenshot](screenshot.png)
 
 
 Download
