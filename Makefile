@@ -1,7 +1,7 @@
 default: jmdict.mobi
 
 edict2.gz enamdict.gz JMdict_e.gz JMnedict.xml.gz:
-	wget -N http://ftp.monash.edu.au/pub/nihongo/$@.gz
+	wget -N http://ftp.monash.edu.au/pub/nihongo/$@
 
 %.txt: %.gz edict_to_txt.py
 	python edict_to_txt.py $< > $@
