@@ -216,8 +216,11 @@ def inflect(dict_form, pos):
 
     nai_form = infl['negative']
     assert nai_form[-2:] == u'ない'
-    infl['past-negative'] = nai_form[:-2] + u'なかった'
-    infl['participle-negative'] = nai_form[:-2] + u'ないで'
+    infl['negative-nominal'] = nai_form[:-2] + u'なく'
+    infl['negative-past'] = nai_form[:-2] + u'なかった'
+    infl['negative-participle'] = nai_form[:-2] + u'ないで'
+    infl['negative-provisional-conditional'] = nai_form[:-2] + u'なければ'
+    infl['negative-provisional-conditional-colloquial'] = nai_form[:-2] + u'なきゃ'
 
     infl['wish'] = infl['nominal'] + u'たい'
     infl['wish-past'] = infl['nominal'] + u'たかった'
