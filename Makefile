@@ -15,10 +15,12 @@ definitions.html: jmdict.py dictionary.py inflections.py JMdict_e.gz
 cover.jpg: cover.py
 	python cover.py
 
-# http://www.amazon.com/gp/feature.html?ie=UTF8&docId=1000765211
-# XXX: Should be -c2 but it is very slow
+# XXX: The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
+# but it is excruciantly slow.
+COMPRESSION ?= 1
+
 jmdict.mobi: jmdict.opf cover.jpg style.css frontmatter.html definitions.html
-	kindlegen jmdict.opf -c1 -verbose
+	kindlegen $< -c$(COMPRESSION) -verbose -o $@
 
 publish: jmdict.mobi
 	scp -p jmdict.mobi annarchy.freedesktop.org:public_html/jmdict/
