@@ -8,6 +8,14 @@ Features:
 
 * lookup of inflected verbs.
 
+<!--
+Screenshots were captured inside the Kindle device as explained in
+http://blog.blankbaby.com/2012/10/take-a-screenshot-on-a-kindle-paperwhite.html
+then processed with ImageMagick's
+`mogrify -colorspace gray -level 0%,111.11% -define PNG:compression-level=9`
+to look like E-Ink display.
+-->
+
 ![Screenshot](screenshot.png)
 
 
