@@ -96,3 +96,5 @@ Alternatives
 * [John Mettraux's EDICT2 Japanese-English Kindle dictionary](https://github.com/jmettraux/edict2-kindle)
 
 * [Amazon Kindle Store](http://www.amazon.com/gp/bestsellers/digital-text/158211011/)
+
+  * [Roger Häusermann's](http://www.mobileread.com/forums/showthread.php?t=223485)
