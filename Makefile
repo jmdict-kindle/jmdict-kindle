@@ -16,15 +16,16 @@ cover.jpg: cover.py
 # but it is excruciantly slow.
 COMPRESSION ?= 1
 
-jmdict.mobi: jmdict.opf cover.jpg style.css frontmatter.html
+jmdict.full.mobi: jmdict.opf cover.jpg style.css frontmatter.html
 	kindlegen $< -c$(COMPRESSION) -verbose -o $@
+
+%.mobi: %.full.mobi kindlestrip.py
+	python kindlestrip.py $< $@
 
 publish: jmdict.mobi
 	scp -p jmdict.mobi annarchy.freedesktop.org:public_html/jmdict/
 
 clean:
-	rm -f jmdict.opf
-	rm -f entry-*.html
-	rm -f cover.jpg
+	rm -f *.mobi *.opf entry-*.html cover.jpg
 
 .PHONE: default publish clean
