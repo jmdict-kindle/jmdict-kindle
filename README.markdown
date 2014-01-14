@@ -1,8 +1,10 @@
 About
 =====
 
-This is a Japanese-English dictionary for Kindle Paperwhite devices based on
-the [JMdict](http://www.edrdg.org/jmdict/j_jmdict.html) database.
+This is a Japanese-English dictionary based on the
+[JMdict](http://www.edrdg.org/jmdict/j_jmdict.html) database for
+[Kindle Paperwhite](http://www.amazon.co.uk/dp/B00CTUKFNQ) devices and
+[Kindle Android](https://play.google.com/store/apps/details?id=com.amazon.kindle) app.
 
 Features:
 
@@ -29,6 +31,9 @@ You can download the latest version of the dictionary from
 Install
 =======
 
+Kindle Paperwhite
+-----------------
+
 To install the dictionary into your device follow these steps:
 
 * for 1st-generation Kindle Paperwhite devices, ensure you have 
@@ -45,6 +50,18 @@ To install the dictionary into your device follow these steps:
   _Home > Settings > Device Options > Language and Dictionaries > Dictionaries_ 
   and set _JMdict Japanese-English Dictionary_ as the default dictionary for
   Japanese.
+
+Kindle Android App
+------------------
+
+* rename `jmdict.mobi` as `B005FNK020_EBOK.prc`
+
+* connect your Android device via USB
+
+* copy `B005FNK020_EBOK.prc` into `Internal Storage/Android/data/com.amazon.kindle/files/` or `/sdcard/android/data/com.amazon.kindle/files`
+
+This will override the
+[default Japanese-Japanese dictionary](https://kindle.amazon.com/work/daijisen-x5927-x8f9e-japanese-edition-ebook/B005FNK020/B005FNK020).
 
 
 Building from source
