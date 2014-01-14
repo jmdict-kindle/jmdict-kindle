@@ -6,9 +6,6 @@ edict2.gz enamdict.gz JMdict_e.gz JMnedict.xml.gz:
 %.txt: %.gz edict_to_txt.py
 	python edict_to_txt.py $< > $@
 
-#definitions.html: edict2_to_html.py dictionary.py edict2.gz
-#	python edict2_to_html.py > $@
-
 jmdict.opf: jmdict.py dictionary.py inflections.py kana.py JMdict_e.gz
 	python jmdict.py
 
