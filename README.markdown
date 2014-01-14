@@ -60,7 +60,7 @@ Requirements:
 
   * [Python Image Library](http://www.pythonware.com/products/pil/)
 
-* [kindlegen 2.8](http://s3.amazonaws.com/kindlegen/kindlegen_linux_2.6_i386_v2_8.tar.gz) (2.9 crashes for me)
+* [kindlegen](http://www.amazon.com/gp/feature.html?docId=1000765211) (tested with version 2.9)
 
 
 Build with:

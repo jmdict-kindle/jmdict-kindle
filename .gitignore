@@ -3,5 +3,6 @@
 *.mobi
 *.pyc
 *.txt
-definitions.html
 cover.jpg
+entry-*.html
+jmdict.opf

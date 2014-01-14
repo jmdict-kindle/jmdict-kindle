@@ -1,3 +1,5 @@
+# vim: set fileencoding=utf-8 :
+
 #
 # Copyright 2014 Jose Fonseca
 # All Rights Reserved.
@@ -27,6 +29,8 @@ import sys
 
 from collections import namedtuple
 
+from kana import *
+
 
 Ortho = namedtuple('Ortho', ['value', 'rank', 'inflgrps'])
 
@@ -47,6 +51,32 @@ class Entry:
         self.senses = senses
         self.orthos = orthos
 
+        self.headword = self._headword()
+        self.section = self._section()
+
+    def _headword(self):
+        # Return the first hira/kata-kana word
+        for ortho in self.orthos:
+            reading = ortho.value
+            if reading.startswith(u'っ'):
+                reading = reading[1:]
+            if is_kana(reading[:2]):
+                return reading
+
+        sys.stderr.write('error: cannot determine headword for %s\n  %s\n' % (self.label, '; '.join(self.senses[0].gloss)))
+        assert False
+
+    def _section(self):
+        # Return the first syllable of the headword
+
+        headword = self.headword
+
+        initial = headword[0]
+        if len(headword) > 1 and headword[1] in u'ゃャゅュょョァィゥェォ':
+            initial += headword[1]
+
+        return initial
+
     def remove(self, reading):
         assert isinstance(reading, unicode)
         for i in range(len(self.orthos)):
@@ -62,11 +92,8 @@ class Entry:
                             del ortho.inflgrps[inflgrp_name]
 
 
-def write_index(entries, stream):
-    # http://www.mobipocket.com/dev/article.asp?basefolder=prcgen&file=indexing.htm
-    # http://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf
-    # http://www.klokan.cz/projects/stardict-lingea/tab2opf.py
 
+def write_index_header(stream):
     stream.write('<?xml version="1.0" encoding="UTF-8"?>\n')
     stream.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n')
     stream.write('<html xmlns:idx="www.mobipocket.com" xmlns:mbp="www.mobipocket.com" xmlns="http://www.w3.org/1999/xhtml">\n')
@@ -76,16 +103,46 @@ def write_index(entries, stream):
     stream.write('</head>\n')
     stream.write('<body topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0">\n')
 
-    entries.sort(lambda x, y: cmp(x.orthos[0].value, y.orthos[0].value))
+def write_index_footer(stream):
+    stream.write('<mbp:pagebreak/>\n')
 
-    prev_char = None
+    stream.write('</body>\n')
+    stream.write('</html>\n')
+
+
+
+def write_index(entries, stream):
+    # http://www.mobipocket.com/dev/article.asp?basefolder=prcgen&file=indexing.htm
+    # http://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf
+    # http://www.klokan.cz/projects/stardict-lingea/tab2opf.py
+
+    # Sort entries alphabetically
+    entries.sort(lambda x, y: cmp(x.headword, y.headword))
+
+    prev_section = None
+
+    stream = None
+
+    sections = []
+    section_streams = {}
 
     for entry in entries:
-        char = entry.orthos[0].value[0]
+        section = entry.section
 
-        if char != prev_char:
-            stream.write('<mbp:pagebreak/>\n')
-            prev_char = char
+        if section != prev_section:
+            sys.stderr.write('%s\n' % section)
+
+            try:
+                stream = section_streams[section]
+            except KeyError:
+                sections.append(section)
+                filename = 'entry-%s.html' % section
+                stream = open(filename, 'wt')
+                section_streams[section] = stream
+                write_index_header(stream)
+
+            prev_section = section
+
 
         stream.write('<idx:entry>\n')
         
@@ -121,7 +178,45 @@ def write_index(entries, stream):
         
         stream.write('<hr/>\n')
 
-    stream.write('<mbp:pagebreak/>\n')
+    for stream in section_streams.values():
+        write_index_footer(stream)
+        stream.close()
 
-    stream.write('</body>\n')
-    stream.write('</html>\n')
+
+    # Write the OPF
+    stream = open('jmdict.opf', 'wt')
+    stream.write('<?xml version="1.0" encoding="utf-8"?>\n')
+    stream.write('<package unique-identifier="uid">\n')
+    stream.write('  <metadata>\n')
+    stream.write('    <dc-metadata xmlns:dc="http://purl.org/metadata/dublin_core">\n')
+    stream.write('      <dc:Identifier id="uid">8FC8AF2ED7</dc:Identifier>\n')
+    stream.write('      <dc:Title><h2>JMdict Japanese-English Dictionary</h2></dc:Title>\n')
+    stream.write('      <dc:Language>ja</dc:Language>\n')
+    stream.write('      <dc:Creator>Electronic Dictionary Research &amp; Development Group</dc:Creator>\n')
+    stream.write('      <dc:Date>2013-12-29</dc:Date>\n')
+    stream.write('      <dc:Copyrights>2013 Electronic Dictionary Research &amp; Development Group</dc:Copyrights>\n')
+    stream.write('    </dc-metadata>\n')
+    stream.write('    <x-metadata>\n')
+    stream.write('      <output encoding="UTF-8" flatten-dynamic-dir="yes"/>\n')
+    stream.write('      <DictionaryInLanguage>ja</DictionaryInLanguage>\n')
+    stream.write('      <DictionaryOutLanguage>en</DictionaryOutLanguage>\n')
+    stream.write('    </x-metadata>\n')
+    stream.write('  </metadata>\n')
+    stream.write('  <manifest>\n')
+    stream.write('    <item id="cover" href="cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n')
+    stream.write('    <item id="css" href="style.css" media-type="text/css"/>\n')
+    stream.write('    <item id="frontmatter" href="frontmatter.html" media-type="text/x-oeb1-document"/>\n')
+    for i in range(len(sections)):
+        section = sections[i]
+        print section
+        stream.write('    <item id="entry-%u" href="entry-%s.html" media-type="text/x-oeb1-document"/>\n' % (i, escape(section, quote=True)))
+    stream.write('  </manifest>\n')
+    stream.write('\n')
+    stream.write('  <spine>\n')
+    stream.write('    <itemref idref="frontmatter"/>\n')
+    for i in range(len(sections)):
+        stream.write('    <itemref idref="entry-%u"/>\n' % i)
+    stream.write('  </spine>\n')
+    stream.write('  <tours/>\n')
+    stream.write('  <guide/>\n')
+    stream.write('</package>\n')

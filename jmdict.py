@@ -29,8 +29,8 @@ import sys
 import gzip
 import xml.parsers.expat
 
+from kana import *
 from dictionary import *
-
 from inflections import *
 
 
@@ -291,8 +291,6 @@ class JMdictParser(XmlParser):
             for sense in senses:
                 print '  ' + sense
 
-
-
         return entry
 
     def parse_kanji(self):
@@ -377,8 +375,10 @@ class JMnedictParser(JMdictParser):
         return entries
 
 
+sys.stderr.write('Parsing JMdict_e.gz...\n')
 parser = JMdictParser('JMdict_e.gz')
 #parser = JMnedictParser('JMnedict.xml.gz')
 entries = parser.parse()
 
+sys.stderr.write('Writing entries...\n')
 write_index(entries, sys.stdout)

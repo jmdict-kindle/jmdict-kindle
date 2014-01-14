@@ -9,8 +9,8 @@ edict2.gz enamdict.gz JMdict_e.gz JMnedict.xml.gz:
 #definitions.html: edict2_to_html.py dictionary.py edict2.gz
 #	python edict2_to_html.py > $@
 
-definitions.html: jmdict.py dictionary.py inflections.py JMdict_e.gz
-	python jmdict.py > $@
+jmdict.opf: jmdict.py dictionary.py inflections.py kana.py JMdict_e.gz
+	python jmdict.py
 
 cover.jpg: cover.py
 	python cover.py
@@ -19,8 +19,15 @@ cover.jpg: cover.py
 # but it is excruciantly slow.
 COMPRESSION ?= 1
 
-jmdict.mobi: jmdict.opf cover.jpg style.css frontmatter.html definitions.html
+jmdict.mobi: jmdict.opf cover.jpg style.css frontmatter.html
 	kindlegen $< -c$(COMPRESSION) -verbose -o $@
 
 publish: jmdict.mobi
 	scp -p jmdict.mobi annarchy.freedesktop.org:public_html/jmdict/
+
+clean:
+	rm -f jmdict.opf
+	rm -f entry-*.html
+	rm -f cover.jpg
+
+.PHONE: default publish clean

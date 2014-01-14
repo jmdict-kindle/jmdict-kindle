@@ -26,15 +26,6 @@
 # - http://www.japaneseverbconjugator.com/
 
 
-def is_katakana(word):
-    assert isinstance(word, unicode)
-    for c in word:
-        ord_c = ord(c)
-        if ord_c < 12449 or ord_c >= 12534:
-            return False
-    return True
-    
-
 def inflect(dict_form, pos):
     '''That's here that we fully conjugate the verb from
     its dictionary form.'''
