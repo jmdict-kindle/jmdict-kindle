@@ -54,6 +54,8 @@ To install the dictionary into your device follow these steps:
 Kindle Android App
 ------------------
 
+**NOTE: Unfortunately the Kindle Android App does not support dictionary inflections, yielding verbs lookup practically impossible. No known workaround.**
+
 * rename `jmdict.mobi` as `B005FNK020_EBOK.prc`
 
 * connect your Android device via USB
