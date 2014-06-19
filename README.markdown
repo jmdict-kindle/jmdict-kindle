@@ -25,7 +25,7 @@ Download
 ========
 
 You can download the latest version of the dictionary from
-[here](http://people.freedesktop.org/~jrfonseca/jmdict/).
+[here](https://github.com/jrfonseca/jmdict-kindle/releases).
 
 
 Install
