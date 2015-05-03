@@ -1,0 +1,25 @@
+language: C
+
+sudo: true
+
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -qq -y --no-install-recommends python-cairo python-imaging p7zip
+- mkdir kindlegen
+- wget -q -O - https://kindlegen.s3.amazonaws.com/kindlegen_linux_2.6_i386_v2_9.tar.gz | tar -xz -C kindlegen
+- export PATH=$PWD/kindlegen:$PATH
+
+script:
+- make jmdict.mobi
+- if [ "$TRAVIS_TAG" ]; then 7zr a jmdict-"$TRAVIS_TAG".7z jmdict.mobi; fi
+
+deploy:
+  provider: releases
+  api_key:
+    secure: frTz8L+ex+foqv1fpVJX9guW/YHftxhjJ3SKwcfLmIW/NP77FVLgF8PgyLyPVbRkUOoSZpNYGQcWEpOF3bEK5HbeQScuV75TgSO2n2Ie4UqMO7+4G3bY5+Ni/SvfA/qt7krZQeNc0wCtPX+QjD4HLmSXfnie6PMZw/q5pkjN9fI=
+  file_glob: true
+  file: jmdict-*.7z
+  on:
+    repo: jrfonseca/jmdict-kindle
+    tags: true
+    all_branches: true
