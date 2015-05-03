@@ -11,12 +11,14 @@ before_install:
 
 script:
 - make jmdict.mobi
-- if [ "$TRAVIS_TAG" ]; then 7zr a jmdict-"$TRAVIS_TAG".7z jmdict.mobi; fi
+
+before_deploy:
+- 7zr a jmdict-"$TRAVIS_TAG".7z jmdict.mobi
 
 deploy:
   provider: releases
   api_key:
-    secure: frTz8L+ex+foqv1fpVJX9guW/YHftxhjJ3SKwcfLmIW/NP77FVLgF8PgyLyPVbRkUOoSZpNYGQcWEpOF3bEK5HbeQScuV75TgSO2n2Ie4UqMO7+4G3bY5+Ni/SvfA/qt7krZQeNc0wCtPX+QjD4HLmSXfnie6PMZw/q5pkjN9fI=
+    secure: gwdRipwpvQ1ZnLHi/qCD3taDrn/zQXrSnuYxMO2I07q67EbvhSH4BeYTQQEGvoYpXJEmJXUhWJJglhWbeK8UABEw2AxqwOIuuVtx38WHM74xH65RrBlrSUnnU9EHTSRbMVZuZzjjAJh0JrXAVIJCc1Mp7NJhYxwz6Etz913ZRwQ=
   file_glob: true
   file: jmdict-*.7z
   on:
