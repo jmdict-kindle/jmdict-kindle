@@ -21,6 +21,7 @@ deploy:
     secure: gwdRipwpvQ1ZnLHi/qCD3taDrn/zQXrSnuYxMO2I07q67EbvhSH4BeYTQQEGvoYpXJEmJXUhWJJglhWbeK8UABEw2AxqwOIuuVtx38WHM74xH65RrBlrSUnnU9EHTSRbMVZuZzjjAJh0JrXAVIJCc1Mp7NJhYxwz6Etz913ZRwQ=
   file_glob: true
   file: jmdict-*.7z
+  skip_cleanup: true
   on:
     repo: jrfonseca/jmdict-kindle
     tags: true
