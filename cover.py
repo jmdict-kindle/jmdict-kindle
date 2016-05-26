@@ -27,12 +27,14 @@
 import cairo
  
 
-surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 600, 800)
+w, h = 768, 1024
+
+surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
 ctx = cairo.Context(surface)
  
 # paint gray background
 ctx.set_source_rgb(0.75, 0.75, 0.75)
-ctx.rectangle(0, 0, 600, 800)
+ctx.rectangle(0, 0, w, h)
 ctx.fill()
  
 # draw centered text
@@ -49,11 +51,11 @@ def draw_text(ctx, x, y, t):
 ctx.select_font_face('Sans')
 ctx.set_source_rgb(0.00, 0.00, 0.00) # black
 
-ctx.set_font_size(90)
-draw_text(ctx, 300, 400, 'JMDICT')
+ctx.set_font_size(90*h/800)
+draw_text(ctx, 0.5*w, 0.5*h, 'JMDICT')
 
-ctx.set_font_size(30)
-draw_text(ctx, 300, 600, 'Japanese-English Dictionary')
+ctx.set_font_size(30*h/800)
+draw_text(ctx, 0.5*w, 0.75*h, 'Japanese-English Dictionary')
  
 # finish
 ctx.stroke()
