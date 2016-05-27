@@ -3,8 +3,7 @@ About
 
 This is a Japanese-English dictionary based on the
 [JMdict](http://www.edrdg.org/jmdict/j_jmdict.html) database for
-[Kindle Paperwhite](http://www.amazon.co.uk/dp/B00CTUKFNQ) devices and
-[Kindle Android](https://play.google.com/store/apps/details?id=com.amazon.kindle) app.
+[Kindle Paperwhite](http://www.amazon.co.uk/dp/B00CTUKFNQ) devices.
 
 Features:
 
@@ -36,7 +35,7 @@ Kindle Paperwhite
 
 To install the dictionary into your device follow these steps:
 
-* for 1st-generation Kindle Paperwhite devices, ensure you have 
+* for 1st-generation Kindle Paperwhite devices, ensure you have
   [firmware version 5.3.9 or higher](http://www.amazon.com/gp/help/customer/display.html/ref=hp_left_cn?ie=UTF8&nodeId=201064850)
   as it includes improved homonym lookup for Japanese;
 
@@ -47,7 +46,7 @@ To install the dictionary into your device follow these steps:
 * eject the USB device;
 
 * on your device go to
-  _Home > Settings > Device Options > Language and Dictionaries > Dictionaries_ 
+  _Home > Settings > Device Options > Language and Dictionaries > Dictionaries_
   and set _JMdict Japanese-English Dictionary_ as the default dictionary for
   Japanese.
 
@@ -116,6 +115,4 @@ Alternatives
 
 * [John Mettraux's EDICT2 Japanese-English Kindle dictionary](https://github.com/jmettraux/edict2-kindle)
 
-* [Amazon Kindle Store](http://www.amazon.com/gp/bestsellers/digital-text/158211011/)
-
-  * [Roger Häusermann's](http://www.mobileread.com/forums/showthread.php?t=223485)
+* [Amazon Kindle Store](http://www.amazon.com/s/url=search-alias%3Ddigital-text&field-keywords=japanese+english+dictionary)
