@@ -3,7 +3,7 @@ About
 
 This is a Japanese-English dictionary based on the
 [JMdict](http://www.edrdg.org/jmdict/j_jmdict.html) database for
-[Kindle Paperwhite](http://www.amazon.co.uk/dp/B00CTUKFNQ) devices.
+_e-Ink_ Kindle devices.
 
 Features:
 
@@ -20,6 +20,18 @@ to look like E-Ink display.
 ![Screenshot](screenshot.png)
 
 
+Supported Devices
+=================
+
+The dictionary has been tested on _Kindle Paperwhite_.  It _should_ also work
+well with other _e-Ink_ Kindle devices that were released after _Paperwhite_,
+such _Kindle Voyage_, _Kindle Oasis_, and newer generations of _Kindle_.
+
+The dictionary will *not* work well on _Kindle Fire_ or _Kindle Android App_,
+or any Android based Kindle, because the Kindle software on those platforms
+does not support inflection lookups.
+
+
 Download
 ========
 
@@ -30,7 +42,7 @@ You can download the latest version of the dictionary from
 Install
 =======
 
-Kindle Paperwhite
+_e-Ink_ Kindle
 -----------------
 
 To install the dictionary into your device follow these steps:
