@@ -2,19 +2,19 @@
 # vim: set fileencoding=utf-8 :
 
 #
-# Copyright 2014 Jose Fonseca
+# Copyright 2014, 2017 Jose Fonseca
 # Copyright 2004, 2005 Choplair-network.
-# 
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -26,6 +26,32 @@
 # - http://www.japaneseverbconjugator.com/
 
 
+class InflectionError(Exception):
+    pass
+
+
+def _check(dict_form, pos, *suffixes):
+    assert suffixes
+    suffix_lens = [len(suffix) for suffix in suffixes]
+    suffix_len = suffix_lens.pop()
+    for l in suffix_lens:
+        assert l == suffix_len
+
+    suffix = dict_form[-suffix_len:]
+
+    if suffix in suffixes:
+        return
+
+    msg = u"%s[%s] should end with %s, but ends with %s" % (
+         dict_form,
+         pos,
+         u'/'.join(suffixes),
+         suffix
+    )
+
+    raise InflectionError(msg)
+
+
 def inflect(dict_form, pos):
     '''That's here that we fully conjugate the verb from
     its dictionary form.'''
@@ -33,7 +59,7 @@ def inflect(dict_form, pos):
     infl = {}
 
     if pos == 'adj-i':
-        assert dict_form[-1] == u'い'
+        _check(dict_form, pos, u'い')
 
         radical = dict_form[:-1]
 
@@ -50,7 +76,7 @@ def inflect(dict_form, pos):
     elif pos == 'v1':
         # ichidan
 
-        assert dict_form[-1:] == u'る'
+        _check(dict_form, pos, u'る')
 
         infl['nominal'] = dict_form[:-1]
         infl['past'] = infl['nominal'] + u'た'
@@ -67,7 +93,7 @@ def inflect(dict_form, pos):
         root = ''
 
         if pos == 'v5t':
-            assert dict_form[-1:] == u'つ'
+            _check(dict_form, pos, u'つ')
             root = dict_form[:-1]
             infl['nominal'] = root + u'ち'
             infl['past'] = root + u'った'
@@ -77,7 +103,7 @@ def inflect(dict_form, pos):
             infl['volitional'] = root + u'とう'
 
         elif pos == 'v5k':
-            assert dict_form[-1:] == u'く'
+            _check(dict_form, pos, u'く')
             root = dict_form[:-1]
             infl['nominal'] = root + u'き'
             infl['past'] = root + u'いた'
@@ -87,7 +113,7 @@ def inflect(dict_form, pos):
             infl['volitional'] = root + u'こう'
 
         elif pos == 'v5g':
-            assert dict_form[-1:] == u'ぐ'
+            _check(dict_form, pos, u'ぐ')
             root = dict_form[:-1]
             infl['nominal'] = root + u'ぎ'
             infl['past'] = root + u'いた'
@@ -97,7 +123,7 @@ def inflect(dict_form, pos):
             infl['volitional'] = root + u'ごう'
 
         elif pos == 'v5s':
-            assert dict_form[-1:] == u'す'
+            _check(dict_form, pos, u'す')
             root = dict_form[:-1]
             infl['nominal'] = root + u'し'
             infl['past'] = infl['nominal'] + u'た'
@@ -107,7 +133,7 @@ def inflect(dict_form, pos):
             infl['volitional'] = root + u'ぞう'
 
         elif pos == 'v5n':
-            assert dict_form[-1:] == u'ぬ'
+            _check(dict_form, pos, u'ぬ')
             root = dict_form[:-1]
             infl['nominal'] = root + u'に'
             infl['past'] = root + u'んだ'
@@ -117,7 +143,7 @@ def inflect(dict_form, pos):
             infl['volitional'] = root + u'のう'
 
         elif pos == 'v5b':
-            assert dict_form[-1:] == u'ぶ'
+            _check(dict_form, pos, u'ぶ')
             root = dict_form[:-1]
             infl['nominal'] = root + u'び'
             infl['past'] = root + u'んだ'
@@ -127,7 +153,7 @@ def inflect(dict_form, pos):
             infl['volitional'] = root + u'ぼう'
 
         elif pos == 'v5m':
-            assert dict_form[-1:] == u'む'
+            _check(dict_form, pos, u'む')
             root = dict_form[:-1]
             infl['nominal'] = root + u'み'
             infl['past'] = root + u'んだ'
@@ -137,7 +163,7 @@ def inflect(dict_form, pos):
             infl['volitional'] = root + u'もう'
 
         elif pos == 'v5r':
-            assert dict_form[-1:] == u'る'
+            _check(dict_form, pos, u'る')
             root = dict_form[:-1]
             infl['nominal'] = root + u'り'
             infl['past'] = root + u'った'
@@ -147,7 +173,7 @@ def inflect(dict_form, pos):
             infl['volitional'] = root + u'ろう'
 
         elif pos == 'v5u':
-            assert dict_form[-1:] == u'う'
+            _check(dict_form, pos, u'う')
             root = dict_form[:-1]
             infl['nominal'] = root + u'い'
             infl['past'] = root + u'った'
@@ -163,19 +189,18 @@ def inflect(dict_form, pos):
             # TODO: v5u-s
             # TODO: v5z
 
-        assert infl['negative'][-2:] == u'ない'
+        _check(infl['negative'], 'negative', u'ない')
         infl['passive'] = infl['negative'][:-2] + u'れる'
         infl['causative'] = infl['negative'][:-2] + u'せる'
 
-        assert infl['potential'][-1:] == u'る'
+        _check(infl['potential'], 'potential', u'る')
         infl['provisional-conditional'] = infl['potential'][:-1] + u'ば'
         infl['imperative'] = infl['potential'][:-1]
 
     elif pos == 'vs-i':
         # suru
 
-        assert dict_form[-1] == u'る'
-        assert dict_form[-2] in u'為す'
+        _check(dict_form, pos, u'為る', u'する')
 
         if dict_form[-2] == u'す':
             root = dict_form[:-2]
@@ -196,9 +221,8 @@ def inflect(dict_form, pos):
     elif pos == 'vk':
         # kuru
 
-        assert dict_form[-1] == u'る'
-        assert dict_form[-2] in u'来來く'
-        
+        _check(dict_form, pos, u'来る', u'來る', u'くる')
+
         u_form = dict_form[:-1]
         if dict_form[-2] == u'く':
             i_form = dict_form[:-2] + u'き'

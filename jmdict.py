@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8 :
 
 #
-# Copyright 2011-2014 Jose Fonseca
+# Copyright 2011-2017 Jose Fonseca
 # All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -280,9 +280,13 @@ class JMdictParser(XmlParser):
             # Don't try to inflect katakana words
             if not is_katakana(ortho.value):
                 for pos in posses:
-                    infl_dict = inflect(ortho.value, pos)
-                    if infl_dict:
-                        ortho.inflgrps[pos] = infl_dict.values()
+                    try:
+                        infl_dict = inflect(ortho.value, pos)
+                    except InflectionError as ex:
+                        sys.stderr.write('error: %s\n' % ex.message)
+                    else:
+                        if infl_dict:
+                            ortho.inflgrps[pos] = infl_dict.values()
 
         entry = Entry(label, senses, orthos)
 
