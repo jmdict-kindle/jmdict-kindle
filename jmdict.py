@@ -74,23 +74,23 @@ class XmlTokenizer:
         self.final = False
         self.skip_ws = skip_ws
         self.entities = {}
-        
+
         self.character_pos = 0, 0
         self.character_data = ''
-        
+
         self.parser = xml.parsers.expat.ParserCreate()
         self.parser.StartElementHandler  = self.handle_element_start
         self.parser.EndElementHandler    = self.handle_element_end
         self.parser.CharacterDataHandler = self.handle_character_data
         self.parser.EntityDeclHandler    = self.handle_entity_decl_handler
         self.parser.SetParamEntityParsing(xml.parsers.expat.XML_PARAM_ENTITY_PARSING_NEVER)
-    
+
     def handle_element_start(self, name, attributes):
         self.finish_character_data()
         line, column = self.pos()
         token = XmlToken(XML_ELEMENT_START, name, attributes, line, column)
         self.tokens.append(token)
-    
+
     def handle_element_end(self, name):
         self.finish_character_data()
         line, column = self.pos()
@@ -101,18 +101,18 @@ class XmlTokenizer:
         if not self.character_data:
             self.character_pos = self.pos()
         self.character_data += data
-    
+
     def handle_entity_decl_handler(self, entityName, is_parameter_entity, value, base, systemId, publicId, notationName):
         self.entities[value] = entityName
 
     def finish_character_data(self):
         if self.character_data:
-            if not self.skip_ws or not self.character_data.isspace(): 
+            if not self.skip_ws or not self.character_data.isspace():
                 line, column = self.character_pos
                 token = XmlToken(XML_CHARACTER_DATA, self.character_data, None, line, column)
                 self.tokens.append(token)
             self.character_data = ''
-    
+
     def next(self):
         size = 16*1024
         while self.index >= len(self.tokens) and not self.final:
@@ -156,13 +156,13 @@ class XmlParser:
     def __init__(self, fp):
         self.tokenizer = XmlTokenizer(fp)
         self.consume()
-    
+
     def consume(self):
         self.token = self.tokenizer.next()
 
     def match_element_start(self, name):
         return self.token.type == XML_ELEMENT_START and self.token.name_or_data == name
-    
+
     def match_element_end(self, name):
         return self.token.type == XML_ELEMENT_END and self.token.name_or_data == name
 
@@ -176,7 +176,7 @@ class XmlParser:
         attrs = self.token.attrs
         self.consume()
         return attrs
-    
+
     def element_end(self, name):
         while self.token.type == XML_CHARACTER_DATA:
             self.consume()
@@ -207,18 +207,6 @@ class XmlParser:
             else:
                 assert False
         self.element_end(name)
-
-
-#import locale
-#import sys
-#import codecs
-#
-## Fix stdout encoding when piping
-#if not sys.stdout.isatty():
-#    sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
-
-
-
 
 
 class JMdictParser(XmlParser):
@@ -312,7 +300,7 @@ class JMdictParser(XmlParser):
 
         assert keb is not None
         return Ortho(keb, rank, {})
-    
+
     def parse_reading(self):
         reb = None
         rank = 1
