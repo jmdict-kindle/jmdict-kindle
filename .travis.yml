@@ -5,6 +5,7 @@ sudo: true
 before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -qq -y --no-install-recommends python-cairo python-imaging p7zip
+- python --version
 - mkdir kindlegen
 - wget -q -O - https://kindlegen.s3.amazonaws.com/kindlegen_linux_2.6_i386_v2_9.tar.gz | tar -xz -C kindlegen
 - export PATH=$PWD/kindlegen:$PATH
