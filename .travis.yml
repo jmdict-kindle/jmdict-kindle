@@ -1,8 +1,8 @@
 language: C
 
-sudo: true
-
-dist: trusty
+# https://blog.travis-ci.com/2017-04-17-precise-EOL
+dist: precise
+sudo: required
 
 before_install:
 - sudo apt-get update -qq
