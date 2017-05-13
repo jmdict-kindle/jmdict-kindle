@@ -21,7 +21,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: gwdRipwpvQ1ZnLHi/qCD3taDrn/zQXrSnuYxMO2I07q67EbvhSH4BeYTQQEGvoYpXJEmJXUhWJJglhWbeK8UABEw2AxqwOIuuVtx38WHM74xH65RrBlrSUnnU9EHTSRbMVZuZzjjAJh0JrXAVIJCc1Mp7NJhYxwz6Etz913ZRwQ=
+    secure: bmnrXL+vzUpUHeE6zuHXkLK7/7tpKo/tIhj/Ha8qWp0G0c4ySHlStGPKfbzaYmywCvXSDnGyPWAKncTv1cH4yRglWH/n53jhB9crGqcDdu+61JUwGerKFdAEs23xtfX1BtHD0qZ3HjQzGrFpHiebberLYUECnckfijXMNI/JBO0=
   file_glob: true
   file: jmdict-*.7z
   skip_cleanup: true
