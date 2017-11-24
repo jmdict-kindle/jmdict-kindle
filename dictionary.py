@@ -63,8 +63,8 @@ class Entry:
             if is_kana(reading[:2]):
                 return reading
 
-        sys.stderr.write('error: cannot determine headword for %s\n  %s\n' % (self.label, '; '.join(self.senses[0].gloss)))
-        assert False
+        # Fallback to the first reading
+        return self.orthos[0].value
 
     def _section(self):
         # Return the first syllable of the headword
