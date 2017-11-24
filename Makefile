@@ -27,11 +27,9 @@ cover.jpg: cover.py
 # but it is excruciatingly slow.
 COMPRESSION ?= 1
 
-jmdict.full.mobi: jmdict.opf cover.jpg style.css frontmatter.html kindlegen
-	./kindlegen $< -c$(COMPRESSION) -verbose -o $@
-
-%.mobi: %.full.mobi kindlestrip.py
-	$(PYTHON) kindlestrip.py $< $@
+# See also https://wiki.mobileread.com/wiki/KindleGen
+jmdict.mobi: jmdict.opf cover.jpg style.css frontmatter.html kindlegen
+	./kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
 
 clean:
 	rm -f *.mobi *.opf entry-*.html cover.jpg
