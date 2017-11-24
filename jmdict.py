@@ -271,7 +271,7 @@ class JMdictParser(XmlParser):
                     try:
                         infl_dict = inflect(ortho.value, pos)
                     except InflectionError as ex:
-                        sys.stderr.write('error: %s\n' % ex.message)
+                        sys.stderr.write('error: %s\n' % ex.args[0])
                     else:
                         if infl_dict:
                             ortho.inflgrps[pos] = infl_dict.values()
