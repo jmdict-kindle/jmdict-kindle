@@ -1,6 +1,6 @@
 language: generic
 
-dist: travis
+dist: trusty
 sudo: required
 
 env:
