@@ -1,4 +1,4 @@
-PYTHON ?= python
+PYTHON3 ?= python3
 
 default: jmdict.mobi
 
@@ -15,10 +15,10 @@ kindlegen: $(KINDLEGEN_PKG)
 	touch $@
 
 jmdict.opf: jmdict.py dictionary.py inflections.py kana.py JMdict_e.gz
-	$(PYTHON) jmdict.py
+	$(PYTHON3) jmdict.py
 
 cover.jpg: cover.py
-	$(PYTHON) cover.py
+	$(PYTHON3) cover.py
 
 # XXX: The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
 # but it is excruciatingly slow.

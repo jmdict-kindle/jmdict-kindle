@@ -1,5 +1,3 @@
-# vim: set fileencoding=utf-8 :
-
 #
 # Copyright 2014 Jose Fonseca
 # All Rights Reserved.
@@ -28,16 +26,16 @@
 _hiragana_xtab = dict([(_c, None) for _c in range(0x3041, 0x3097)])
 
 def is_hiragana(word):
-    assert isinstance(word, unicode)
-    return word.translate(_hiragana_xtab) == u''
+    assert isinstance(word, str)
+    return word.translate(_hiragana_xtab) == ''
 
 
 # See http://en.wikipedia.org/wiki/Katakana_(Unicode_block)
 _katakana_xtab = dict([(_c, None) for _c in range(0x30a1, 0x30fd)])
 
 def is_katakana(word):
-    assert isinstance(word, unicode)
-    return word.translate(_katakana_xtab) == u''
+    assert isinstance(word, str)
+    return word.translate(_katakana_xtab) == ''
 
 
 _kana_xtab = {}
@@ -45,6 +43,6 @@ _kana_xtab.update(_hiragana_xtab)
 _kana_xtab.update(_katakana_xtab)
 
 def is_kana(word):
-    assert isinstance(word, unicode)
-    return word.translate(_kana_xtab) == u''
+    assert isinstance(word, str)
+    return word.translate(_kana_xtab) == ''
 

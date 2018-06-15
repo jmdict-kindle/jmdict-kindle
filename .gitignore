@@ -4,6 +4,7 @@
 *.pyc
 *.txt
 cover.jpg
+cover.png
 entry-*.html
 jmdict.opf
 kindlegen

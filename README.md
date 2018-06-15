@@ -84,11 +84,11 @@ Requirements:
 
 * Unix (tested with Linux but might work on MacOS or Cygwin with little or no changes)
 
-* Python version 2.7
+* Python version 3
 
   * [Pycairo Python](http://www.cairographics.org/pycairo)
 
-  * [Python Image Library](http://www.pythonware.com/products/pil/)
+  * [Pillow](http://pillow.readthedocs.io/en/latest/)
 
 * [kindlegen](http://www.amazon.com/gp/feature.html?docId=1000765211) (tested with version 2.9)
 

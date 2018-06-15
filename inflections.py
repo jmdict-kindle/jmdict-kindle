@@ -1,5 +1,3 @@
-# vim: set fileencoding=utf-8 :
-
 #
 # Copyright 2014, 2017 Jose Fonseca
 # Copyright 2004, 2005 Choplair-network.
@@ -41,10 +39,10 @@ def _check(dict_form, pos, *suffixes):
     if suffix in suffixes:
         return
 
-    msg = u"%s[%s] should end with %s, but ends with %s" % (
+    msg = "%s[%s] should end with %s, but ends with %s" % (
          dict_form,
          pos,
-         u'/'.join(suffixes),
+         '/'.join(suffixes),
          suffix
     )
 
@@ -58,128 +56,128 @@ def inflect(dict_form, pos):
     infl = {}
 
     if pos == 'adj-i':
-        _check(dict_form, pos, u'い')
+        _check(dict_form, pos, 'い')
 
         radical = dict_form[:-1]
 
-        infl['nominal'] = radical + u'く'
-        infl['past'] = radical + u'かった'
-        infl['negative'] = infl['nominal'] + u'ない'
-        infl['negative-polite'] = infl['nominal'] + u'ありません'
-        infl['participle'] = infl['nominal'] + u'て'
-        infl['provisional-conditional'] = radical + u'ければ'
-        infl['volitional'] = radical + u'かろう'
+        infl['nominal'] = radical + 'く'
+        infl['past'] = radical + 'かった'
+        infl['negative'] = infl['nominal'] + 'ない'
+        infl['negative-polite'] = infl['nominal'] + 'ありません'
+        infl['participle'] = infl['nominal'] + 'て'
+        infl['provisional-conditional'] = radical + 'ければ'
+        infl['volitional'] = radical + 'かろう'
 
         return infl
 
     elif pos == 'v1':
         # ichidan
 
-        _check(dict_form, pos, u'る')
+        _check(dict_form, pos, 'る')
 
         infl['nominal'] = dict_form[:-1]
-        infl['past'] = infl['nominal'] + u'た'
-        infl['negative'] = infl['nominal'] + u'ない'
-        infl['participle'] = infl['nominal'] + u'て'
-        infl['potential'] = infl['nominal'] + u'れる'
-        infl['passive'] = infl['nominal'] + u'られる'
-        infl['causative'] = infl['nominal'] + u'させる'
-        infl['provisional-conditional'] = infl['nominal'] + u'れば'
-        infl['imperative'] = infl['nominal'] + u'ろ'
-        infl['volitional'] = infl['nominal'] + u'よう'
+        infl['past'] = infl['nominal'] + 'た'
+        infl['negative'] = infl['nominal'] + 'ない'
+        infl['participle'] = infl['nominal'] + 'て'
+        infl['potential'] = infl['nominal'] + 'れる'
+        infl['passive'] = infl['nominal'] + 'られる'
+        infl['causative'] = infl['nominal'] + 'させる'
+        infl['provisional-conditional'] = infl['nominal'] + 'れば'
+        infl['imperative'] = infl['nominal'] + 'ろ'
+        infl['volitional'] = infl['nominal'] + 'よう'
 
     elif pos in ('v5b', 'v5g', 'v5k', 'v5m', 'v5n', 'v5r', 'v5s', 'v5t', 'v5u'):
         root = ''
 
         if pos == 'v5t':
-            _check(dict_form, pos, u'つ')
+            _check(dict_form, pos, 'つ')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'ち'
-            infl['past'] = root + u'った'
-            infl['negative'] = root + u'たない'
-            infl['participle'] = root + u'って'
-            infl['potential'] = root + u'てる'
-            infl['volitional'] = root + u'とう'
+            infl['nominal'] = root + 'ち'
+            infl['past'] = root + 'った'
+            infl['negative'] = root + 'たない'
+            infl['participle'] = root + 'って'
+            infl['potential'] = root + 'てる'
+            infl['volitional'] = root + 'とう'
 
         elif pos == 'v5k':
-            _check(dict_form, pos, u'く')
+            _check(dict_form, pos, 'く')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'き'
-            infl['past'] = root + u'いた'
-            infl['negative'] = root + u'かない'
-            infl['participle'] = root + u'いて'
-            infl['potential'] = root + u'ける'
-            infl['volitional'] = root + u'こう'
+            infl['nominal'] = root + 'き'
+            infl['past'] = root + 'いた'
+            infl['negative'] = root + 'かない'
+            infl['participle'] = root + 'いて'
+            infl['potential'] = root + 'ける'
+            infl['volitional'] = root + 'こう'
 
         elif pos == 'v5g':
-            _check(dict_form, pos, u'ぐ')
+            _check(dict_form, pos, 'ぐ')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'ぎ'
-            infl['past'] = root + u'いた'
-            infl['negative'] = root + u'がない'
-            infl['participle'] = root + u'いで'
-            infl['potential'] = root + u'げる'
-            infl['volitional'] = root + u'ごう'
+            infl['nominal'] = root + 'ぎ'
+            infl['past'] = root + 'いた'
+            infl['negative'] = root + 'がない'
+            infl['participle'] = root + 'いで'
+            infl['potential'] = root + 'げる'
+            infl['volitional'] = root + 'ごう'
 
         elif pos == 'v5s':
-            _check(dict_form, pos, u'す')
+            _check(dict_form, pos, 'す')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'し'
-            infl['past'] = infl['nominal'] + u'た'
-            infl['negative'] = root + u'さない'
-            infl['participle'] = infl['nominal'] + u'て'
-            infl['potential'] = root + u'せる'
-            infl['volitional'] = root + u'ぞう'
+            infl['nominal'] = root + 'し'
+            infl['past'] = infl['nominal'] + 'た'
+            infl['negative'] = root + 'さない'
+            infl['participle'] = infl['nominal'] + 'て'
+            infl['potential'] = root + 'せる'
+            infl['volitional'] = root + 'ぞう'
 
         elif pos == 'v5n':
-            _check(dict_form, pos, u'ぬ')
+            _check(dict_form, pos, 'ぬ')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'に'
-            infl['past'] = root + u'んだ'
-            infl['negative'] = root + u'なない'
-            infl['participle'] = root + u'んで'
-            infl['potential'] = root + u'ねる'
-            infl['volitional'] = root + u'のう'
+            infl['nominal'] = root + 'に'
+            infl['past'] = root + 'んだ'
+            infl['negative'] = root + 'なない'
+            infl['participle'] = root + 'んで'
+            infl['potential'] = root + 'ねる'
+            infl['volitional'] = root + 'のう'
 
         elif pos == 'v5b':
-            _check(dict_form, pos, u'ぶ')
+            _check(dict_form, pos, 'ぶ')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'び'
-            infl['past'] = root + u'んだ'
-            infl['negative'] = root + u'ばない'
-            infl['participle'] = root + u'んで'
-            infl['potential'] = root + u'べる'
-            infl['volitional'] = root + u'ぼう'
+            infl['nominal'] = root + 'び'
+            infl['past'] = root + 'んだ'
+            infl['negative'] = root + 'ばない'
+            infl['participle'] = root + 'んで'
+            infl['potential'] = root + 'べる'
+            infl['volitional'] = root + 'ぼう'
 
         elif pos == 'v5m':
-            _check(dict_form, pos, u'む')
+            _check(dict_form, pos, 'む')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'み'
-            infl['past'] = root + u'んだ'
-            infl['negative'] = root + u'まない'
-            infl['participle'] = root + u'んで'
-            infl['potential'] = root + u'める'
-            infl['volitional'] = root + u'もう'
+            infl['nominal'] = root + 'み'
+            infl['past'] = root + 'んだ'
+            infl['negative'] = root + 'まない'
+            infl['participle'] = root + 'んで'
+            infl['potential'] = root + 'める'
+            infl['volitional'] = root + 'もう'
 
         elif pos == 'v5r':
-            _check(dict_form, pos, u'る')
+            _check(dict_form, pos, 'る')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'り'
-            infl['past'] = root + u'った'
-            infl['negative'] = root + u'らない'
-            infl['participle'] = root + u'って'
-            infl['potential'] = root + u'れる'
-            infl['volitional'] = root + u'ろう'
+            infl['nominal'] = root + 'り'
+            infl['past'] = root + 'った'
+            infl['negative'] = root + 'らない'
+            infl['participle'] = root + 'って'
+            infl['potential'] = root + 'れる'
+            infl['volitional'] = root + 'ろう'
 
         elif pos == 'v5u':
-            _check(dict_form, pos, u'う')
+            _check(dict_form, pos, 'う')
             root = dict_form[:-1]
-            infl['nominal'] = root + u'い'
-            infl['past'] = root + u'った'
-            infl['negative'] = root + u'わない'
-            infl['participle'] = root + u'って'
-            infl['potential'] = root + u'える'
-            infl['volitional'] = root + u'おう'
+            infl['nominal'] = root + 'い'
+            infl['past'] = root + 'った'
+            infl['negative'] = root + 'わない'
+            infl['participle'] = root + 'って'
+            infl['potential'] = root + 'える'
+            infl['volitional'] = root + 'おう'
 
         else:
             assert False
@@ -188,79 +186,79 @@ def inflect(dict_form, pos):
             # TODO: v5u-s
             # TODO: v5z
 
-        _check(infl['negative'], 'negative', u'ない')
-        infl['passive'] = infl['negative'][:-2] + u'れる'
-        infl['causative'] = infl['negative'][:-2] + u'せる'
+        _check(infl['negative'], 'negative', 'ない')
+        infl['passive'] = infl['negative'][:-2] + 'れる'
+        infl['causative'] = infl['negative'][:-2] + 'せる'
 
-        _check(infl['potential'], 'potential', u'る')
-        infl['provisional-conditional'] = infl['potential'][:-1] + u'ば'
+        _check(infl['potential'], 'potential', 'る')
+        infl['provisional-conditional'] = infl['potential'][:-1] + 'ば'
         infl['imperative'] = infl['potential'][:-1]
 
     elif pos == 'vs-i':
         # suru
 
-        _check(dict_form, pos, u'為る', u'する')
+        _check(dict_form, pos, '為る', 'する')
 
-        if dict_form[-2] == u'す':
+        if dict_form[-2] == 'す':
             root = dict_form[:-2]
-            infl['nominal'] = root + u'し'
-            infl['potential'] = root + u'できる'
-            infl['passive'] = root + u'される'
-            infl['causative'] = root + u'させる'
-            infl['provisional-conditional'] = root + u'すれば'
-            infl['imperative'] = root + u'しろ'
-            infl['volitional'] = root + u'しよう'
+            infl['nominal'] = root + 'し'
+            infl['potential'] = root + 'できる'
+            infl['passive'] = root + 'される'
+            infl['causative'] = root + 'させる'
+            infl['provisional-conditional'] = root + 'すれば'
+            infl['imperative'] = root + 'しろ'
+            infl['volitional'] = root + 'しよう'
         else:
             infl['nominal'] = dict_form[:-1]
 
-        infl['past'] = infl['nominal'] + u'た'
-        infl['negative'] = infl['nominal'] + u'ない'
-        infl['participle'] = infl['nominal'] + u'て'
+        infl['past'] = infl['nominal'] + 'た'
+        infl['negative'] = infl['nominal'] + 'ない'
+        infl['participle'] = infl['nominal'] + 'て'
 
     elif pos == 'vk':
         # kuru
 
-        _check(dict_form, pos, u'来る', u'來る', u'くる')
+        _check(dict_form, pos, '来る', '來る', 'くる')
 
         u_form = dict_form[:-1]
-        if dict_form[-2] == u'く':
-            i_form = dict_form[:-2] + u'き'
-            o_form = dict_form[:-2] + u'こ'
+        if dict_form[-2] == 'く':
+            i_form = dict_form[:-2] + 'き'
+            o_form = dict_form[:-2] + 'こ'
         else:
             i_form = dict_form[:-1]
             o_form = dict_form[:-1]
 
         infl['nominal'] = i_form
-        infl['past'] = i_form + u'た'
-        infl['negative'] = o_form + u'ない'
-        infl['participle'] = i_form + u'て'
-        infl['potential'] = o_form + u'れる'
-        infl['passive'] = o_form + u'られる'
-        infl['causative'] = o_form + u'させる'
-        infl['provisional-conditional'] = u_form + u'れば'
-        infl['imperative'] = o_form + u'い'
-        infl['volitional'] = o_form + u'よう'
+        infl['past'] = i_form + 'た'
+        infl['negative'] = o_form + 'ない'
+        infl['participle'] = i_form + 'て'
+        infl['potential'] = o_form + 'れる'
+        infl['passive'] = o_form + 'られる'
+        infl['causative'] = o_form + 'させる'
+        infl['provisional-conditional'] = u_form + 'れば'
+        infl['imperative'] = o_form + 'い'
+        infl['volitional'] = o_form + 'よう'
 
     else:
         return infl
 
     nai_form = infl['negative']
-    assert nai_form[-2:] == u'ない'
-    infl['negative-nominal'] = nai_form[:-2] + u'なく'
-    infl['negative-past'] = nai_form[:-2] + u'なかった'
-    infl['negative-participle'] = nai_form[:-2] + u'ないで'
-    infl['negative-provisional-conditional'] = nai_form[:-2] + u'なければ'
-    infl['negative-provisional-conditional-colloquial'] = nai_form[:-2] + u'なきゃ'
+    assert nai_form[-2:] == 'ない'
+    infl['negative-nominal'] = nai_form[:-2] + 'なく'
+    infl['negative-past'] = nai_form[:-2] + 'なかった'
+    infl['negative-participle'] = nai_form[:-2] + 'ないで'
+    infl['negative-provisional-conditional'] = nai_form[:-2] + 'なければ'
+    infl['negative-provisional-conditional-colloquial'] = nai_form[:-2] + 'なきゃ'
 
-    infl['conditional'] = infl['past'] + u'ら'
+    infl['conditional'] = infl['past'] + 'ら'
 
-    infl['wish'] = infl['nominal'] + u'たい'
-    infl['wish-past'] = infl['nominal'] + u'たかった'
-    infl['wish-nominal'] = infl['nominal'] + u'たく'
+    infl['wish'] = infl['nominal'] + 'たい'
+    infl['wish-past'] = infl['nominal'] + 'たかった'
+    infl['wish-nominal'] = infl['nominal'] + 'たく'
 
-    infl['polite'] = infl['nominal'] + u'ます'
-    infl['past-polite'] = infl['nominal'] + u'ました'
-    infl['negative-polite'] = infl['nominal'] + u'ません'
-    infl['volitional-polite'] = infl['nominal'] + u'ましょう'
+    infl['polite'] = infl['nominal'] + 'ます'
+    infl['past-polite'] = infl['nominal'] + 'ました'
+    infl['negative-polite'] = infl['nominal'] + 'ません'
+    infl['volitional-polite'] = infl['nominal'] + 'ましょう'
 
     return infl

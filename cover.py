@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+# !/usr/bin/env python3
 
 #
 # Copyright 2014 Jose Fonseca
@@ -61,9 +61,11 @@ draw_text(ctx, 0.5*w, 0.75*h, 'Japanese-English Dictionary')
 ctx.stroke()
 
 
+surface.write_to_png('cover.png')
+
 # Convert to grayscale JPEG
 # XXX: Kindle does not show thumbnails for PNG covers
 from PIL import Image
-im = Image.frombuffer("RGBA", (surface.get_width(), surface.get_height()), surface.get_data(), "raw", "RGBA", 0, 1)
+im = Image.open('cover.png')
 im = im.convert('L')
 im.save('cover.jpg')

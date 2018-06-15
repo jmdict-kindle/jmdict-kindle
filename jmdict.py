@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
+#!/usr/bin/env python3
 
 #
 # Copyright 2011-2017 Jose Fonseca
@@ -35,7 +34,7 @@ from inflections import *
 
 
 # limit the number of entries for quick experiments
-MAX_ENTRIES = sys.maxint
+MAX_ENTRIES = sys.maxsize
 
 
 
@@ -113,7 +112,7 @@ class XmlTokenizer:
                 self.tokens.append(token)
             self.character_data = ''
 
-    def next(self):
+    def __next__(self):
         size = 16*1024
         while self.index >= len(self.tokens) and not self.final:
             self.tokens = []
@@ -158,7 +157,7 @@ class XmlParser:
         self.consume()
 
     def consume(self):
-        self.token = self.tokenizer.next()
+        self.token = next(self.tokenizer)
 
     def match_element_start(self, name):
         return self.token.type == XML_ELEMENT_START and self.token.name_or_data == name
@@ -252,9 +251,9 @@ class JMdictParser(XmlParser):
 
         # Label
         assert readings
-        label = u';'.join([reading.value for reading in readings])
+        label = ';'.join([reading.value for reading in readings])
         if kanjis:
-            label += u'【' + u';'.join([kanji.value for kanji in kanjis]) + u'】'
+            label += '【' + ';'.join([kanji.value for kanji in kanjis]) + '】'
 
         # Aggregate the POS of all senses
         posses = set()
@@ -274,20 +273,20 @@ class JMdictParser(XmlParser):
                         sys.stderr.write('error: %s\n' % ex.args[0])
                     else:
                         if infl_dict:
-                            ortho.inflgrps[pos] = infl_dict.values()
+                            ortho.inflgrps[pos] = list(infl_dict.values())
 
         entry = Entry(label, senses, orthos)
 
         if 0:
-            print label
+            print(label)
             for sense in senses:
-                print '  ' + sense
+                print('  ' + sense)
 
         return entry
 
     def parse_kanji(self):
         keb = None
-        rank = sys.maxint
+        rank = sys.maxsize
         self.element_start('k_ele')
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'keb':

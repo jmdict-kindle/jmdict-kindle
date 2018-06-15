@@ -1,7 +1,5 @@
-# vim: set fileencoding=utf-8 :
-
 #
-# Copyright 2014 Jose Fonseca
+# Copyright 2014-2017 Jose Fonseca
 # All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,10 +22,10 @@
 #
 
 
-import cgi
 import sys
 
 from collections import namedtuple
+from html import escape
 
 from kana import *
 
@@ -36,12 +34,6 @@ Ortho = namedtuple('Ortho', ['value', 'rank', 'inflgrps'])
 
 
 Sense = namedtuple('Sense', ['pos', 'gloss'])
-
-
-def escape(s, quote=None):
-    s = s.encode('UTF-8')
-    s = cgi.escape(s)
-    return s
 
 
 class Entry:
@@ -58,7 +50,7 @@ class Entry:
         # Return the first hira/kata-kana word
         for ortho in self.orthos:
             reading = ortho.value
-            if reading.startswith(u'っ'):
+            if reading.startswith('っ'):
                 reading = reading[1:]
             if is_kana(reading[:2]):
                 return reading
@@ -72,20 +64,20 @@ class Entry:
         headword = self.headword
 
         initial = headword[0]
-        if len(headword) > 1 and headword[1] in u'ゃャゅュょョァィゥェォ':
+        if len(headword) > 1 and headword[1] in 'ゃャゅュょョァィゥェォ':
             initial += headword[1]
 
         return initial
 
     def remove(self, reading):
-        assert isinstance(reading, unicode)
+        assert isinstance(reading, str)
         for i in range(len(self.orthos)):
             ortho = self.orthos[i]
             if ortho.value == reading:
                 self.orthos.pop(i)
                 return
             else:
-                for inflgrp_name, inflgrp_values in ortho.inflgrps.items():
+                for inflgrp_name, inflgrp_values in list(ortho.inflgrps.items()):
                     if reading in inflgrp_values:
                         inflgrp_values.discard(reading)
                         if not inflgrp:
@@ -103,12 +95,12 @@ def write_index_header(stream):
     stream.write('</head>\n')
     stream.write('<body topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0">\n')
 
+
 def write_index_footer(stream):
     stream.write('<mbp:pagebreak/>\n')
 
     stream.write('</body>\n')
     stream.write('</html>\n')
-
 
 
 def write_index(entries, stream):
@@ -117,7 +109,7 @@ def write_index(entries, stream):
     # http://www.klokan.cz/projects/stardict-lingea/tab2opf.py
 
     # Sort entries alphabetically
-    entries.sort(lambda x, y: cmp(x.headword, y.headword))
+    entries.sort(key=lambda x: x.headword)
 
     prev_section = None
 
@@ -137,7 +129,7 @@ def write_index(entries, stream):
             except KeyError:
                 sections.append(section)
                 filename = 'entry-%s.html' % section
-                stream = open(filename, 'wt')
+                stream = open(filename, 'wt', encoding='UTF-8')
                 section_streams[section] = stream
                 write_index_header(stream)
 
@@ -146,7 +138,7 @@ def write_index(entries, stream):
 
         stream.write('<idx:entry>\n')
         
-        stream.write(' <p class=label>' + escape(entry.label) + '</p>\n')
+        stream.write(' <p class=label>' + escape(entry.label, quote=False) + '</p>\n')
         assert entry.senses
         
         stream.write(' <ul>\n')
@@ -154,7 +146,7 @@ def write_index(entries, stream):
             stream.write(' <li>')
             if sense.pos:
                 stream.write('<span class=pos>' + ','.join(sense.pos) + '</span> ')
-            stream.write(escape('; '.join(sense.gloss)))
+            stream.write(escape('; '.join(sense.gloss), quote=False))
             stream.write('</li>\n')
         stream.write(' </ul>\n')
 
@@ -162,7 +154,7 @@ def write_index(entries, stream):
             stream.write(' <idx:orth value="%s"' % escape(ortho.value, quote=True))
             if ortho.inflgrps:
                 stream.write('>\n')
-                for inflgrp in ortho.inflgrps.values():
+                for inflgrp in list(ortho.inflgrps.values()):
                     assert inflgrp
                     stream.write('  <idx:infl>\n')
                     iforms = list(inflgrp)
@@ -178,13 +170,13 @@ def write_index(entries, stream):
         
         stream.write('<hr/>\n')
 
-    for stream in section_streams.values():
+    for stream in list(section_streams.values()):
         write_index_footer(stream)
         stream.close()
 
 
     # Write the OPF
-    stream = open('jmdict.opf', 'wt')
+    stream = open('jmdict.opf', 'wt', encoding='UTF-8')
     stream.write('<?xml version="1.0" encoding="utf-8"?>\n')
     stream.write('<package unique-identifier="uid">\n')
     stream.write('  <metadata>\n')
@@ -208,7 +200,7 @@ def write_index(entries, stream):
     stream.write('    <item id="frontmatter" href="frontmatter.html" media-type="text/x-oeb1-document"/>\n')
     for i in range(len(sections)):
         section = sections[i]
-        print section
+        print(section)
         stream.write('    <item id="entry-%u" href="entry-%s.html" media-type="text/x-oeb1-document"/>\n' % (i, escape(section, quote=True)))
     stream.write('  </manifest>\n')
     stream.write('\n')
