@@ -1,6 +1,6 @@
 language: generic
 
-dist: trusty
+dist: xenial
 sudo: required
 
 env:
