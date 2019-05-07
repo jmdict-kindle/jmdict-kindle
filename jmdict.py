@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 #
 # Copyright 2011-2017 Jose Fonseca
 # All Rights Reserved.
@@ -31,6 +29,7 @@ import xml.parsers.expat
 from kana import *
 from dictionary import *
 from inflections import *
+from exampleSentences import *
 
 
 # limit the number of entries for quick experiments
@@ -275,7 +274,7 @@ class JMdictParser(XmlParser):
                         if infl_dict:
                             ortho.inflgrps[pos] = list(infl_dict.values())
 
-        entry = Entry(label, senses, orthos)
+        entry = Entry(label, senses, orthos, [])
 
         if 0:
             print(label)
@@ -370,6 +369,8 @@ sys.stderr.write('Parsing JMdict_e.gz...\n')
 parser = JMdictParser('JMdict_e.gz')
 #parser = JMnedictParser('JMnedict.xml.gz')
 entries = parser.parse()
-
+sys.stderr.write('Adding sentences...\n')
+examples = ExampleSentences("jpn_indices.tar.bz2", "sentences.tar.bz2", entries)
+sys.stderr.write("Sentences added:" + str(examples.addExamples()) + "\n")
 sys.stderr.write('Writing entries...\n')
 write_index(entries, sys.stdout)

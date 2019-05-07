@@ -4,6 +4,12 @@ default: jmdict.mobi
 
 JMdict_e.gz:
 	wget -nv -N http://ftp.monash.edu.au/pub/nihongo/$@
+	
+sentences.tar.bz2:
+	wget -nv -N http://downloads.tatoeba.org/exports/$@
+	
+jpn_indices.tar.bz2:
+	wget -nv -N http://downloads.tatoeba.org/exports/$@
 
 KINDLEGEN_PKG ?= kindlegen_linux_2.6_i386_v2_9.tar.gz
 
@@ -14,7 +20,7 @@ kindlegen: $(KINDLEGEN_PKG)
 	tar -xzf $(KINDLEGEN_PKG) kindlegen
 	touch $@
 
-jmdict.opf: jmdict.py dictionary.py inflections.py kana.py JMdict_e.gz
+jmdict.opf: jmdict.py dictionary.py inflections.py kana.py JMdict_e.gz sentences.tar.bz2 jpn_indices.tar.bz2
 	$(PYTHON3) jmdict.py
 
 cover.jpg: cover.py
@@ -29,6 +35,6 @@ jmdict.mobi: jmdict.opf cover.jpg style.css frontmatter.html kindlegen
 	./kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
 
 clean:
-	rm -f *.mobi *.opf entry-*.html cover.jpg
+	rm -f *.mobi *.opf entry-*.html cover.jpg *.tar.bz2 *.gz *.csv cover.png
 
 .PHONE: default clean

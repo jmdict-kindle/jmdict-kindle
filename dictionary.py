@@ -35,13 +35,19 @@ Ortho = namedtuple('Ortho', ['value', 'rank', 'inflgrps'])
 
 Sense = namedtuple('Sense', ['pos', 'gloss'])
 
+class Sentence:
+
+    def __init__(self, english, japanese):
+        self.english = english
+        self.japanese =japanese
 
 class Entry:
 
-    def __init__(self, label, senses, orthos):
+    def __init__(self, label, senses, orthos, sentences):
         self.label = label
         self.senses = senses
         self.orthos = orthos
+        self.sentences = sentences
 
         self.headword = self._headword()
         self.section = self._section()
@@ -149,6 +155,17 @@ def write_index(entries, stream):
             stream.write(escape('; '.join(sense.gloss), quote=False))
             stream.write('</li>\n')
         stream.write(' </ul>\n')
+
+        if(len(entry.sentences) > 0):
+            stream.write("<div class=examples>")
+            stream.write("<span class='examples-heading'>Examples:</span>")
+            for sentence in entry.sentences:
+                stream.write('<div class=sentence>')
+                stream.write('<span>' + sentence.japanese + '</span>')
+                stream.write('<br>')
+                stream.write('<span>' + sentence.english + '</span>')
+                stream.write("</div>")
+            stream.write('</div>')
 
         for ortho in entry.orthos:
             stream.write(' <idx:orth value="%s"' % escape(ortho.value, quote=True))

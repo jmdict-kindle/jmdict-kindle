@@ -18,3 +18,17 @@ p {
 li {
   list-style-type: square;
 }
+
+.sentence{
+  margin-top: 10pt;
+  margin-bottom: 10pt;
+}
+
+.examples{
+  margin-top: 30pt;
+}
+
+.examples-heading{
+  font-weight: bold;
+  margin-bottom: 10pt;
+}
