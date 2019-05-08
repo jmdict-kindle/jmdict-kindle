@@ -1,6 +1,6 @@
 PYTHON3 ?= python3
 
-all: JMdict.mobi JMnedict.mobi
+all: jmdict.mobi jmnedict.mobi
 
 JMdict_e.gz:
 	wget -nv -N http://ftp.monash.edu.au/pub/nihongo/$@
@@ -34,10 +34,10 @@ JMdict-cover.jpg JMnedict-cover.jpg: cover.py
 COMPRESSION ?= 1
 
 # See also https://wiki.mobileread.com/wiki/KindleGen
-JMdict.mobi: JMdict.opf JMdict-cover.jpg style.css JMdict-frontmatter.html kindlegen
+jmdict.mobi: JMdict.opf JMdict-cover.jpg style.css JMdict-frontmatter.html kindlegen
 	./kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
 	
-JMnedict.mobi: JMnedict.opf JMnedict-cover.jpg style.css JMnedict-frontmatter.html kindlegen
+jmnedict.mobi: JMnedict.opf JMnedict-cover.jpg style.css JMnedict-frontmatter.html kindlegen
 	./kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
 
 clean:
