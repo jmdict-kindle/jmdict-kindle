@@ -23,15 +23,16 @@ class ExampleSentences:
         
         self.__entry_dictionary = {}
         for entry in entries:
-            for ortho in entry.orthos:
-                if ortho.value in self.__entry_dictionary :
-                    self.__entry_dictionary[ortho.value].append(entry)
-                else:
-                    self.__entry_dictionary[ortho.value] = [entry]
+            if(entry.entry_type == VOCAB_ENTRY):
+                for ortho in entry.orthos:
+                    if ortho.value in self.__entry_dictionary :
+                        self.__entry_dictionary[ortho.value].append(entry)
+                    else:
+                        self.__entry_dictionary[ortho.value] = [entry]
 
 
-    #function to find the correct line corresponding to the sentence id, since lines and ids do not match
-    def __findLine(self, id):
+    #function to find the correct sentence corresponding to the sentence id, since lines and ids do not match
+    def __findSentence(self, id):
         if(id > self.sentences_count):
             current_line = self.sentences_count
         else:
@@ -55,7 +56,7 @@ class ExampleSentences:
             else:#the entry does not exist since the numbers should converge
                 return None
                 
-        return line
+        return columns[2]
 
     def addExamples(self):
 
@@ -68,19 +69,13 @@ class ExampleSentences:
                 keywords = []
 
                 while(tilde_index != -1):
-
                     while(jpn_index[2][tilde_index-1] == ' '):# cut out stray spaces before ~
                         jpn_index[2] = jpn_index[2][0:(tilde_index-1)] + jpn_index[2][tilde_index:]
                         tilde_index -= 1
 
                     space_index = jpn_index[2].rfind(' ', 0, tilde_index)
-
-                    if(space_index == -1):
-                        keyword = jpn_index[2][0:tilde_index]
-                    else:
-                        keyword = jpn_index[2][(space_index + 1):tilde_index]
-                    
-                    match_group = re.match('.+?(?=\W|$)', keyword)
+                    keyword = jpn_index[2][(space_index + 1):tilde_index]
+                    match_group = re.match('.+?(?=\W|$)', keyword)#dictionary form ends in { [ or space
                     keywords.append(match_group.group(0))
                     
                     if(tilde_index == len(jpn_index[2])-1):
@@ -93,17 +88,15 @@ class ExampleSentences:
 
                 if(ja_id > 0 and eng_id > 0):
 
-                    japanese_sentence = self.__findLine(ja_id)
-                    english_sentence = self.__findLine(eng_id)
+                    japanese_sentence = self.__findSentence(ja_id)
+                    english_sentence = self.__findSentence(eng_id)
                 
                     if(japanese_sentence != None and english_sentence != None):
-                        japanese_sentence = japanese_sentence.split('\t')[2]
-                        english_sentence = english_sentence.split('\t')[2]
-
                         for keyword in keywords:
                             if keyword in self.__entry_dictionary:
                                 for entry in self.__entry_dictionary[keyword]:
                                     added_sentences += 1
+                                    print(entry.section)
                                     entry.sentences.append(Sentence(english_sentence, japanese_sentence))
 
         return added_sentences      
