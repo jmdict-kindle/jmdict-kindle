@@ -1,6 +1,6 @@
-PYTHON3 ?= python3
+PYTHON3 ?= python
 
-all: jmdict.mobi jmnedict.mobi
+all: jmdict.mobi jmnedict.mobi combined.mobi
 
 JMdict_e.gz:
 	wget -nv -N http://ftp.monash.edu.au/pub/nihongo/$@
@@ -23,22 +23,22 @@ kindlegen: $(KINDLEGEN_PKG)
 	tar -xzf $(KINDLEGEN_PKG) kindlegen
 	touch $@
 
-JMdict.opf JMnedict.opf: jmdict.py dictionary.py inflections.py kana.py JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2
+JMdict.opf JMnedict.opf JMdict_and_JMnedict.opf: jmdict.py dictionary.py inflections.py kana.py JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2
 	$(PYTHON3) jmdict.py
-
-JMdict-cover.jpg JMnedict-cover.jpg: cover.py
-	$(PYTHON3) cover.py
 
 # XXX: The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
 # but it is excruciatingly slow.
-COMPRESSION ?= 1
+COMPRESSION ?= 2
 
 # See also https://wiki.mobileread.com/wiki/KindleGen
-jmdict.mobi: JMdict.opf JMdict-cover.jpg style.css JMdict-frontmatter.html kindlegen
-	./kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
+jmdict.mobi: JMdict.opf style.css JMdict-frontmatter.html kindlegen
+	kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
 	
-jmnedict.mobi: JMnedict.opf JMnedict-cover.jpg style.css JMnedict-frontmatter.html kindlegen
-	./kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
+jmnedict.mobi: JMnedict.opf style.css JMnedict-frontmatter.html kindlegen
+	kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
+	
+combined.mobi: JMdict_and_JMnedict.opf style.css JMdict_and_JMnedict-Frontmatter.html kindlegen
+	kindlegen $< -c$(COMPRESSION) -verbose -dont_append_source -o $@	
 
 clean:
 	rm -f *.mobi *.opf entry-*.html *cover.jpg *.tar.bz2 *.gz *.csv *cover.png kindlegen

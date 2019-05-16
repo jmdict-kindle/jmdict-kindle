@@ -28,6 +28,7 @@ from collections import namedtuple
 from html import escape
 
 from kana import *
+from cover import *
 
 NAME_ENTRY, VOCAB_ENTRY = range(2)
 
@@ -125,6 +126,7 @@ def write_index(entries, dictionary_name, title, stream):
     entries.sort(key=lambda x: x.headword)
 
     prev_section = None
+    dictionary_file_name = dictionary_name.replace(' ', '_')
 
     stream = None
 
@@ -135,14 +137,11 @@ def write_index(entries, dictionary_name, title, stream):
         section = entry.section
 
         if section != prev_section:
-            sys.stderr.write('%s\n' %section)
-
             try:
                 stream = section_streams[section]
             except KeyError:
                 sections.append(section)
-                #filename = 'entry-%s.html' %section
-                filename = 'entry-%s-%s.html'%(dictionary_name, section)
+                filename = 'entry-%s-%s.html'%(dictionary_file_name, section)
                 stream = open(filename, 'wt', encoding='UTF-8')
                 section_streams[section] = stream
                 write_index_header(stream)
@@ -200,9 +199,11 @@ def write_index(entries, dictionary_name, title, stream):
         write_index_footer(stream)
         stream.close()
 
+    #create cover
+    createCover(dictionary_name, title, 768, 1024)
 
     # Write the OPF
-    stream = open('%s.opf' %dictionary_name, 'wt', encoding='UTF-8')
+    stream = open('%s.opf' %dictionary_file_name, 'wt', encoding='UTF-8')
     stream.write('<?xml version="1.0" encoding="utf-8"?>\n')
     stream.write('<package unique-identifier="uid">\n')
     stream.write('  <metadata>\n')
@@ -221,13 +222,12 @@ def write_index(entries, dictionary_name, title, stream):
     stream.write('    </x-metadata>\n')
     stream.write('  </metadata>\n')
     stream.write('  <manifest>\n')
-    stream.write('    <item id="cover" href="%s-cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n' %dictionary_name)
+    stream.write('    <item id="cover" href="%s-cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n' %dictionary_file_name)
     stream.write('    <item id="css" href="style.css" media-type="text/css"/>\n')
-    stream.write('    <item id="frontmatter" href="%s-frontmatter.html" media-type="text/x-oeb1-document"/>\n' %dictionary_name)
+    stream.write('    <item id="frontmatter" href="%s-frontmatter.html" media-type="text/x-oeb1-document"/>\n' %dictionary_file_name)
     for i in range(len(sections)):
         section = sections[i]
-        print(section)
-        stream.write('    <item id="entry-%u" href="entry-%s-%s.html" media-type="text/x-oeb1-document"/>\n' % (i, dictionary_name, escape(section, quote=True)))
+        stream.write('    <item id="entry-%u" href="entry-%s-%s.html" media-type="text/x-oeb1-document"/>\n' % (i, dictionary_file_name, escape(section, quote=True)))
     stream.write('  </manifest>\n')
     stream.write('\n')
     stream.write('  <spine>\n')
