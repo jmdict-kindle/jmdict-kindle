@@ -96,7 +96,6 @@ class ExampleSentences:
                             if keyword in self.__entry_dictionary:
                                 for entry in self.__entry_dictionary[keyword]:
                                     added_sentences += 1
-                                    print(entry.section)
                                     entry.sentences.append(Sentence(english_sentence, japanese_sentence))
 
         return added_sentences      
