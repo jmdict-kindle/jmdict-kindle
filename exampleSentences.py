@@ -58,31 +58,37 @@ class ExampleSentences:
                 
         return columns[2]
 
-    def addExamples(self):
+    def addExamples(self, good_only, max_sentences):
 
         added_sentences = 0
 
         for jpn_index in self.__jpn_indices:
-            tilde_index = jpn_index[2].find('~')#only add the important sentences
-            if(tilde_index != -1):
 
-                keywords = []
+            keywords = []
 
-                while(tilde_index != -1):
-                    while(jpn_index[2][tilde_index-1] == ' '):# cut out stray spaces before ~
-                        jpn_index[2] = jpn_index[2][0:(tilde_index-1)] + jpn_index[2][tilde_index:]
-                        tilde_index -= 1
+            if(good_only):
+                sections = jpn_index[2].split('~')# good keywords are marked with an ~
+                del sections[-1]#remove the last section since it did not contain a ~
 
-                    space_index = jpn_index[2].rfind(' ', 0, tilde_index)
-                    keyword = jpn_index[2][(space_index + 1):tilde_index]
-                    match_group = re.match('.+?(?=\W|$)', keyword)#dictionary form ends in { [ or space
-                    keywords.append(match_group.group(0))
-                    
-                    if(tilde_index == len(jpn_index[2])-1):
-                        break
-                    else:
-                        tilde_index = jpn_index[2].find('~', tilde_index+1)
+                for section in sections:
+                    split = section.split(' ')
+                    keyword = split[-1]
+                    match_group = re.match('.+?(?=\W|$|~)', keyword)
+                    if(match_group):
+                        keywords.append([match_group.group(0), True])
+            else:
+                for keyword in jpn_index[2].split(' '):
+                    if(len(keyword) > 0):
+                        if(keyword[-1] == '~'):# good keywords are marked with an ~
+                            good_keyword = True
+                        else:
+                            good_keyword = False
+                        #only take the word after the word there can be ()[]{}~|
+                        match_group = re.match('.+?(?=\W|$|~)', keyword)
+                        if(match_group):
+                            keywords.append([match_group.group(0), good_keyword])
 
+            if(len(keywords) > 0):
                 ja_id = int(jpn_index[0])
                 eng_id = int(jpn_index[1])
 
@@ -93,10 +99,16 @@ class ExampleSentences:
                 
                     if(japanese_sentence != None and english_sentence != None):
                         for keyword in keywords:
-                            if keyword in self.__entry_dictionary:
-                                for entry in self.__entry_dictionary[keyword]:
-                                    added_sentences += 1
-                                    entry.sentences.append(Sentence(english_sentence, japanese_sentence))
+                            if keyword[0] in self.__entry_dictionary:
+                                for entry in self.__entry_dictionary[keyword[0]]:
+                                    if(len(entry.sentences) < max_sentences):
+                                        added_sentences += 1
+                                        entry.sentences.append(Sentence(english_sentence, japanese_sentence, keyword[1]))
+                                    elif(keyword[1] == True):
+                                        for i in range(len(entry.sentences)):
+                                            if(not entry.sentences[i].good_sentence):
+                                                entry.sentences[i] = Sentence(english_sentence, japanese_sentence, keyword[1])
+                                                break
 
         return added_sentences      
 

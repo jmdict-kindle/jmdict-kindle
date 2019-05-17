@@ -9,6 +9,7 @@
 *.csv
 *.tar.bz2
 *.tmp
+*.zip
 entry-*.html
 kindlegen
 /.vscode

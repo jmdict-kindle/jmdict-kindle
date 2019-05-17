@@ -38,7 +38,7 @@ def createCover(title, name, width, height):
     ctx.set_source_rgb(0.00, 0.00, 0.00) # black
 
     #draw text
-    ctx.set_font_size(60*height/800)
+    ctx.set_font_size(80*height/800)
     draw_text(ctx, 0.5*width, 0.5*height, title)
 
     ctx.set_font_size(30*height/800)
