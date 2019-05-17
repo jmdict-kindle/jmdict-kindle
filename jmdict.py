@@ -206,12 +206,12 @@ class XmlParser:
 class JMdictParser(XmlParser):
     # http://www.csse.monash.edu.au/~jwb/jmdict_dtd_h.html
 
+
     def __init__(self, filename):
         XmlParser.__init__(self, gzip.open(filename, 'rb'))
 
     def parse(self):
         entries = []
-
         self.element_start('JMdict')
         while self.token.type == XML_ELEMENT_START:
             entry = self.parse_entry()
@@ -219,7 +219,6 @@ class JMdictParser(XmlParser):
             if len(entries) >= MAX_ENTRIES:
                 return entries
         self.element_end('JMdict')
-
         return entries
 
     def parse_entry(self):
@@ -255,7 +254,6 @@ class JMdictParser(XmlParser):
         for sense in senses:
             for pos in sense.pos:
                 posses.add(pos)
-
 
         orthos = readings + kanjis
         for ortho in orthos:
@@ -319,6 +317,7 @@ class JMdictParser(XmlParser):
 
     def parse_sense(self):
         posses = []
+        dialects = []
         glosses = []
         self.element_start('sense')
         while self.token.type == XML_ELEMENT_START:
@@ -327,14 +326,19 @@ class JMdictParser(XmlParser):
                 # revert back to entity
                 pos = self.tokenizer.entities[pos]
                 posses.append(pos)
-            if self.token.name_or_data == 'gloss':
+            elif self.token.name_or_data == 'dial':
+                dial = self.element_character_data('dial')
+                # revert back to entity
+                dial = self.tokenizer.entities[dial]
+                dialects.append(dial)
+            elif self.token.name_or_data == 'gloss':
                 gloss = self.element_character_data('gloss')
                 glosses.append(gloss)
             else:
                 self.skip_element()
         self.element_end('sense')
 
-        sense = Sense(posses, glosses)
+        sense = Sense(posses, dialects, glosses)
         return sense
 
     def element_character_data(self, name):
@@ -400,18 +404,18 @@ class JMnedictParser(JMdictParser):
                 # revert back to entity
                 pos = self.tokenizer.entities[pos]
                 posses.append(pos)
-            if self.token.name_or_data == 'trans_det':
+            elif self.token.name_or_data == 'trans_det':
                 gloss = self.element_character_data('trans_det')
                 glosses.append(gloss)
             else:
                 self.skip_element()
         self.element_end('trans')
 
-        sense = Sense(posses, glosses)
+        sense = Sense(posses, [], glosses)
         return sense
 
 #Get paramters
-max_sentences = 15
+max_sentences = 8
 only_good_sentences = True
 create_jmdict = False
 create_jmnedict = False
@@ -420,11 +424,21 @@ create_combined = False
 i = 0
 while i < len(sys.argv):
     arg = sys.argv[i]
+    # The -a flag determines whether only good and verified sentences are used
+    # Default is only good and verified sentences
     if(arg == "-a"):
         only_good_sentences = False
+    # The -s flags sets the maximum sentences per entry. e.g. -s 20 set the maximum to 20
+    # Default is 8
     elif(arg == "-s"):
         max_sentences = int(sys.argv[i+1])
         i += 1
+    #T he -d flag determines for which dictionaires files are created.
+    # e.g. -d jn creates files for jmdict and jmnedict
+    # j is for jmdict
+    # n for jmnedict
+    # c for the combined
+    # the default is jmdict
     elif(arg == '-d'):
         for c in sys.argv[i+1]:
             if(c == "j"):
@@ -448,7 +462,7 @@ if(create_jmdict or create_combined):
     sys.stderr.write('Created %d entries\n' %len(jmdict_entries))
     sys.stderr.write('Adding sentences...\n')
     examples = ExampleSentences("jpn_indices.tar.bz2", "sentences.tar.bz2", jmdict_entries)
-    sys.stderr.write("Sentences added:" + str(examples.addExamples(only_good_sentences, max_sentences)) + "\n")
+    sys.stderr.write("Sentences added: " + str(examples.addExamples(only_good_sentences, max_sentences)) + "\n")
 
 if(create_jmdict):
     sys.stderr.write('Creating files for JMdict...\n')
@@ -466,4 +480,4 @@ if(create_jmnedict):
 
 if(create_combined):
     sys.stderr.write('Creating files for combined dictionary\n')
-    write_index(jmnedict_entries+jmdict_entries, "JMdict and JMnedict", "JMdict and JMnedict", sys.stdout)
+    write_index(jmnedict_entries+jmdict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout)

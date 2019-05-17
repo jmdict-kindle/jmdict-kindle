@@ -1,9 +1,15 @@
-# XXX: The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
-# but it is excruciatingly slow.
+# The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
+# but it is excruciatingly slow. That's why -c1 is selected by default.
 COMPRESSION ?= 1
-#if this number is too high the combined dictionary will be too large and not compile
+# Sets the max sentences per entry only for the jmdict.mobi.
+# It is ignored by combined.mobi due to size restrictions.
+# If there are too many sentences for the combined dictionary,
+# it will not build (exceeds 650MB size limit).
 SENTENCES ?= 5
-# only add sentences that are marked
+# This flag determines wheter only good and verified sentences are used in the
+# dictionary. Set it to TRUE if you only want those sentences.
+# It is ignored bei combined.mobi. there it is always true
+# this is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
 
 ifeq ($(OS), Windows_NT)
@@ -41,22 +47,26 @@ else
 	touch kindlegen
 endif
 
-JMdict.opf JMnedict.opf JMdict_and_JMnedict.opf: jmdict.py dictionary.py inflections.py kana.py JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2
-ifeq ($(ONLY_CHECKED_SENTENCES), TRUE)
-	$(PYTHON3) jmdict.py -s $(SENTENCES) -d jnc
-else
-	$(PYTHON3) jmdict.py -a -s $(SENTENCES) -d jnc
-endif
-
 # See also https://wiki.mobileread.com/wiki/KindleGen
-jmdict.mobi: JMdict.opf style.css JMdict-frontmatter.html kindlegen
-	./$(KINDLEGEN) $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
+jmdict.mobi: JMdict_e.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict-frontmatter.html kindlegen
+ifeq ($(ONLY_CHECKED_SENTENCES), TRUE)
+	$(PYTHON3) jmdict.py -s $(SENTENCES) -d j
+else
+	$(PYTHON3) jmdict.py -a -s $(SENTENCES) -d j
+endif
+	./$(KINDLEGEN) JMdict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 	
-jmnedict.mobi: JMnedict.opf style.css JMnedict-frontmatter.html kindlegen
-	./$(KINDLEGEN) $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
+jmnedict.mobi: JMnedict.xml.gz style.css JMnedict-frontmatter.html kindlegen
+ifeq ($(ONLY_CHECKED_SENTENCES), TRUE)
+	$(PYTHON3) jmdict.py -d n
+else
+	$(PYTHON3) jmdict.py -a -d n
+endif
+	./$(KINDLEGEN) JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 	
-combined.mobi: JMdict_and_JMnedict.opf style.css JMdict_and_JMnedict-Frontmatter.html kindlegen
-	./$(KINDLEGEN) $< -c$(COMPRESSION) -verbose -dont_append_source -o $@	
+combined.mobi: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict_and_JMnedict-Frontmatter.html kindlegen
+	$(PYTHON3) jmdict.py -a -d c
+	./$(KINDLEGEN) JMdict_and_JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@	
 
 clean:
 	rm -f *.mobi *.opf entry-*.html *cover.jpg *.tar.bz2 *.gz *.csv *cover.png kindlegen *.tmp *.zip kindlegen.exe	

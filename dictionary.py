@@ -35,7 +35,7 @@ NAME_ENTRY, VOCAB_ENTRY = range(2)
 Ortho = namedtuple('Ortho', ['value', 'rank', 'inflgrps'])
 
 
-Sense = namedtuple('Sense', ['pos', 'gloss'])
+Sense = namedtuple('Sense', ['pos', 'dial', 'gloss'])
 
 class Sentence:
 
@@ -159,8 +159,8 @@ def write_index(entries, dictionary_name, title, stream):
             stream.write(' <ul>\n')
             for sense in entry.senses:
                 stream.write(' <li>')
-                if sense.pos:
-                    stream.write('<span class=pos>' + ','.join(sense.pos) + '</span> ')
+                if sense.pos or sense.dial:
+                    stream.write('<span class=pos>' + ','.join(sense.pos + sense.dial) + '</span> ')
                 stream.write(escape('; '.join(sense.gloss), quote=False))
                 stream.write('</li>\n')
             stream.write(' </ul>\n')

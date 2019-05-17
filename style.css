@@ -20,15 +20,15 @@ li {
 }
 
 .sentence{
-  margin-top: 10pt;
-  margin-bottom: 10pt;
+  margin-top: 8pt;
+  margin-bottom: 8pt;
 }
 
 .examples{
-  margin-top: 30pt;
+  margin-top: 20pt;
 }
 
 .examples-heading{
   font-weight: bold;
-  margin-bottom: 10pt;
+  margin-bottom: 8pt;
 }
