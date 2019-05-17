@@ -39,9 +39,10 @@ Sense = namedtuple('Sense', ['pos', 'gloss'])
 
 class Sentence:
 
-    def __init__(self, english, japanese):
+    def __init__(self, english, japanese, good_sentence):
         self.english = english
         self.japanese =japanese
+        self.good_sentence = good_sentence
 
 class Entry:
 
@@ -167,6 +168,7 @@ def write_index(entries, dictionary_name, title, stream):
         if(entry.entry_type == VOCAB_ENTRY and len(entry.sentences) > 0):
             stream.write("<div class=examples>")
             stream.write("<span class='examples-heading'>Examples:</span>")
+            entry.sentences.sort(reverse=True, key = lambda sentence: sentence.good_sentence)
             for sentence in entry.sentences:
                 stream.write('<div class=sentence>')
                 stream.write('<span>' + sentence.japanese + '</span>')
@@ -208,7 +210,7 @@ def write_index(entries, dictionary_name, title, stream):
     stream.write('<package unique-identifier="uid">\n')
     stream.write('  <metadata>\n')
     stream.write('    <dc-metadata xmlns:dc="http://purl.org/metadata/dublin_core">\n')
-    stream.write('      <dc:Identifier id="uid">8FC8AF2ED7</dc:Identifier>\n')
+    stream.write('      <dc:Identifier id="uid">%s</dc:Identifier>\n' %(hex(hash(title)).split('x')[1]))
     stream.write('      <dc:Title><h2>%s</h2></dc:Title>\n' %title)
     stream.write('      <dc:Language>ja</dc:Language>\n')
     stream.write('      <dc:Creator>Electronic Dictionary Research &amp; Development Group</dc:Creator>\n')

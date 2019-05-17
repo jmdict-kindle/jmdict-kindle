@@ -410,23 +410,60 @@ class JMnedictParser(JMdictParser):
         sense = Sense(posses, glosses)
         return sense
 
+#Get paramters
+max_sentences = 15
+only_good_sentences = True
+create_jmdict = False
+create_jmnedict = False
+create_combined = False
 
-sys.stderr.write('Parsing JMdict_e.gz...\n')
-parser = JMdictParser('JMdict_e.gz')
-jmdict_entries = parser.parse()
-sys.stderr.write('Created %d entries\n' %len(jmdict_entries))
-sys.stderr.write('Adding sentences...\n')
-examples = ExampleSentences("jpn_indices.tar.bz2", "sentences.tar.bz2", jmdict_entries)
-sys.stderr.write("Sentences added:" + str(examples.addExamples()) + "\n")
-sys.stderr.write('Creating files for JMdict...\n')
-write_index(jmdict_entries, "JMdict", "JMdict Japanese-English Dictionary", sys.stdout)
+i = 0
+while i < len(sys.argv):
+    arg = sys.argv[i]
+    if(arg == "-a"):
+        only_good_sentences = False
+    elif(arg == "-s"):
+        max_sentences = int(sys.argv[i+1])
+        i += 1
+    elif(arg == '-d'):
+        for c in sys.argv[i+1]:
+            if(c == "j"):
+                create_jmdict = True
+            elif(c == "n"):
+                create_jmnedict = True
+            elif(c == "c"):
+                create_combined = True
+        i += 1
 
-sys.stderr.write('Parsing JMnedict.xml.gz...\n')
-parser = JMnedictParser('JMnedict.xml.gz')
-jmnedict_entries = parser.parse()
-sys.stderr.write('Created %d entries\n' %len(jmnedict_entries))
-sys.stderr.write('Creating files for JMnedict...\n')
-write_index(jmnedict_entries, "JMnedict", "JMnedict Japanese Names", sys.stdout)
+    i += 1
 
-sys.stderr.write('Creating files for combined dictionary\n')
-write_index(jmnedict_entries+jmdict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout)
+if(not create_combined and not create_jmdict and not create_jmnedict):
+    create_jmdict = True
+
+#Create files
+if(create_jmdict or create_combined):
+    sys.stderr.write('Parsing JMdict_e.gz...\n')
+    parser = JMdictParser('JMdict_e.gz')
+    jmdict_entries = parser.parse()
+    sys.stderr.write('Created %d entries\n' %len(jmdict_entries))
+    sys.stderr.write('Adding sentences...\n')
+    examples = ExampleSentences("jpn_indices.tar.bz2", "sentences.tar.bz2", jmdict_entries)
+    sys.stderr.write("Sentences added:" + str(examples.addExamples(only_good_sentences, max_sentences)) + "\n")
+
+if(create_jmdict):
+    sys.stderr.write('Creating files for JMdict...\n')
+    write_index(jmdict_entries, "JMdict", "JMdict Japanese-English Dictionary", sys.stdout)
+
+if(create_jmnedict or create_combined):
+    sys.stderr.write('Parsing JMnedict.xml.gz...\n')
+    parser = JMnedictParser('JMnedict.xml.gz')
+    jmnedict_entries = parser.parse()
+    sys.stderr.write('Created %d entries\n' %len(jmnedict_entries))
+
+if(create_jmnedict):
+    sys.stderr.write('Creating files for JMnedict...\n')
+    write_index(jmnedict_entries, "JMnedict", "JMnedict Japanese Names", sys.stdout)
+
+if(create_combined):
+    sys.stderr.write('Creating files for combined dictionary\n')
+    write_index(jmnedict_entries+jmdict_entries, "JMdict and JMnedict", "JMdict and JMnedict", sys.stdout)
