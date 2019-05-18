@@ -17,14 +17,14 @@ script:
 - make
 
 before_deploy:
-- 7zr a dicttionaries-"$TRAVIS_TAG".7z jmdict.mobi jmnedict.mobi combined.mobi
+- 7zr a dictionaries-"$TRAVIS_TAG".7z jmdict.mobi jmnedict.mobi combined.mobi
 
 deploy:
   provider: releases
   api_key:
     secure: bmnrXL+vzUpUHeE6zuHXkLK7/7tpKo/tIhj/Ha8qWp0G0c4ySHlStGPKfbzaYmywCvXSDnGyPWAKncTv1cH4yRglWH/n53jhB9crGqcDdu+61JUwGerKFdAEs23xtfX1BtHD0qZ3HjQzGrFpHiebberLYUECnckfijXMNI/JBO0=
   file_glob: true
-  file: dicttionaries-*.7z
+  file: dictionaries-*.7z
   skip_cleanup: true
   on:
     repo: jrfonseca/jmdict-kindle
