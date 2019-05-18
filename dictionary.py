@@ -23,24 +23,27 @@
 
 
 import sys
+import htmlmin
 
 from collections import namedtuple
 from html import escape
 
 from kana import *
+from cover import *
 
 NAME_ENTRY, VOCAB_ENTRY = range(2)
 
 Ortho = namedtuple('Ortho', ['value', 'rank', 'inflgrps'])
 
 
-Sense = namedtuple('Sense', ['pos', 'gloss'])
+Sense = namedtuple('Sense', ['pos', 'dial', 'gloss'])
 
 class Sentence:
 
-    def __init__(self, english, japanese):
+    def __init__(self, english, japanese, good_sentence):
         self.english = english
         self.japanese =japanese
+        self.good_sentence = good_sentence
 
 class Entry:
 
@@ -101,17 +104,18 @@ class Entry:
 def write_index_header(stream):
     stream.write('<?xml version="1.0" encoding="UTF-8"?>\n')
     stream.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n')
-    stream.write('<html xmlns:idx="www.mobipocket.com" xmlns:mbp="www.mobipocket.com" xmlns="http://www.w3.org/1999/xhtml">\n')
+    stream.write('<html xmlns:mbp="https://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf" xmlns:mmc="https://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf" xmlns:idx="https://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf"\n')
     stream.write('<head>\n')
     stream.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>\n')
     stream.write('<link rel="stylesheet" type="text/css" href="style.css"/>\n')
     stream.write('</head>\n')
     stream.write('<body topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0">\n')
+    stream.write('<mbp:frameset>\n')
 
 
 def write_index_footer(stream):
     stream.write('<mbp:pagebreak/>\n')
-
+    stream.write('</mbp:frameset>\n')
     stream.write('</body>\n')
     stream.write('</html>\n')
 
@@ -125,6 +129,7 @@ def write_index(entries, dictionary_name, title, stream):
     entries.sort(key=lambda x: x.headword)
 
     prev_section = None
+    dictionary_file_name = dictionary_name.replace(' ', '_')
 
     stream = None
 
@@ -135,46 +140,44 @@ def write_index(entries, dictionary_name, title, stream):
         section = entry.section
 
         if section != prev_section:
-            sys.stderr.write('%s\n' %section)
-
             try:
                 stream = section_streams[section]
             except KeyError:
                 sections.append(section)
-                #filename = 'entry-%s.html' %section
-                filename = 'entry-%s-%s.html'%(dictionary_name, section)
+                filename = 'entry-%s-%s.html'%(dictionary_file_name, section)
                 stream = open(filename, 'wt', encoding='UTF-8')
                 section_streams[section] = stream
                 write_index_header(stream)
 
             prev_section = section
 
+        #scriptable="yes" is needed, otherwise the results are cut off or results after the actual result are also dsiplayed
+        stream.write('<idx:entry scriptable="yes">\n')#name attribute is omitted due to size constraints
 
-        stream.write('<idx:entry>\n')
-        
-        stream.write(' <p class=label>' + escape(entry.label, quote=False) + '</p>\n')
+        stream.write(' <p class=lab>' + escape(entry.label, quote=False) + '</p>\n')
         assert entry.senses
         
         if(len(entry.senses) > 0):
             stream.write(' <ul>\n')
             for sense in entry.senses:
                 stream.write(' <li>')
-                if sense.pos:
-                    stream.write('<span class=pos>' + ','.join(sense.pos) + '</span> ')
+                if sense.pos or sense.dial:
+                    stream.write('<span class=pos>' + ','.join(sense.pos + sense.dial) + '</span> ')
                 stream.write(escape('; '.join(sense.gloss), quote=False))
                 stream.write('</li>\n')
             stream.write(' </ul>\n')
 
         if(entry.entry_type == VOCAB_ENTRY and len(entry.sentences) > 0):
-            stream.write("<div class=examples>")
-            stream.write("<span class='examples-heading'>Examples:</span>")
+            stream.write('<div class=ex>\n')
+            stream.write(' <span class="exh">Examples:</span>\n')
+            entry.sentences.sort(reverse=True, key = lambda sentence: sentence.good_sentence)
             for sentence in entry.sentences:
-                stream.write('<div class=sentence>')
-                stream.write('<span>' + sentence.japanese + '</span>')
-                stream.write('<br>')
-                stream.write('<span>' + sentence.english + '</span>')
-                stream.write("</div>")
-            stream.write('</div>')
+                stream.write(' <div class="sen">\n')
+                stream.write('  <span>' + sentence.japanese + '</span>\n')
+                stream.write('  <br>\n')
+                stream.write('  <span>' + sentence.english + '</span>\n')
+                stream.write(' </div>\n')
+            stream.write('</div>\n')
 
         for ortho in entry.orthos:
             stream.write(' <idx:orth value="%s"' % escape(ortho.value, quote=True))
@@ -200,14 +203,28 @@ def write_index(entries, dictionary_name, title, stream):
         write_index_footer(stream)
         stream.close()
 
+    #create cover
+    createCover(dictionary_name, title, 768, 1024)
+
+    # minify html
+    minifier = htmlmin.Minifier(remove_empty_space=True)
+    for i in range(len(sections)):
+        section = sections[i]
+        with open('entry-%s-%s.html' %(dictionary_file_name, section), 'r+', encoding='UTF-8') as f:
+            content = f.read()
+            content = minifier.minify(content)
+            f.seek(0)
+            f.write(content)
+            f.truncate()
+
 
     # Write the OPF
-    stream = open('%s.opf' %dictionary_name, 'wt', encoding='UTF-8')
+    stream = open('%s.opf' %dictionary_file_name, 'wt', encoding='UTF-8')
     stream.write('<?xml version="1.0" encoding="utf-8"?>\n')
     stream.write('<package unique-identifier="uid">\n')
     stream.write('  <metadata>\n')
     stream.write('    <dc-metadata xmlns:dc="http://purl.org/metadata/dublin_core">\n')
-    stream.write('      <dc:Identifier id="uid">8FC8AF2ED7</dc:Identifier>\n')
+    stream.write('      <dc:Identifier id="uid">%s</dc:Identifier>\n' %(hex(hash(title)).split('x')[1]))
     stream.write('      <dc:Title><h2>%s</h2></dc:Title>\n' %title)
     stream.write('      <dc:Language>ja</dc:Language>\n')
     stream.write('      <dc:Creator>Electronic Dictionary Research &amp; Development Group</dc:Creator>\n')
@@ -218,16 +235,16 @@ def write_index(entries, dictionary_name, title, stream):
     stream.write('      <output encoding="UTF-8" flatten-dynamic-dir="yes"/>\n')
     stream.write('      <DictionaryInLanguage>ja</DictionaryInLanguage>\n')
     stream.write('      <DictionaryOutLanguage>en</DictionaryOutLanguage>\n')
+    #stream.write('      <DefaultLookupIndex>ja</DefaultLookupIndex>\n')  
     stream.write('    </x-metadata>\n')
     stream.write('  </metadata>\n')
     stream.write('  <manifest>\n')
-    stream.write('    <item id="cover" href="%s-cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n' %dictionary_name)
+    stream.write('    <item id="cover" href="%s-cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n' %dictionary_file_name)
     stream.write('    <item id="css" href="style.css" media-type="text/css"/>\n')
-    stream.write('    <item id="frontmatter" href="%s-frontmatter.html" media-type="text/x-oeb1-document"/>\n' %dictionary_name)
+    stream.write('    <item id="frontmatter" href="%s-frontmatter.html" media-type="text/x-oeb1-document"/>\n' %dictionary_file_name)
     for i in range(len(sections)):
         section = sections[i]
-        print(section)
-        stream.write('    <item id="entry-%u" href="entry-%s-%s.html" media-type="text/x-oeb1-document"/>\n' % (i, dictionary_name, escape(section, quote=True)))
+        stream.write('    <item id="entry-%u" href="entry-%s-%s.html" media-type="text/x-oeb1-document"/>\n' % (i, dictionary_file_name, escape(section, quote=True)))
     stream.write('  </manifest>\n')
     stream.write('\n')
     stream.write('  <spine>\n')
