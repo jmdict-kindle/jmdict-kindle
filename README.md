@@ -89,10 +89,10 @@ Requirements:
 * Python version 3
 
   * [Pycairo Python](http://www.cairographics.org/pycairo)
-
   * [Pillow](http://pillow.readthedocs.io/en/latest/)
+  * [htmlmin](https://htmlmin.readthedocs.io/en/latest/index.html)
 
-You can change the max number of sentences per entry, compression, as well as which sentences to include, inside of the make file:
+Inside of the makefile you can change the max number of sentences per entry, compression, as well as which sentences to include:
 
 ```markdown
 # The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
@@ -105,6 +105,7 @@ COMPRESSION ?= 1
 SENTENCES ?= 5
 # This flag determines wheter only good and verified sentences are used in the
 # dictionary. Set it to TRUE if you only want those sentences.
+# It is only used by jmdict.mobi.
 # It is ignored bei combined.mobi. there it is always true
 # this is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
