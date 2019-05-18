@@ -55,7 +55,8 @@ class ExampleSentences:
                 old_distance = new_distance
             else:#the entry does not exist since the numbers should converge
                 return None
-                
+        #remove linebreak
+        columns[2] = columns[2].replace('\n', '')      
         return columns[2]
 
     def addExamples(self, good_only, max_sentences):

@@ -8,6 +8,7 @@ COMPRESSION ?= 1
 SENTENCES ?= 5
 # This flag determines wheter only good and verified sentences are used in the
 # dictionary. Set it to TRUE if you only want those sentences.
+# It is only used by jmdict.mobi
 # It is ignored bei combined.mobi. there it is always true
 # this is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
@@ -57,15 +58,11 @@ endif
 	./$(KINDLEGEN) JMdict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 	
 jmnedict.mobi: JMnedict.xml.gz style.css JMnedict-frontmatter.html kindlegen
-ifeq ($(ONLY_CHECKED_SENTENCES), TRUE)
 	$(PYTHON3) jmdict.py -d n
-else
-	$(PYTHON3) jmdict.py -a -d n
-endif
 	./$(KINDLEGEN) JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 	
 combined.mobi: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict_and_JMnedict-Frontmatter.html kindlegen
-	$(PYTHON3) jmdict.py -a -d c
+	$(PYTHON3) jmdict.py -d c
 	./$(KINDLEGEN) JMdict_and_JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@	
 
 clean:
