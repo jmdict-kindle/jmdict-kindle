@@ -14,9 +14,7 @@ before_install:
 - $PYTHON3 --version
 
 script:
-- make jmdict.mobi
-- make jmnedict.mobi
-- make combined.mobi
+- make
 
 before_deploy:
 - 7zr a dicttionaries-"$TRAVIS_TAG".7z jmdict.mobi jmnedict.mobi combined.mobi

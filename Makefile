@@ -57,7 +57,7 @@ else
 endif
 	./$(KINDLEGEN) JMdict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 	
-jmnedict.mobi: JMnedict.xml.gz style.css JMnedict-frontmatter.html kindlegen
+jmnedict.mobi: JMnedict.xml.gz style.css JMnedict-Frontmatter.html kindlegen
 	$(PYTHON3) jmdict.py -d n
 	./$(KINDLEGEN) JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 	
