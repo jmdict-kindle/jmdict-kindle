@@ -70,7 +70,7 @@ Kindle Android App
 
 **NOTE: Unfortunately the Kindle Android App does not support dictionary inflections, yielding verbs lookup practically impossible. No known workaround.**
 
-* rename `jmdict.mobi` as `B005FNK020_EBOK.prc`
+* rename `jmdict.mobi` or any of the other two dictionaries as `B005FNK020_EBOK.prc`
 
 * connect your Android device via USB
 
@@ -130,7 +130,7 @@ To do
   * cross references
 * Add Furigana to example sentences
 * Create proper covers
-* Find a way to have more sentences in the combined dictionary
+* Find a way to have more sentences in the combined dictionary (maybe less names). Currently the amount of sentences in the combined dictionary is quite limited since the size limit for a `mobi` is 650MB
 
 
 Credits

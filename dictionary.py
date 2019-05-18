@@ -151,10 +151,10 @@ def write_index(entries, dictionary_name, title, stream):
 
             prev_section = section
 
+        #scriptable="yes" is needed, otherwise the results are cut off or results after the actual result are also dsiplayed
+        stream.write('<idx:entry scriptable="yes">\n')#name attribute is omitted due to size constraints
 
-        stream.write('<idx:entry>\n')# scriptable and name attribute are omitted due to size constraints
-
-        stream.write(' <p class=label>' + escape(entry.label, quote=False) + '</p>\n')
+        stream.write(' <p class=lab>' + escape(entry.label, quote=False) + '</p>\n')
         assert entry.senses
         
         if(len(entry.senses) > 0):
@@ -168,11 +168,11 @@ def write_index(entries, dictionary_name, title, stream):
             stream.write(' </ul>\n')
 
         if(entry.entry_type == VOCAB_ENTRY and len(entry.sentences) > 0):
-            stream.write('<div class=examples>\n')
-            stream.write(' <span class="examples-heading">Examples:</span>\n')
+            stream.write('<div class=ex>\n')
+            stream.write(' <span class="exh">Examples:</span>\n')
             entry.sentences.sort(reverse=True, key = lambda sentence: sentence.good_sentence)
             for sentence in entry.sentences:
-                stream.write(' <div class="sentence">\n')
+                stream.write(' <div class="sen">\n')
                 stream.write('  <span>' + sentence.japanese + '</span>\n')
                 stream.write('  <br>\n')
                 stream.write('  <span>' + sentence.english + '</span>\n')
@@ -235,7 +235,7 @@ def write_index(entries, dictionary_name, title, stream):
     stream.write('      <output encoding="UTF-8" flatten-dynamic-dir="yes"/>\n')
     stream.write('      <DictionaryInLanguage>ja</DictionaryInLanguage>\n')
     stream.write('      <DictionaryOutLanguage>en</DictionaryOutLanguage>\n')
-    #stream.write('      <DefaultLookupIndex>jap</DefaultLookupIndex>\n')  
+    #stream.write('      <DefaultLookupIndex>ja</DefaultLookupIndex>\n')  
     stream.write('    </x-metadata>\n')
     stream.write('  </metadata>\n')
     stream.write('  <manifest>\n')
