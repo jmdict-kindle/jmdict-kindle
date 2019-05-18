@@ -44,7 +44,7 @@ class ExampleSentences:
         old_distance = abs(columns[0]-id)
 
         while columns[0] != id:
-            assert(columns[0] >= current_line) , "there is a line with an id smaller than the line number"#this could lead to an infinite loop
+            assert(columns[0] >= current_line) , "The sentence list is not ordered"
             current_line = current_line - (columns[0]-id)
             line = linecache.getline("sentences.csv", current_line)
             columns = line.split('\t')
@@ -53,11 +53,26 @@ class ExampleSentences:
             new_distance = abs(columns[0]-id)
             if(new_distance < old_distance):
                 old_distance = new_distance
-            else:#the entry does not exist since the numbers should converge
-                return None
-        #remove linebreak
-        columns[2] = columns[2].replace('\n', '')      
-        return columns[2]
+            else:#if it is stuck try linear search from that point on
+                if(columns[0] > id):
+                    while columns[0] > id:
+                        current_line -= 1
+                        line = linecache.getline("sentences.csv", current_line)
+                        columns = line.split('\t')
+                        columns[0] = int(columns[0])
+                elif(columns[0] < id):
+                    while columns[0] < id:
+                        current_line += 1
+                        line = linecache.getline("sentences.csv", current_line)
+                        columns = line.split('\t')
+                        columns[0] = int(columns[0])
+                break
+        if(columns[0] == id):
+            #remove linebreak
+            columns[2] = columns[2].replace('\n', '')      
+            return columns[2]
+        else:
+            return None
 
     def addExamples(self, good_only, max_sentences):
 

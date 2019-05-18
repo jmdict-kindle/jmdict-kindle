@@ -9,7 +9,7 @@ Features:
 
 * lookup of inflected verbs.
 * lookup for Japanese names.
-* the dictionaries can be downloaded as seperate files or as one big dictionary
+* the dictionaries can be downloaded as separate files or as one big dictionary (the combined dictionary does not include example sentences due to file size restrictions)
 
 <!--
 Screenshots were captured inside the Kindle device as explained in
@@ -122,6 +122,8 @@ make jmnedict.mobi
 make combined.mobi
 ```
 
+Please be aware that as of now the combined dictionary does not contain example sentences as this would push the `mobi` beyond the file size limit
+
 To do
 =====
 
@@ -130,7 +132,7 @@ To do
   * cross references
 * Add Furigana to example sentences
 * Create proper covers
-* Find a way to have more sentences in the combined dictionary (maybe less names). Currently the amount of sentences in the combined dictionary is quite limited since the size limit for a `mobi` is 650MB
+* Find a way to have sentences in the combined dictionary (maybe less names). The size limit for `mobi` of 650MB is reached quite fast
 
 
 Credits
