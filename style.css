@@ -6,7 +6,7 @@ p {
   margin-bottom: 0;
 }
 
-.label {
+.lab {
   font-weight:bold;
 }
 
@@ -19,16 +19,16 @@ li {
   list-style-type: square;
 }
 
-.sentence{
+.sen{
   margin-top: 8pt;
   margin-bottom: 8pt;
 }
 
-.examples{
+.ex{
   margin-top: 20pt;
 }
 
-.examples-heading{
+.exh{
   font-weight: bold;
   margin-bottom: 8pt;
 }

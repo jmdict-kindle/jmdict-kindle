@@ -60,9 +60,10 @@ endif
 jmnedict.mobi: JMnedict.xml.gz style.css JMnedict-Frontmatter.html kindlegen
 	$(PYTHON3) jmdict.py -d n
 	./$(KINDLEGEN) JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
-	
+
+#Currently the limit for sentences is around 33000. After that the file becomes too big	
 combined.mobi: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict_and_JMnedict-Frontmatter.html kindlegen
-	$(PYTHON3) jmdict.py -d c
+	$(PYTHON3) jmdict.py -s 5 -d c
 	./$(KINDLEGEN) JMdict_and_JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@	
 
 clean:
