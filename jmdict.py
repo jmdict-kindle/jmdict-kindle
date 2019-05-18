@@ -460,9 +460,11 @@ if(create_jmdict or create_combined):
     parser = JMdictParser('JMdict_e.gz')
     jmdict_entries = parser.parse()
     sys.stderr.write('Created %d entries\n' %len(jmdict_entries))
-    sys.stderr.write('Adding sentences...\n')
-    examples = ExampleSentences("jpn_indices.tar.bz2", "sentences.tar.bz2", jmdict_entries)
-    sys.stderr.write("Sentences added: " + str(examples.addExamples(only_good_sentences, max_sentences)) + "\n")
+        
+    if(max_sentences > 0):
+        sys.stderr.write('Adding sentences...\n')
+        examples = ExampleSentences("jpn_indices.tar.bz2", "sentences.tar.bz2", jmdict_entries)
+        sys.stderr.write("Sentences added: " + str(examples.addExamples(only_good_sentences, max_sentences)) + "\n")
 
 if(create_jmdict):
     sys.stderr.write('Creating files for JMdict...\n')
