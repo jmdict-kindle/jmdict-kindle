@@ -25,18 +25,36 @@
 
 
 import cairo
+from PIL import Image
  
+def createCover(title, name, width, height):
+    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+    ctx = cairo.Context(surface)
+    ctx.scale
+    ctx.set_source_rgb(0.75, 0.75, 0.75)
+    ctx.rectangle(0, 0, width, height)
+    ctx.fill()
+    ctx.select_font_face('Sans')
+    ctx.set_source_rgb(0.00, 0.00, 0.00) # black
 
-w, h = 768, 1024
+    #draw text
+    ctx.set_font_size(60*height/800)
+    draw_text(ctx, 0.5*width, 0.5*height, title)
 
-surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
-ctx = cairo.Context(surface)
- 
-# paint gray background
-ctx.set_source_rgb(0.75, 0.75, 0.75)
-ctx.rectangle(0, 0, w, h)
-ctx.fill()
- 
+    ctx.set_font_size(30*height/800)
+    draw_text(ctx, 0.5*width, 0.75*height, name)
+
+    # finish
+    ctx.stroke()
+
+    surface.write_to_png('%s-cover.png' %title)
+
+    # Convert to grayscale JPEG
+    # XXX: Kindle does not show thumbnails for PNG covers
+    im = Image.open('%s-cover.png' %title)
+    im = im.convert('L')
+    im.save('%s-cover.jpg' %title.replace(' ', '_'))
+
 # draw centered text
 def draw_text(ctx, x, y, t):
     x_bearing, y_bearing, width, height, x_advance, y_advance = ctx.text_extents(t)
@@ -46,26 +64,3 @@ def draw_text(ctx, x, y, t):
         
     ctx.move_to(x, y)
     ctx.show_text(t)
-
-# draw text
-ctx.select_font_face('Sans')
-ctx.set_source_rgb(0.00, 0.00, 0.00) # black
-
-ctx.set_font_size(90*h/800)
-draw_text(ctx, 0.5*w, 0.5*h, 'JMDICT')
-
-ctx.set_font_size(30*h/800)
-draw_text(ctx, 0.5*w, 0.75*h, 'Japanese-English Dictionary')
- 
-# finish
-ctx.stroke()
-
-
-surface.write_to_png('cover.png')
-
-# Convert to grayscale JPEG
-# XXX: Kindle does not show thumbnails for PNG covers
-from PIL import Image
-im = Image.open('cover.png')
-im = im.convert('L')
-im.save('cover.jpg')

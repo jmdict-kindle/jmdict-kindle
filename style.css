@@ -6,7 +6,7 @@ p {
   margin-bottom: 0;
 }
 
-.label {
+.lab {
   font-weight:bold;
 }
 
@@ -17,4 +17,18 @@ p {
 
 li {
   list-style-type: square;
+}
+
+.sen{
+  margin-top: 8pt;
+  margin-bottom: 8pt;
+}
+
+.ex{
+  margin-top: 20pt;
+}
+
+.exh{
+  font-weight: bold;
+  margin-bottom: 8pt;
 }

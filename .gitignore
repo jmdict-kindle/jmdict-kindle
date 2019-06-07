@@ -3,8 +3,13 @@
 *.mobi
 *.pyc
 *.txt
-cover.jpg
-cover.png
+*cover.jpg
+*cover.png
+*.opf
+*.csv
+*.tar.bz2
+*.tmp
+*.zip
 entry-*.html
-jmdict.opf
 kindlegen
+/.vscode
