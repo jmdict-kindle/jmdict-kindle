@@ -19,9 +19,11 @@ then processed with ImageMagick's
 to look like E-Ink display.
 -->
 
-![Screenshot word lookup](screenshot_word.png)
+![Inflection lookup screenshot](screenshots/infl.png)
 
-![Screenshot name lookup](screenshot_name.png)
+![Word lookup screenshot](screenshots/word.png)
+
+![Name lookup screenshot](screenshots/name.png)
 
 Supported Devices
 =================
@@ -88,13 +90,13 @@ Requirements:
 * Linux or Windows with Cygwin (might also work on macOS with a few changes)
 * Python version 3
 
-  * [Pycairo Python](http://www.cairographics.org/pycairo)
+  * [Pycairo](http://www.cairographics.org/pycairo)
   * [Pillow](http://pillow.readthedocs.io/en/latest/)
   * [htmlmin](https://htmlmin.readthedocs.io/en/latest/index.html)
 
 Inside of the makefile you can change the max number of sentences per entry, compression, as well as which sentences to include:
 
-```markdown
+```makefile
 # The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
 # but it is excruciatingly slow. That's why -c1 is selected by default.
 COMPRESSION ?= 1
@@ -131,8 +133,8 @@ To do
 
   * cross references
 * Add Furigana to example sentences
-* Create proper covers
-* Find a way to have sentences in the combined dictionary (maybe less names). The size limit for `mobi` of 650MB is reached quite fast
+* Create better covers
+* Find a way to have sentences in the combined dictionary (maybe less names). The size limit for `mobi` of 650MB is reached quite fast.
 
 
 Credits
