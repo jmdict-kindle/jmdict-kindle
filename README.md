@@ -51,16 +51,16 @@ _e-Ink_ Kindle
 
 There are in total 3 dictionaries:
 
-* jmdict.mobi: Contains only data from the JMedict database. It does not contain words
-* jmnedict.mobi: Contains only names from the JMnedict databse
-* combined.mobi: Contains the data from both of the above dictionaries
+* `jmdict.mobi`: Contains only data from the JMedict database, with additional examples. It does not contain proper names.
+* `jmnedict.mobi`: Contains only Japanese proper names from the JMnedict databse.
+* `combined.mobi`: Contains the data from both of the above dictionaries, but no examples.
 
 To install any of the dictionaries (you can also install all three of them) into your device follow these steps:
 
 * for 1st-generation Kindle Paperwhite devices, ensure you have
   [firmware version 5.3.9 or higher](http://www.amazon.com/gp/help/customer/display.html/ref=hp_left_cn?ie=UTF8&nodeId=201064850) as it includes improved homonym lookup for Japanese;
 * connect your Kindle device via USB;
-* copy the the `.mobi` file for the dictionary you want to use to the `documents` sub-folder;
+* copy the the `.mobi` file for the dictionary you want to use to the `documents/dictionaries` sub-folder;
 * eject the USB device;
 * on your device go to
   _Home > Settings > Device Options > Language and Dictionaries > Dictionaries_
