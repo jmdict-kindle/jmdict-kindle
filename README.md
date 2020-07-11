@@ -85,6 +85,8 @@ This will override the
 Building from source
 ====================
 
+[![Build Status](https://travis-ci.org/jrfonseca/jmdict-kindle.svg?branch=master)](https://travis-ci.org/jrfonseca/jmdict-kindle)
+
 Requirements:
 
 * Linux or Windows with Cygwin (might also work on macOS with a few changes)
