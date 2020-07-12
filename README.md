@@ -9,8 +9,8 @@ Features:
 
 * lookup of inflected verbs.
 * lookup for Japanese names.
-* Example sentences
-* Pronunciation
+* Example sentences (not in the combined dictionary due to file size constraints)
+* Pronunciation (not in the combined dictionary due to file size constraints)
 * the dictionaries can be downloaded as separate files or as one big dictionary (the combined dictionary does not include example sentences due to file size restrictions)
 
 <!--
