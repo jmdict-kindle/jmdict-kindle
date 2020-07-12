@@ -12,7 +12,7 @@ SENTENCES ?= 5
 # It is ignored bei combined.mobi. there it is always true
 # this is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
-
+# If true adds pronunciations indication
 PRONUNCIATIONS ?= TRUE
 
 ifeq ($(PRONUNCIATIONS), TRUE)

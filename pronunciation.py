@@ -12,6 +12,9 @@ katakana = u'ガギグゲゴザジズゼゾダヂヅデドバビブベボパピ�
 hiragana = [ord(char) for char in hiragana]
 translate_table = dict(zip(hiragana, katakana))
 
+HIGH_STATE = 0
+LOW_STATE = 1
+
 class Pronunciation:
 
   def __init__(self):
@@ -74,37 +77,35 @@ def format_pronunciations(reading):
               nopron[-1] = nopron[-1] * 10
 
   outstr = ""
-  overline = False
+  if(int(accent[0]) > 0):
+    state = HIGH_STATE
+    outstr = outstr + '<span class="high">'
+  else:
+    state = LOW_STATE
+    outstr = outstr + '<span class="low">'
+
 
   for i in range(strlen):
-      a = int(accent[i])
-      # Start or end overline when necessary
-      if not overline and a > 0:
-          outstr = outstr + '<span class="overline">'
-          overline = True
-      if overline and a == 0:
-          outstr = outstr + '</span>'
-          overline = False
+    a = int(accent[i])
+    
+    if(state == HIGH_STATE):
+      if a == 0:
+        outstr = outstr + '</span><span class="low">'
+        state = LOW_STATE
+    else:
+      if a > 0:
+        outstr = outstr + '</span><span class="high">'
+        state = HIGH_STATE
 
-      if (i+1) in nopron:
-          outstr = outstr + '<span class="nopron">'
-
-      # Add the character stuff
-      outstr = outstr + escape(txt[i], quote=False)
-
-      # Add the pronunciation stuff
-      if (i+1) in nopron:
-          outstr = outstr + "</span>"
-      if (i+1) in nasal:
-          outstr = outstr + '<span class="nasal">&#176;</span>'
-
-      # If we go down in pitch, add the downfall
-      if a == 2:
-          outstr = outstr + '&#42780;</span>'
-          overline = False
-
-  # Close the overline if it's still open
-  if overline:
-      outstr = outstr + "</span>"
-
+    outstr = outstr + escape(txt[i], quote=False)
+    if (i+1) in nopron:
+      #outstr = outstr + "</span>" dont know what to do here
+      outstr = outstr
+    if (i+1) in nasal:
+      outstr = outstr + '<span class="nasal">&#176;</span>'
+    if a == 2:
+      outstr = outstr + '</span><span class="low">&#42780;'
+      state = LOW_STATE
+    
+  outstr = outstr + '</span>'
   return outstr

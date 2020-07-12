@@ -8,6 +8,7 @@ p {
 
 .lab {
   font-weight:bold;
+  margin-bottom: 10px;
 }
 
 .pos {
@@ -33,11 +34,18 @@ li {
   margin-bottom: 8pt;
 }
 
-.overline{
+.high{
   text-decoration: overline;
-  font-size: 1.8rem;
+}
+
+.low{
+  text-decoration: underline;
 }
 
 .nopron{
   color: royalblue;
+}
+
+.nasal{
+  color: limegreen;
 }

@@ -171,11 +171,30 @@ def write_index(entries, dictionary_name, title, stream):
         stream.write('<idx:entry scriptable="yes">\n')#name attribute is omitted due to size constraints
         
         assert entry.readings
-        label = ';'.join([format_pronunciations(reading) for reading in entry.readings])
+        special_readings = {}
+        readings = []
+        for reading in entry.readings:
+            if reading.re_restr:
+                if(not reading.re_restr in special_readings):
+                    special_readings[reading.re_restr] = []
+                special_readings[reading.re_restr].append(reading)
+            readings.append(format_pronunciations(reading))
+        label = ";".join(readings)
         if entry.kanjis:
             label += '【' + ';'.join([escape(kanji.keb, quote=False) for kanji in entry.kanjis]) + '】'
         
         stream.write(' <p class=lab>' + label + '</p>\n')
+
+        if(len(special_readings.keys()) > 0):
+            for kanji in special_readings:
+                label = ""
+                readings = []
+                for reading in special_readings[kanji]:
+                    readings.append(format_pronunciations(reading))
+                label = ";".join(readings)
+                label += '【' + escape(kanji, quote=False) + '】'
+                stream.write(' <p class=lab>' + label + '</p>\n')
+                    
         assert entry.senses
         
         if(len(entry.senses) > 0):
