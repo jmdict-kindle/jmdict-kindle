@@ -9,6 +9,8 @@ Features:
 
 * lookup of inflected verbs.
 * lookup for Japanese names.
+* Example sentences
+* Pronunciation
 * the dictionaries can be downloaded as separate files or as one big dictionary (the combined dictionary does not include example sentences due to file size restrictions)
 
 <!--
@@ -113,6 +115,8 @@ SENTENCES ?= 5
 # It is ignored bei combined.mobi. there it is always true
 # this is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
+# If true adds pronunciations indication
+PRONUNCIATIONS ?= TRUE
 ```
 
 Build with make to create all 3 dictionaries:
