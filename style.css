@@ -32,3 +32,12 @@ li {
   font-weight: bold;
   margin-bottom: 8pt;
 }
+
+.overline{
+  text-decoration: overline;
+  font-size: 2rem;
+}
+
+.nopron{
+  color: royalblue;
+}

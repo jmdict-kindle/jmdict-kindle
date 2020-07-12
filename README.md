@@ -146,6 +146,7 @@ Credits
 * The [Tatoeba](https://tatoeba.org/) project
 * John Mettraux for his [EDICT2 Japanese-English Kindle dictionary](https://github.com/jmettraux/edict2-kindle)
 * Choplair-network for their [Nihongo conjugator](http://www.choplair.org/?Nihongo%20conjugator)
+* javdejong for the [pronunciation](https://github.com/javdejong/nhk-pronunciation)
 
 
 Alternatives

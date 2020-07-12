@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 #
 # Copyright 2014-2017 Jose Fonseca
 # All Rights Reserved.
@@ -30,11 +31,20 @@ from html import escape
 
 from kana import *
 from cover import *
+from pronunciation import format_pronunciations
 
 NAME_ENTRY, VOCAB_ENTRY = range(2)
 
-Ortho = namedtuple('Ortho', ['value', 'rank', 'inflgrps'])
+Ortho = namedtuple('Ortho', ['value', 'rank','inflgrps'])
 
+Kanji = namedtuple('Kanji', ['keb', 'rank'])
+
+class Reading:
+    def __init__(self, reb, rank, re_restr, pronunciation):
+        self.reb = reb
+        self.rank = rank
+        self.re_restr = re_restr
+        self.pronunciation = pronunciation
 
 Sense = namedtuple('Sense', ['pos', 'dial', 'gloss'])
 
@@ -47,10 +57,11 @@ class Sentence:
 
 class Entry:
 
-    def __init__(self, label, senses, orthos, sentences=None, entry_type=VOCAB_ENTRY):
-        self.label = label
+    def __init__(self, senses, orthos, kanjis, readings, sentences=None, entry_type=VOCAB_ENTRY):
         self.senses = senses
         self.orthos = orthos
+        self.kanjis = kanjis
+        self.readings = readings
 
         if(sentences == None):
             self.sentences = []
@@ -153,8 +164,13 @@ def write_index(entries, dictionary_name, title, stream):
 
         #scriptable="yes" is needed, otherwise the results are cut off or results after the actual result are also dsiplayed
         stream.write('<idx:entry scriptable="yes">\n')#name attribute is omitted due to size constraints
-
-        stream.write(' <p class=lab>' + escape(entry.label, quote=False) + '</p>\n')
+        
+        assert entry.readings
+        label = ';'.join([format_pronunciations(reading) for reading in entry.readings])
+        if entry.kanjis:
+            label += '【' + ';'.join([escape(kanji.keb, quote=False) for kanji in entry.kanjis]) + '】'
+        
+        stream.write(' <p class=lab>' + label + '</p>\n')
         assert entry.senses
         
         if(len(entry.senses) > 0):
