@@ -34,18 +34,18 @@ li {
   margin-bottom: 8pt;
 }
 
-.high{
+.h{
   text-decoration: overline;
 }
 
-.low{
+.l{
   text-decoration: underline;
 }
 
-.nopron{
+.nop{
   color: royalblue;
 }
 
-.nasal{
+.nas{
   color: limegreen;
 }

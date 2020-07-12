@@ -29,6 +29,7 @@ class Pronunciation:
         }
 
   def addPronunciation(self, entries):
+    count = 0
     for entry in entries:
       for reading in entry.readings:
         if reading.re_restr != None:
@@ -41,8 +42,10 @@ class Pronunciation:
         key = f"{kanji}-{reading.reb.translate(translate_table)}"
         if key in self.dict:
           reading.pronunciation = self.dict[key]
+          count += 1
         else:
           reading.pronunciation = None
+    return count
 
 def format_pronunciations(reading):
   """ Format an entry from the data in the original database to something that uses html """
@@ -79,10 +82,10 @@ def format_pronunciations(reading):
   outstr = ""
   if(int(accent[0]) > 0):
     state = HIGH_STATE
-    outstr = outstr + '<span class="high">'
+    outstr = outstr + '<span class="h">'
   else:
     state = LOW_STATE
-    outstr = outstr + '<span class="low">'
+    outstr = outstr + '<span class="l">'
 
 
   for i in range(strlen):
@@ -90,11 +93,11 @@ def format_pronunciations(reading):
     
     if(state == HIGH_STATE):
       if a == 0:
-        outstr = outstr + '</span><span class="low">'
+        outstr = outstr + '</span><span class="l">'
         state = LOW_STATE
     else:
       if a > 0:
-        outstr = outstr + '</span><span class="high">'
+        outstr = outstr + '</span><span class="h">'
         state = HIGH_STATE
 
     outstr = outstr + escape(txt[i], quote=False)
@@ -102,9 +105,9 @@ def format_pronunciations(reading):
       #outstr = outstr + "</span>" dont know what to do here
       outstr = outstr
     if (i+1) in nasal:
-      outstr = outstr + '<span class="nasal">&#176;</span>'
+      outstr = outstr + '<span class="nas">&#176;</span>'
     if a == 2:
-      outstr = outstr + '</span><span class="low">&#42780;'
+      outstr = outstr + '</span><span class="l">&#42780;'
       state = LOW_STATE
     
   outstr = outstr + '</span>'

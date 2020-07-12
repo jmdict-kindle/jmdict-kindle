@@ -456,7 +456,8 @@ if(create_jmdict or create_combined):
     if(pronunciations):
         sys.stderr.write('Adding pronunciations...\n')
         ac = Pronunciation()
-        ac.addPronunciation(jmdict_entries)
+        count = ac.addPronunciation(jmdict_entries)
+        sys.stderr.write(f"added {count} pronunciations\n")
     sys.stderr.write('Created %d entries\n' %len(jmdict_entries))
         
     if(max_sentences > 0):
