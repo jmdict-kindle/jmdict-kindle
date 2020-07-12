@@ -130,6 +130,11 @@ def write_index_footer(stream):
     stream.write('</body>\n')
     stream.write('</html>\n')
 
+def sort_function(entry):
+    if(entry.entry_type == VOCAB_ENTRY):
+        return f"1-{entry.headword}"
+    else:
+        return f"2-{entry.headword}"
 
 def write_index(entries, dictionary_name, title, stream):
     # http://www.mobipocket.com/dev/article.asp?basefolder=prcgen&file=indexing.htm
@@ -137,7 +142,7 @@ def write_index(entries, dictionary_name, title, stream):
     # http://www.klokan.cz/projects/stardict-lingea/tab2opf.py
 
     # Sort entries alphabetically
-    entries.sort(key=lambda x: x.headword)
+    entries.sort(key=sort_function)
 
     prev_section = None
     dictionary_file_name = dictionary_name.replace(' ', '_')
