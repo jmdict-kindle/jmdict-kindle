@@ -11,7 +11,7 @@ Features:
 * lookup for Japanese names.
 * Example sentences
 * Pronunciation
-* the dictionaries can be downloaded as separate files or as one big dictionary (the combined dictionary does not include example sentences due to file size restrictions)
+* the dictionaries can be downloaded as separate files or as one big dictionary
 
 <!--
 Screenshots were captured inside the Kindle device as explained in
@@ -55,7 +55,7 @@ There are in total 3 dictionaries:
 
 * `jmdict.mobi`: Contains only data from the JMedict database, with additional examples. It does not contain proper names.
 * `jmnedict.mobi`: Contains only Japanese proper names from the JMnedict databse.
-* `combined.mobi`: Contains the data from both of the above dictionaries, but no examples.
+* `combined.mobi`: Contains the data from both of the above dictionaries
 
 To install any of the dictionaries (you can also install all three of them) into your device follow these steps:
 
@@ -107,7 +107,7 @@ COMPRESSION ?= 1
 # Sets the max sentences per entry only for the jmdict.mobi.
 # It is ignored by combined.mobi due to size restrictions.
 # If there are too many sentences for the combined dictionary,
-# it will not build (exceeds 650MB size limit). The amount is limited to 3 for the combined dictionary in this makefile
+# it will not build (exceeds 650MB size limit). The amount is limited to 3 in this makefile
 SENTENCES ?= 5
 # This flag determines wheter only good and verified sentences are used in the
 # dictionary. Set it to TRUE if you only want those sentences.

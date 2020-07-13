@@ -34,7 +34,7 @@ from cover import *
 from pronunciation import format_pronunciations
 
 NAME_ENTRY, VOCAB_ENTRY = range(2)
-NAME_INDEX, KANJI_INDEX = range(2)
+NAME_INDEX, VOCAB_INDEX = range(2)
 
 Ortho = namedtuple('Ortho', ['value', 'rank','inflgrps'])
 
@@ -142,13 +142,13 @@ def sort_function(entry):
         r_rank = entry.readings[0].rank
     else:
         r_rank = 100
-
+    rank =  min(k_rank, r_rank)
     if(entry.entry_type == VOCAB_ENTRY):
-        return f"1-{r_rank}-{k_rank}-{entry.headword}"
+        return f"1-{rank}-{entry.headword}"
     else:
-        return f"2-{r_rank}-{k_rank}-{entry.headword}"
+        return f"2-{rank}-{entry.headword}"
 
-def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, default_index=KANJI_INDEX):
+def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, default_index=VOCAB_INDEX):
     # http://www.mobipocket.com/dev/article.asp?basefolder=prcgen&file=indexing.htm
     # http://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf
     # http://www.klokan.cz/projects/stardict-lingea/tab2opf.py
@@ -180,7 +180,15 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
             prev_section = section
 
         #scriptable="yes" is needed, otherwise the results are cut off or results after the actual result are also dsiplayed
-        stream.write('<idx:entry scriptable="yes">\n')
+        if  default_index != None:
+            if entry.entry_type == VOCAB_ENTRY:
+                stream.write('<idx:entry name="v" scriptable="yes">\n')
+            elif entry.entry_type == NAME_ENTRY:
+                stream.write('<idx:entry name="n" scriptable="yes">\n')
+            else:
+                print(f"Not implemented entry type: {entry.entry_type}")
+        else:
+            stream.write('<idx:entry scriptable="yes">\n')
         
         assert entry.readings
         if respect_re_restr:
@@ -292,6 +300,10 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
     stream.write('      <output encoding="UTF-8" flatten-dynamic-dir="yes"/>\n')
     stream.write('      <DictionaryInLanguage>ja</DictionaryInLanguage>\n')
     stream.write('      <DictionaryOutLanguage>en</DictionaryOutLanguage>\n')
+    if default_index == VOCAB_INDEX:
+        stream.write('  <DictionaryOutLanguage>v</DictionaryOutLanguage>\n')
+    elif default_index == NAME_INDEX:
+        stream.write('  <DictionaryOutLanguage>n</DictionaryOutLanguage>\n')
     stream.write('    </x-metadata>\n')
     stream.write('  </metadata>\n')
     stream.write('  <manifest>\n')

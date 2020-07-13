@@ -471,7 +471,7 @@ if(create_jmdict or create_combined):
 
 if(create_jmdict):
     sys.stderr.write('Creating files for JMdict...\n')
-    write_index(jmdict_entries, "JMdict", "JMdict Japanese-English Dictionary", sys.stdout, default_index=KANJI_INDEX)
+    write_index(jmdict_entries, "JMdict", "JMdict Japanese-English Dictionary", sys.stdout, default_index=VOCAB_INDEX)
 
 if(create_jmnedict or create_combined):
     sys.stderr.write('Parsing JMnedict.xml.gz...\n')
@@ -485,4 +485,4 @@ if(create_jmnedict):
 
 if(create_combined):
     sys.stderr.write('Creating files for combined dictionary\n')
-    write_index(jmdict_entries+jmnedict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout, default_index=KANJI_INDEX)
+    write_index(jmdict_entries+jmnedict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout, default_index=None)
