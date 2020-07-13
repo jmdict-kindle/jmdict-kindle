@@ -6,7 +6,7 @@
 *cover.jpg
 *cover.png
 *.opf
-*.csv
+/*.csv
 *.tar.bz2
 *.tmp
 *.zip

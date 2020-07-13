@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 #
 # Copyright 2011-2017 Jose Fonseca
 # All Rights Reserved.
@@ -30,6 +31,7 @@ from kana import *
 from dictionary import *
 from inflections import *
 from exampleSentences import *
+from pronunciation import Pronunciation
 
 
 # limit the number of entries for quick experiments
@@ -225,15 +227,18 @@ class JMdictParser(XmlParser):
         kanjis = []
         readings = []
         senses = []
+        orthos = []
 
         self.element_start('entry')
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'k_ele':
                 kanji = self.parse_kanji()
                 kanjis.append(kanji)
+                orthos.append(Ortho(kanji.keb, kanji.rank, {}))
             elif self.token.name_or_data == 'r_ele':
                 reading = self.parse_reading()
                 readings.append(reading)
+                orthos.append(Ortho(reading.reb, reading.rank, {}))
             elif self.token.name_or_data == 'sense':
                 sense = self.parse_sense()
                 senses.append(sense)
@@ -241,21 +246,12 @@ class JMdictParser(XmlParser):
                 self.skip_element()
         self.element_end('entry')
 
-        orthos = kanjis + readings
-
-        # Label
-        assert readings
-        label = ';'.join([reading.value for reading in readings])
-        if kanjis:
-            label += '【' + ';'.join([kanji.value for kanji in kanjis]) + '】'
-
         # Aggregate the POS of all senses
         posses = set()
         for sense in senses:
             for pos in sense.pos:
                 posses.add(pos)
 
-        orthos = readings + kanjis
         for ortho in orthos:
             # Don't try to inflect katakana words
             if not is_katakana(ortho.value):
@@ -268,12 +264,7 @@ class JMdictParser(XmlParser):
                         if infl_dict:
                             ortho.inflgrps[pos] = list(infl_dict.values())
 
-        entry = Entry(label, senses, orthos)
-
-        if 0:
-            print(label)
-            for sense in senses:
-                print('  ' + sense)
+        entry = Entry(senses, orthos, kanjis, readings)
 
         return entry
 
@@ -291,22 +282,26 @@ class JMdictParser(XmlParser):
         self.element_end('k_ele')
 
         assert keb is not None
-        return Ortho(keb, rank, {})
+        return Kanji(keb, rank)
 
     def parse_reading(self):
         reb = None
         rank = 1
+        re_restr = None
+
         self.element_start('r_ele')
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'reb':
                 reb = self.element_character_data('reb')
             elif self.token.name_or_data == 're_pri':
                 rank = min(rank, self.parse_rank())
+            elif self.token.name_or_data == 're_restr':
+                re_restr = self.element_character_data('re_restr')
             else:
                 self.skip_element()
         self.element_end('r_ele')
         assert reb is not None
-        return Ortho(reb, rank, {})
+        return Reading(reb, rank, re_restr, None)
 
     def parse_rank(self):
         re_pri = self.element_character_data('re_pri')
@@ -319,6 +314,7 @@ class JMdictParser(XmlParser):
         posses = []
         dialects = []
         glosses = []
+        misc_info = []
         self.element_start('sense')
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'pos':
@@ -334,11 +330,14 @@ class JMdictParser(XmlParser):
             elif self.token.name_or_data == 'gloss':
                 gloss = self.element_character_data('gloss')
                 glosses.append(gloss)
+            elif self.token.name_or_data == 'misc':
+                misc = self.element_character_data('misc')
+                misc_info.append(misc)
             else:
                 self.skip_element()
         self.element_end('sense')
 
-        sense = Sense(posses, dialects, glosses)
+        sense = Sense(posses, dialects, glosses, misc_info)
         return sense
 
     def element_character_data(self, name):
@@ -367,15 +366,18 @@ class JMnedictParser(JMdictParser):
         kanjis = []
         readings = []
         senses = []
+        orthos = []
 
         self.element_start('entry')
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'k_ele':
                 kanji = self.parse_kanji()
                 kanjis.append(kanji)
+                orthos.append(Ortho(kanji.keb, kanji.rank, {}))
             elif self.token.name_or_data == 'r_ele':
                 reading = self.parse_reading()
                 readings.append(reading)
+                orthos.append(Ortho(reading.reb, reading.rank, {}))
             elif self.token.name_or_data == 'trans':
                 sense = self.parse_translation()
                 senses.append(sense)
@@ -383,16 +385,7 @@ class JMnedictParser(JMdictParser):
                 self.skip_element()
         self.element_end('entry')
 
-        orthos = kanjis + readings
-
-        # Label
-        assert readings
-        label = ';'.join([reading.value for reading in readings])
-        if kanjis:
-            label += '【' + ';'.join([kanji.value for kanji in kanjis]) + '】'
-
-        orthos = readings + kanjis
-        return Entry(label, senses, orthos, entry_type=NAME_ENTRY)
+        return Entry(senses, orthos, kanjis, readings, entry_type=NAME_ENTRY)
     
     def parse_translation(self):
         posses = []
@@ -411,7 +404,7 @@ class JMnedictParser(JMdictParser):
                 self.skip_element()
         self.element_end('trans')
 
-        sense = Sense(posses, [], glosses)
+        sense = Sense(posses, [], glosses, [])
         return sense
 
 #Get paramters
@@ -420,6 +413,7 @@ only_good_sentences = True
 create_jmdict = False
 create_jmnedict = False
 create_combined = False
+pronunciations = False
 
 i = 0
 while i < len(sys.argv):
@@ -448,6 +442,10 @@ while i < len(sys.argv):
             elif(c == "c"):
                 create_combined = True
         i += 1
+    # The -p flag enables pronunciations
+    elif(arg == '-p'):
+        pronunciations = True
+        i+=1
 
     i += 1
 
@@ -459,6 +457,11 @@ if(create_jmdict or create_combined):
     sys.stderr.write('Parsing JMdict_e.gz...\n')
     parser = JMdictParser('JMdict_e.gz')
     jmdict_entries = parser.parse()
+    if(pronunciations):
+        sys.stderr.write('Adding pronunciations...\n')
+        ac = Pronunciation()
+        count = ac.addPronunciation(jmdict_entries)
+        sys.stderr.write(f"added {count} pronunciations\n")
     sys.stderr.write('Created %d entries\n' %len(jmdict_entries))
         
     if(max_sentences > 0):
@@ -468,7 +471,7 @@ if(create_jmdict or create_combined):
 
 if(create_jmdict):
     sys.stderr.write('Creating files for JMdict...\n')
-    write_index(jmdict_entries, "JMdict", "JMdict Japanese-English Dictionary", sys.stdout)
+    write_index(jmdict_entries, "JMdict", "JMdict Japanese-English Dictionary", sys.stdout, default_index=VOCAB_INDEX)
 
 if(create_jmnedict or create_combined):
     sys.stderr.write('Parsing JMnedict.xml.gz...\n')
@@ -478,8 +481,8 @@ if(create_jmnedict or create_combined):
 
 if(create_jmnedict):
     sys.stderr.write('Creating files for JMnedict...\n')
-    write_index(jmnedict_entries, "JMnedict", "JMnedict Japanese Names", sys.stdout)
+    write_index(jmnedict_entries, "JMnedict", "JMnedict Japanese Names", sys.stdout, default_index=NAME_INDEX)
 
 if(create_combined):
     sys.stderr.write('Creating files for combined dictionary\n')
-    write_index(jmnedict_entries+jmdict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout)
+    write_index(jmdict_entries+jmnedict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout, default_index=None)

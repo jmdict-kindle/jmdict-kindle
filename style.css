@@ -1,9 +1,6 @@
 p {
   text-indent: 0;
-  margin-top: 0;
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 .lab {
@@ -31,4 +28,20 @@ li {
 .exh{
   font-weight: bold;
   margin-bottom: 8pt;
+}
+
+.h{
+  text-decoration: overline;
+}
+
+.l{
+  text-decoration: underline;
+}
+
+.nop{
+  color: royalblue;
+}
+
+.nas{
+  color: limegreen;
 }

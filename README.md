@@ -9,7 +9,9 @@ Features:
 
 * lookup of inflected verbs.
 * lookup for Japanese names.
-* the dictionaries can be downloaded as separate files or as one big dictionary (the combined dictionary does not include example sentences due to file size restrictions)
+* Example sentences
+* Pronunciation
+* the dictionaries can be downloaded as separate files or as one big dictionary
 
 <!--
 Screenshots were captured inside the Kindle device as explained in
@@ -53,7 +55,7 @@ There are in total 3 dictionaries:
 
 * `jmdict.mobi`: Contains only data from the JMedict database, with additional examples. It does not contain proper names.
 * `jmnedict.mobi`: Contains only Japanese proper names from the JMnedict databse.
-* `combined.mobi`: Contains the data from both of the above dictionaries, but no examples.
+* `combined.mobi`: Contains the data from both of the above dictionaries
 
 To install any of the dictionaries (you can also install all three of them) into your device follow these steps:
 
@@ -105,14 +107,16 @@ COMPRESSION ?= 1
 # Sets the max sentences per entry only for the jmdict.mobi.
 # It is ignored by combined.mobi due to size restrictions.
 # If there are too many sentences for the combined dictionary,
-# it will not build (exceeds 650MB size limit).
+# it will not build (exceeds 650MB size limit). The amount is limited to 3 in this makefile
 SENTENCES ?= 5
 # This flag determines wheter only good and verified sentences are used in the
 # dictionary. Set it to TRUE if you only want those sentences.
-# It is only used by jmdict.mobi.
+# It is only used by jmdict.mobi
 # It is ignored bei combined.mobi. there it is always true
 # this is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
+# If true adds pronunciations indication
+PRONUNCIATIONS ?= TRUE
 ```
 
 Build with make to create all 3 dictionaries:
@@ -126,8 +130,6 @@ make jmnedict.mobi
 make combined.mobi
 ```
 
-Please be aware that as of now the combined dictionary does not contain example sentences as this would push the `mobi` beyond the file size limit
-
 To do
 =====
 
@@ -136,7 +138,6 @@ To do
   * cross references
 * Add Furigana to example sentences
 * Create better covers
-* Find a way to have sentences in the combined dictionary (maybe less names). The size limit for `mobi` of 650MB is reached quite fast.
 
 
 Credits
@@ -146,6 +147,7 @@ Credits
 * The [Tatoeba](https://tatoeba.org/) project
 * John Mettraux for his [EDICT2 Japanese-English Kindle dictionary](https://github.com/jmettraux/edict2-kindle)
 * Choplair-network for their [Nihongo conjugator](http://www.choplair.org/?Nihongo%20conjugator)
+* javdejong for the [pronunciation](https://github.com/javdejong/nhk-pronunciation)
 
 
 Alternatives

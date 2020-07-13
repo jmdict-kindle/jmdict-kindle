@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 #
 # Copyright 2014-2017 Jose Fonseca
 # All Rights Reserved.
@@ -30,13 +31,23 @@ from html import escape
 
 from kana import *
 from cover import *
+from pronunciation import format_pronunciations
 
 NAME_ENTRY, VOCAB_ENTRY = range(2)
+NAME_INDEX, VOCAB_INDEX = range(2)
 
-Ortho = namedtuple('Ortho', ['value', 'rank', 'inflgrps'])
+Ortho = namedtuple('Ortho', ['value', 'rank','inflgrps'])
 
+Kanji = namedtuple('Kanji', ['keb', 'rank'])
 
-Sense = namedtuple('Sense', ['pos', 'dial', 'gloss'])
+class Reading:
+    def __init__(self, reb, rank, re_restr, pronunciation):
+        self.reb = reb
+        self.rank = rank
+        self.re_restr = re_restr
+        self.pronunciation = pronunciation
+
+Sense = namedtuple('Sense', ['pos', 'dial', 'gloss', 'misc'])
 
 class Sentence:
 
@@ -47,11 +58,14 @@ class Sentence:
 
 class Entry:
 
-    def __init__(self, label, senses, orthos, sentences=None, entry_type=VOCAB_ENTRY):
-        self.label = label
+    def __init__(self, senses, orthos, kanjis, readings, sentences=None, entry_type=VOCAB_ENTRY):
         self.senses = senses
         self.orthos = orthos
-
+        self.kanjis = kanjis
+        self.readings = readings
+        self.readings.sort(key=lambda reading:reading.rank)
+        self.kanjis.sort(key=lambda kanji:kanji.rank)
+        self.orthos.sort(key=lambda ortho:ortho.rank)
         if(sentences == None):
             self.sentences = []
         else:
@@ -119,14 +133,28 @@ def write_index_footer(stream):
     stream.write('</body>\n')
     stream.write('</html>\n')
 
+def sort_function(entry):
+    if len(entry.kanjis) > 0:
+        k_rank = entry.kanjis[0].rank
+    else:
+        k_rank = 100
+    if len(entry.readings) > 0:
+        r_rank = entry.readings[0].rank
+    else:
+        r_rank = 100
+    rank =  min(k_rank, r_rank)
+    if(entry.entry_type == VOCAB_ENTRY):
+        return f"1-{rank}-{entry.headword}"
+    else:
+        return f"2-{rank}-{entry.headword}"
 
-def write_index(entries, dictionary_name, title, stream):
+def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, default_index=VOCAB_INDEX):
     # http://www.mobipocket.com/dev/article.asp?basefolder=prcgen&file=indexing.htm
     # http://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf
     # http://www.klokan.cz/projects/stardict-lingea/tab2opf.py
 
     # Sort entries alphabetically
-    entries.sort(key=lambda x: x.headword)
+    entries.sort(key=sort_function)
 
     prev_section = None
     dictionary_file_name = dictionary_name.replace(' ', '_')
@@ -152,17 +180,54 @@ def write_index(entries, dictionary_name, title, stream):
             prev_section = section
 
         #scriptable="yes" is needed, otherwise the results are cut off or results after the actual result are also dsiplayed
-        stream.write('<idx:entry scriptable="yes">\n')#name attribute is omitted due to size constraints
+        if  default_index != None:
+            if entry.entry_type == VOCAB_ENTRY:
+                stream.write('<idx:entry name="v" scriptable="yes">\n')
+            elif entry.entry_type == NAME_ENTRY:
+                stream.write('<idx:entry name="n" scriptable="yes">\n')
+            else:
+                print(f"Not implemented entry type: {entry.entry_type}")
+        else:
+            stream.write('<idx:entry scriptable="yes">\n')
+        
+        assert entry.readings
+        if respect_re_restr:
+            special_readings = {}
+            readings = []
+            for reading in entry.readings:
+                if reading.re_restr:
+                    if(not reading.re_restr in special_readings):
+                        special_readings[reading.re_restr] = []
+                    special_readings[reading.re_restr].append(reading)
+                readings.append(format_pronunciations(reading))
+            label = ";".join(readings)
+            if entry.kanjis:
+                label += '【' + ';'.join([escape(kanji.keb, quote=False) for kanji in entry.kanjis]) + '】'
+            
+            stream.write(' <p class=lab>' + label + '</p>\n')
 
-        stream.write(' <p class=lab>' + escape(entry.label, quote=False) + '</p>\n')
+            if(len(special_readings.keys()) > 0):
+                for kanji in special_readings:
+                    label = ""
+                    readings = []
+                    for reading in special_readings[kanji]:
+                        readings.append(format_pronunciations(reading))
+                    label = ";".join(readings)
+                    label += '【' + escape(kanji, quote=False) + '】'
+                    stream.write(' <p class=lab>' + label + '</p>\n')
+        else:
+            label = ';'.join([reading.reb for reading in entry.readings])
+            if entry.kanjis:
+                label += '【' + ';'.join([kanji.keb for kanji in entry.kanjis]) + '】'
+                    
         assert entry.senses
         
         if(len(entry.senses) > 0):
             stream.write(' <ul>\n')
             for sense in entry.senses:
                 stream.write(' <li>')
-                if sense.pos or sense.dial:
-                    stream.write('<span class=pos>' + ','.join(sense.pos + sense.dial) + '</span> ')
+                if sense.pos or sense.dial or sense.misc:
+                    stream.write('<span class=pos>' + ','.join(sense.pos + sense.dial + sense.misc) + '</span> ')
                 stream.write(escape('; '.join(sense.gloss), quote=False))
                 stream.write('</li>\n')
             stream.write(' </ul>\n')
@@ -235,7 +300,10 @@ def write_index(entries, dictionary_name, title, stream):
     stream.write('      <output encoding="UTF-8" flatten-dynamic-dir="yes"/>\n')
     stream.write('      <DictionaryInLanguage>ja</DictionaryInLanguage>\n')
     stream.write('      <DictionaryOutLanguage>en</DictionaryOutLanguage>\n')
-    #stream.write('      <DefaultLookupIndex>ja</DefaultLookupIndex>\n')  
+    if default_index == VOCAB_INDEX:
+        stream.write('  <DictionaryOutLanguage>v</DictionaryOutLanguage>\n')
+    elif default_index == NAME_INDEX:
+        stream.write('  <DictionaryOutLanguage>n</DictionaryOutLanguage>\n')
     stream.write('    </x-metadata>\n')
     stream.write('  </metadata>\n')
     stream.write('  <manifest>\n')
