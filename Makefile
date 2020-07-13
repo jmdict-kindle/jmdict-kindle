@@ -4,7 +4,7 @@ COMPRESSION ?= 1
 # Sets the max sentences per entry only for the jmdict.mobi.
 # It is ignored by combined.mobi due to size restrictions.
 # If there are too many sentences for the combined dictionary,
-# it will not build (exceeds 650MB size limit).
+# it will not build (exceeds 650MB size limit). The amount is limited to three in this makefile
 SENTENCES ?= 5
 # This flag determines wheter only good and verified sentences are used in the
 # dictionary. Set it to TRUE if you only want those sentences.
@@ -69,7 +69,11 @@ jmnedict.mobi: JMnedict.xml.gz style.css JMnedict-Frontmatter.html kindlegen
 
 #Currently the limit for sentences is around 30000. After that the file becomes too big	
 combined.mobi: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict_and_JMnedict-Frontmatter.html kindlegen
-	$(PYTHON3) jmdict.py -s 0 -d c
+	ifeq ($(shell test $(VER) -gt 3; echo $$?),0)
+		$(PYTHON3) jmdict.py -s 3 -d c
+	else
+		$(PYTHON3) jmdict.py -s $(SENTENCES) -d c
+	endif
 	./$(KINDLEGEN) JMdict_and_JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@	
 
 clean:

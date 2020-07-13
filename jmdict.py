@@ -314,6 +314,7 @@ class JMdictParser(XmlParser):
         posses = []
         dialects = []
         glosses = []
+        misc_info = []
         self.element_start('sense')
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == 'pos':
@@ -329,11 +330,14 @@ class JMdictParser(XmlParser):
             elif self.token.name_or_data == 'gloss':
                 gloss = self.element_character_data('gloss')
                 glosses.append(gloss)
+            elif self.token.name_or_data == 'misc':
+                misc = self.element_character_data('misc')
+                misc_info.append(misc)
             else:
                 self.skip_element()
         self.element_end('sense')
 
-        sense = Sense(posses, dialects, glosses)
+        sense = Sense(posses, dialects, glosses, misc_info)
         return sense
 
     def element_character_data(self, name):
@@ -400,7 +404,7 @@ class JMnedictParser(JMdictParser):
                 self.skip_element()
         self.element_end('trans')
 
-        sense = Sense(posses, [], glosses)
+        sense = Sense(posses, [], glosses, [])
         return sense
 
 #Get paramters
@@ -467,7 +471,7 @@ if(create_jmdict or create_combined):
 
 if(create_jmdict):
     sys.stderr.write('Creating files for JMdict...\n')
-    write_index(jmdict_entries, "JMdict", "JMdict Japanese-English Dictionary", sys.stdout)
+    write_index(jmdict_entries, "JMdict", "JMdict Japanese-English Dictionary", sys.stdout, default_index=KANJI_INDEX)
 
 if(create_jmnedict or create_combined):
     sys.stderr.write('Parsing JMnedict.xml.gz...\n')
@@ -477,8 +481,8 @@ if(create_jmnedict or create_combined):
 
 if(create_jmnedict):
     sys.stderr.write('Creating files for JMnedict...\n')
-    write_index(jmnedict_entries, "JMnedict", "JMnedict Japanese Names", sys.stdout)
+    write_index(jmnedict_entries, "JMnedict", "JMnedict Japanese Names", sys.stdout, default_index=NAME_INDEX)
 
 if(create_combined):
     sys.stderr.write('Creating files for combined dictionary\n')
-    write_index(jmdict_entries+jmnedict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout)
+    write_index(jmdict_entries+jmnedict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout, default_index=KANJI_INDEX)
