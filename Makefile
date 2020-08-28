@@ -44,7 +44,7 @@ jpn_indices.tar.bz2:
 	wget -nv -N http://downloads.tatoeba.org/exports/$@
 	
 kindlegen:
-	wget -nv -N https://kindlegen.s3.amazonaws.com/$(KINDLEGEN_PKG)
+	wget -nv -N https://web.archive.org/web/20190817070956mp_/https://kindlegen.s3.amazonaws.com/$(KINDLEGEN_PKG)
 ifeq ($(OS), Windows_NT)
 	unzip -o $(KINDLEGEN_PKG) kindlegen.exe
 	touch kindlegen.exe
