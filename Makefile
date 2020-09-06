@@ -33,16 +33,16 @@ all: jmdict.mobi jmnedict.mobi combined.mobi
 
 JMdict_e.gz:
 	wget -nv -N http://ftp.monash.edu.au/pub/nihongo/$@
-	
+
 JMnedict.xml.gz:
 	wget -nv -N http://ftp.monash.edu/pub/nihongo/$@
-	
+
 sentences.tar.bz2:
 	wget -nv -N http://downloads.tatoeba.org/exports/$@
-	
+
 jpn_indices.tar.bz2:
 	wget -nv -N http://downloads.tatoeba.org/exports/$@
-	
+
 kindlegen:
 	wget -nv -N https://web.archive.org/web/20190817070956mp_/https://kindlegen.s3.amazonaws.com/$(KINDLEGEN_PKG)
 ifeq ($(OS), Windows_NT)
@@ -62,21 +62,21 @@ else
 	$(PYTHON3) jmdict.py -a -s $(SENTENCES) -d j $(PRONUNCIATIONS_FLAG)
 endif
 	./$(KINDLEGEN) JMdict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
-	
+
 jmnedict.mobi: JMnedict.xml.gz style.css JMnedict-Frontmatter.html kindlegen
 	$(PYTHON3) jmdict.py -d n
 	./$(KINDLEGEN) JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 
-#Currently the limit for sentences is around 30000. After that the file becomes too big	
+#Currently the limit for sentences is around 30000. After that the file becomes too big
 combined.mobi: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict_and_JMnedict-Frontmatter.html kindlegen
 	if [ $(SENTENCES) -gt 3 ]; then \
 		$(PYTHON3) jmdict.py -s 3 -d c ; \
 	else  \
 		$(PYTHON3) jmdict.py -s $(SENTENCES) -d c ; \
 	fi
-	./$(KINDLEGEN) JMdict_and_JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@	
+	./$(KINDLEGEN) JMdict_and_JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 
 clean:
-	rm -f *.mobi *.opf entry-*.html *cover.jpg *.tar.bz2 *.gz *.csv *cover.png kindlegen *.tmp *.zip kindlegen.exe	
-	
+	rm -f *.mobi *.opf entry-*.html *cover.jpg *.tar.bz2 *.gz *.csv *cover.png kindlegen *.tmp *.zip kindlegen.exe
+
 .PHONY: all clean
