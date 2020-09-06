@@ -67,6 +67,7 @@ def inflect(dict_form, pos):
         infl['participle'] = infl['nominal'] + 'て'
         infl['provisional-conditional'] = radical + 'ければ'
         infl['volitional'] = radical + 'かろう'
+        infl['noun'] = radical + 'さ'
 
         return infl
 
