@@ -116,9 +116,8 @@ class Entry:
 
 
 def write_index_header(stream):
-    stream.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-    stream.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n')
-    stream.write('<html xmlns:mbp="https://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf" xmlns:mmc="https://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf" xmlns:idx="https://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf"\n')
+    stream.write('<!DOCTYPE html>\n')
+    stream.write('<html>\n')
     stream.write('<head>\n')
     stream.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>\n')
     stream.write('<link rel="stylesheet" type="text/css" href="style.css"/>\n')
