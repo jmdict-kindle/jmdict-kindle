@@ -22,7 +22,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: bmnrXL+vzUpUHeE6zuHXkLK7/7tpKo/tIhj/Ha8qWp0G0c4ySHlStGPKfbzaYmywCvXSDnGyPWAKncTv1cH4yRglWH/n53jhB9crGqcDdu+61JUwGerKFdAEs23xtfX1BtHD0qZ3HjQzGrFpHiebberLYUECnckfijXMNI/JBO0=
+    secure: ADYMOS6UQXiCrnItfzWC8rqLz9pblXymWba2YSOJvyLZQVRoorX9R9mOzMWGIjSDJXpNPfg/yn9jcyFOYFF2lnAKWlZjUUB5375VFTRXl2JtVMmOS7dLsJTCGmor5VWCUlIyrfsIpEO71+q9ml3A+HkKGr+Y4en7W5A0DZdk65Q=
   file_glob: true
   file: dictionaries-*.7z
   skip_cleanup: true
