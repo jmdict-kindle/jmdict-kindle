@@ -3,6 +3,10 @@ language: generic
 dist: bionic
 sudo: required
 
+cache:
+  directories:
+  - cache
+
 env:
   global:
   - MAKEFLAGS=-j2
