@@ -1,0 +1,29 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  schedule:
+  - cron: '0 0 1 * *' # monthly
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: apt-update
+      run: sudo apt-get update -qq
+    - name: apt-install
+      run: sudo apt-get install -qq -y --no-install-recommends python3-cairo python3-pil python3-htmlmin p7zip
+    - name: make
+      run: make
+      env:
+        MAKEFLAGS: -j2
+        PYTHON3: /usr/bin/python3
+    - name: upload-artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: mobi
+        path: '*.mobi'

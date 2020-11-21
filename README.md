@@ -87,7 +87,7 @@ This will override the
 Building from source
 ====================
 
-[![Build Status](https://travis-ci.org/jrfonseca/jmdict-kindle.svg?branch=master)](https://travis-ci.org/jrfonseca/jmdict-kindle)
+![Build](https://github.com/jrfonseca/jmdict-kindle/workflows/build/badge.svg?branch=master)
 
 Requirements:
 
