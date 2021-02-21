@@ -27,3 +27,54 @@ jobs:
       with:
         name: mobi
         path: '*.mobi'
+
+  # See https://github.com/actions/upload-release-asset
+  release:
+    # https://github.community/t/trigger-job-on-tag-push-only/18076/2
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v2
+      id: download
+      with:
+        name: mobi
+        path: artifacts
+    - run: ls -lR ${{ steps.download.outputs.download-path }}
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: true
+        prerelease: false
+    - name: Upload jmdict.mobi
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.download.outputs.download-path }}/jmdict.mobi
+        asset_name: jmdict.mobi
+        asset_content_type: application/x-mobipocket-ebook
+    - name: Upload jmnedict.mobi
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.download.outputs.download-path }}/jmnedict.mobi
+        asset_name: jmnedict.mobi
+        asset_content_type: application/x-mobipocket-ebook
+    - name: Upload combined.mobi
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.download.outputs.download-path }}/combined.mobi
+        asset_name: combined.mobi
+        asset_content_type: application/x-mobipocket-ebook
