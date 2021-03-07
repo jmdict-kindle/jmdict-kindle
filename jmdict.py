@@ -485,4 +485,4 @@ if(create_jmnedict):
 
 if(create_combined):
     sys.stderr.write('Creating files for combined dictionary\n')
-    write_index(jmdict_entries+jmnedict_entries, "JMdict and JMnedict", "Japanese-English Dictionary", sys.stdout, default_index=None)
+    write_index(jmdict_entries+jmnedict_entries, "JMdict and JMnedict", "JMdict Japanese-English Dictionary and JMnedict Japanese Names", sys.stdout, default_index=None)
