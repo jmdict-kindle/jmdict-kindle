@@ -34,16 +34,16 @@ endif
 all: jmdict.mobi jmnedict.mobi combined.mobi
 
 JMdict_e.gz:
-	wget -nv -N http://ftp.monash.edu.au/pub/nihongo/$@
+	wget -nv -N http://ftp.edrdg.org/pub/Nihongo/$@
 
 JMnedict.xml.gz:
-	wget -nv -N http://ftp.monash.edu/pub/nihongo/$@
+	wget -nv -N http://ftp.edrdg.org/pub/Nihongo/$@
 
 sentences.tar.bz2:
-	wget -nv -N http://downloads.tatoeba.org/exports/$@
+	wget -nv -N https://downloads.tatoeba.org/exports/$@
 
 jpn_indices.tar.bz2:
-	wget -nv -N http://downloads.tatoeba.org/exports/$@
+	wget -nv -N https://downloads.tatoeba.org/exports/$@
 
 ifneq ($(OS), Windows_NT)
 
