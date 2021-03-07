@@ -16,7 +16,7 @@ jobs:
     - name: apt-update
       run: sudo apt-get update -qq
     - name: apt-install
-      run: sudo apt-get install -qq -y --no-install-recommends python3-cairo python3-pil python3-htmlmin p7zip
+      run: sudo apt-get install -qq -y --no-install-recommends python3-cairo python3-pil python3-htmlmin
     - name: make
       run: make
       env:
