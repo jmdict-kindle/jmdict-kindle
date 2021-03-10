@@ -107,7 +107,7 @@ For more information see [Japanese pitch accent - Wikipedia](https://en.wikipedi
 Building from source
 ====================
 
-![Build](https://github.com/jrfonseca/jmdict-kindle/workflows/build/badge.svg?branch=master)
+[![Build](https://github.com/jrfonseca/jmdict-kindle/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/jrfonseca/jmdict-kindle/actions/workflows/build.yml)
 
 Requirements:
 
