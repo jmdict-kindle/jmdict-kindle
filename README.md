@@ -83,6 +83,11 @@ Kindle Android App
 This will override the
 [default Japanese-Japanese dictionary](https://kindle.amazon.com/work/daijisen-x5927-x8f9e-japanese-edition-ebook/B005FNK020/B005FNK020).
 
+Kindle iOS App
+------------------
+
+The steps for iOS App are [similar](https://learnoutlive.com/add-german-english-dictionary-to-kindle-on-your-ipad-or-iphone-ios/) the Android App above.  **Unfortunately the Kindle iOS App [seems to suffer from the same limitations regarding inflections](https://github.com/jrfonseca/jmdict-kindle/issues/15).**
+
 
 Building from source
 ====================
