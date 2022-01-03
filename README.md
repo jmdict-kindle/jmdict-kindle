@@ -113,7 +113,7 @@ COMPRESSION ?= 1
 
 # Sets the max sentences per entry
 # If there are too many sentences for the combined dictionary,
-# it will not build (exceeds 650MB size limit). The amount is limited to 1 in this makefile for the combined.mobi
+# it will not build (exceeds 650MB size limit). The amount is limited to 0 in this makefile for the combined.mobi
 SENTENCES ?= 5
 
 # This flag determines wheter only good and verified sentences are used in the
