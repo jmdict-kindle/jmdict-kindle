@@ -5,7 +5,7 @@ COMPRESSION ?= 1
 
 # Sets the max sentences per entry
 # If there are too many sentences for the combined dictionary,
-# it will not build (exceeds 650MB size limit). The amount is limited to 1 in this makefile for the combined.mobi
+# it will not build (exceeds 650MB size limit). The amount is limited to 0 in this makefile for the combined.mobi
 SENTENCES ?= 5
 
 # This flag determines wheter only good and verified sentences are used in the
@@ -75,10 +75,10 @@ endif
 jmnedict.opf: JMnedict.xml.gz style.css JMnedict-Frontmatter.html
 	$(PYTHON3) jmdict.py -d n
 
-combined.opf: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict_and_JMnedict-Frontmatter.html
-#Currently the limit for sentences is around 30000. After that the file becomes too big
-	if [ $(SENTENCES) -gt 1 ]; then \
-		$(PYTHON3) jmdict.py -s 1 -d c ; \
+combined.opf: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css Combined-Frontmatter.html
+#Currently the combined dictionary wont build with sentences on windows with Kindle Previewer due to size constraints
+	if [ $(SENTENCES) -gt 0 ]; then \
+		$(PYTHON3) jmdict.py -s 0 -d c ; \
 	else  \
 		$(PYTHON3) jmdict.py -s $(SENTENCES) -d c ; \
 	fi
@@ -88,7 +88,6 @@ ifeq ($(OS), Windows_NT)
 	mkdir -p out
 	$(KINDLEGEN) $< -convert -output ./out -locale en
 	cp ./out/mobi/$@ ./$@
-	rm -rf out
 else
 	$(KINDLEGEN) $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
 endif
