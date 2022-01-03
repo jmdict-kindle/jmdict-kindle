@@ -108,18 +108,21 @@ Inside of the makefile you can change the max number of sentences per entry, com
 ```makefile
 # The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
 # but it is excruciatingly slow. That's why -c1 is selected by default.
+# Compression currently is not officially supported by Kindle Previewer according to the documentation
 COMPRESSION ?= 1
-# Sets the max sentences per entry only for the jmdict.mobi.
-# It is ignored by combined.mobi due to size restrictions.
+
+# Sets the max sentences per entry
 # If there are too many sentences for the combined dictionary,
-# it will not build (exceeds 650MB size limit). The amount is limited to 3 in this makefile
+# it will not build (exceeds 650MB size limit). The amount is limited to 1 in this makefile for the combined.mobi
 SENTENCES ?= 5
+
 # This flag determines wheter only good and verified sentences are used in the
 # dictionary. Set it to TRUE if you only want those sentences.
 # It is only used by jmdict.mobi
-# It is ignored bei combined.mobi. there it is always true
-# this is due to size constraints.
+# It is ignored bei combined.mobi. There it is always true
+# This is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
+
 # If true adds pronunciations indication
 PRONUNCIATIONS ?= TRUE
 ```
