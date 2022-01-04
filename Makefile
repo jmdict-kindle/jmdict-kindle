@@ -15,11 +15,19 @@ SENTENCES ?= 5
 # This is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
 
-# If true adds pronunciations indication
+# If true adds pronunciations to entries. The combined dictionary ignores this flag due to size constraints
 PRONUNCIATIONS ?= TRUE
 
+# If true adds additional information to entries. The combined dictionary ignores this flag due to size constraints
+ADDITIONAL_INFO ?= TRUE
+
+
 ifeq ($(PRONUNCIATIONS), TRUE)
-	PRONUNCIATIONS_FLAG ?= -p
+	FLAGS += -p
+endif
+
+ifeq ($(ADDITIONAL_INFO), TRUE)
+	FLAGS += -i
 endif
 
 ifeq ($(OS), Windows_NT)
@@ -67,16 +75,16 @@ endif
 
 jmdict.opf: JMdict_e.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict-frontmatter.html
 ifeq ($(ONLY_CHECKED_SENTENCES), TRUE)
-	$(PYTHON3) jmdict.py -s $(SENTENCES) -d j $(PRONUNCIATIONS_FLAG)
+	$(PYTHON3) jmdict.py -s $(SENTENCES) -d j $(FLAGS)
 else
-	$(PYTHON3) jmdict.py -a -s $(SENTENCES) -d j $(PRONUNCIATIONS_FLAG)
+	$(PYTHON3) jmdict.py -a -s $(SENTENCES) -d j $(FLAGS)
 endif
 
 jmnedict.opf: JMnedict.xml.gz style.css JMnedict-Frontmatter.html
-	$(PYTHON3) jmdict.py -d n
+	$(PYTHON3) jmdict.py -d n $(FLAGS)
 
 combined.opf: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css Combined-Frontmatter.html
-#Currently the combined dictionary wont build with sentences on windows with Kindle Previewer due to size constraints
+#Currently the combined dictionary wont build with sentences and prononciations on windows with Kindle Previewer due to size constraints
 	if [ $(SENTENCES) -gt 0 ]; then \
 		$(PYTHON3) jmdict.py -s 0 -d c ; \
 	else  \

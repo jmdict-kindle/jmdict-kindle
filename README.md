@@ -123,8 +123,11 @@ SENTENCES ?= 5
 # This is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
 
-# If true adds pronunciations indication
+# If true adds pronunciations to entries. The combined dictionary ignores this flag due to size constraints
 PRONUNCIATIONS ?= TRUE
+
+# If true adds additional information to entries. The combined dictionary ignores this flag due to size constraints
+ADDITIONAL_INFO ?= TRUE
 ```
 
 Build with make to create all 3 dictionaries:
