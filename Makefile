@@ -84,7 +84,7 @@ jmnedict.opf: JMnedict.xml.gz style.css JMnedict-Frontmatter.html
 	$(PYTHON3) jmdict.py -d n $(FLAGS)
 
 combined.opf: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css Combined-Frontmatter.html
-#Currently the combined dictionary wont build with sentences and prononciations on windows with Kindle Previewer due to size constraints
+#Currently the combined dictionary wont build with sentences and pronunciations on windows with Kindle Previewer due to size constraints
 	if [ $(SENTENCES) -gt 0 ]; then \
 		$(PYTHON3) jmdict.py -s 0 -d c ; \
 	else  \
