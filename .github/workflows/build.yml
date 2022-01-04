@@ -8,20 +8,22 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
-    - name: apt-update
-      run: sudo apt-get update -qq
-    - name: apt-install
-      run: sudo apt-get install -qq -y --no-install-recommends python3-cairo python3-pil python3-htmlmin
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: install python depenencies
+      run: pip install Pycairo Pillow htmlmin
+    - name: download Kindle Previewer
+      run: Invoke-WebRequest -Uri "https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe" -OutFile ".\KindlePreviewerInstaller.exe"
+    - name: install Kindle Previewer
+      run: Start-Process -FilePath ".\KindlePreviewerInstaller.exe" -ArgumentList "/S" -Wait
     - name: make
-      run: make
-      env:
-        MAKEFLAGS: -j2
-        PYTHON3: /usr/bin/python3
+      run: .\build.ps1
     - name: upload-artifact
       uses: actions/upload-artifact@v2
       with:

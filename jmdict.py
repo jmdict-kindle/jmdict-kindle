@@ -461,37 +461,37 @@ def main():
 
     #Create files
     if(args.dictionary.create_jmdict or args.dictionary.create_combined):
-        sys.stderr.write('Parsing JMdict_e.gz...\n')
+        sys.stdout.write('Parsing JMdict_e.gz...\n')
         parser = JMdictParser('JMdict_e.gz')
         jmdict_entries = parser.parse()
         if(args.pronunciation):
-            sys.stderr.write('Adding pronunciations...\n')
+            sys.stdout.write('Adding pronunciations...\n')
             ac = Pronunciation()
             count = ac.addPronunciation(jmdict_entries)
-            sys.stderr.write(f"added {count} pronunciations\n")
-        sys.stderr.write(f"Created {len(jmdict_entries)} entries\n")
+            sys.stdout.write(f"added {count} pronunciations\n")
+        sys.stdout.write(f"Created {len(jmdict_entries)} entries\n")
             
         if(args.sentences > 0):
-            sys.stderr.write('Adding sentences...\n')
+            sys.stdout.write('Adding sentences...\n')
             examples = ExampleSentences("jpn_indices.tar.bz2", "sentences.tar.bz2", jmdict_entries)
-            sys.stderr.write(f"Sentences added: {str(examples.addExamples(not args.all_sentences, args.sentences))}\n")
+            sys.stdout.write(f"Sentences added: {str(examples.addExamples(not args.all_sentences, args.sentences))}\n")
 
     if(args.dictionary.create_jmdict):
-        sys.stderr.write('Creating files for JMdict...\n')
+        sys.stdout.write('Creating files for JMdict...\n')
         write_index(jmdict_entries, "jmdict", "JMdict Japanese-English Dictionary", sys.stdout, default_index=VOCAB_INDEX, add_entry_info=args.info)
 
     if(args.dictionary.create_jmnedict or args.dictionary.create_combined):
-        sys.stderr.write('Parsing JMnedict.xml.gz...\n')
+        sys.stdout.write('Parsing JMnedict.xml.gz...\n')
         parser = JMnedictParser('JMnedict.xml.gz')
         jmnedict_entries = parser.parse()
-        sys.stderr.write(f"Created {len(jmnedict_entries)} entries\n")
+        sys.stdout.write(f"Created {len(jmnedict_entries)} entries\n")
 
     if(args.dictionary.create_jmnedict):
-        sys.stderr.write('Creating files for JMnedict...\n')
+        sys.stdout.write('Creating files for JMnedict...\n')
         write_index(jmnedict_entries, "jmnedict", "JMnedict Japanese Names", sys.stdout, default_index=NAME_INDEX, add_entry_info=args.info)
 
     if(args.dictionary.create_combined):
-        sys.stderr.write('Creating files for combined dictionary\n')
+        sys.stdout.write('Creating files for combined dictionary\n')
         write_index(jmdict_entries+jmnedict_entries, "combined", "JMdict Japanese-English Dictionary and JMnedict Japanese Names", sys.stdout, default_index=None, add_entry_info=args.info)
 
 if __name__ == "__main__":
