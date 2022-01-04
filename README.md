@@ -50,9 +50,9 @@ _e-Ink_ Kindle
 
 There are in total 3 dictionaries:
 
-* `jmdict.mobi`: Contains only data from the JMedict database, with additional examples. It does not contain proper names.
-* `jmnedict.mobi`: Contains only Japanese proper names from the JMnedict databse.
-* `combined.mobi`: Contains the data from both of the above dictionaries
+* `jmdict.mobi`: Contains data from the JMedict database, with additional examples. It does not contain proper names.
+* `jmnedict.mobi`: Contains Japanese proper names from the JMnedict databse.
+* `combined.mobi`: Contains the data from both of the above dictionaries. _Please note that a lot of features are missing from the combined dictionary (sentences, pronunciation, ...) due to size constraints. Therefore, it is not suggested to use this dictionary_.
 
 To install any of the dictionaries (you can also install all three of them) into your device follow these steps:
 
