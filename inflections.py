@@ -39,12 +39,7 @@ def _check(dict_form, pos, *suffixes):
     if suffix in suffixes:
         return
 
-    msg = "%s[%s] should end with %s, but ends with %s" % (
-         dict_form,
-         pos,
-         '/'.join(suffixes),
-         suffix
-    )
+    msg = f"{dict_form}[{pos}] should end with {'/'.join(suffixes)}, but ends with {suffix}"
 
     raise InflectionError(msg)
 

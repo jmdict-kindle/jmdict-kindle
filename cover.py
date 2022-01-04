@@ -47,13 +47,13 @@ def createCover(title, name, width, height):
     # finish
     ctx.stroke()
 
-    surface.write_to_png('%s-cover.png' %title)
+    surface.write_to_png(f"{title}-cover.png")
 
     # Convert to grayscale JPEG
     # XXX: Kindle does not show thumbnails for PNG covers
-    im = Image.open('%s-cover.png' %title)
+    im = Image.open(f"{title}-cover.png")
     im = im.convert('L')
-    im.save('%s-cover.jpg' %title.replace(' ', '_'))
+    im.save(f"{title.replace(' ', '_')}-cover.jpg")
 
 # draw centered text
 def draw_text(ctx, x, y, t):
