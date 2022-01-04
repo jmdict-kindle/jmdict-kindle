@@ -20,9 +20,6 @@ then processed with ImageMagick's
 `mogrify -colorspace gray -level 0%,111.11% -define PNG:compression-level=9`
 to look like E-Ink display.
 -->
-
-![Inflection lookup screenshot](screenshots/infl.png)
-
 ![Word lookup screenshot](screenshots/word.png)
 
 ![Name lookup screenshot](screenshots/name.png)
@@ -109,19 +106,25 @@ Inside of the makefile you can change the max number of sentences per entry, com
 # The Kindle Publishing Guidelines recommend -c2 (huffdic compression),
 # but it is excruciatingly slow. That's why -c1 is selected by default.
 COMPRESSION ?= 1
+
 # Sets the max sentences per entry only for the jmdict.mobi.
 # It is ignored by combined.mobi due to size restrictions.
 # If there are too many sentences for the combined dictionary,
 # it will not build (exceeds 650MB size limit). The amount is limited to 3 in this makefile
 SENTENCES ?= 5
+
 # This flag determines wheter only good and verified sentences are used in the
 # dictionary. Set it to TRUE if you only want those sentences.
 # It is only used by jmdict.mobi
 # It is ignored bei combined.mobi. there it is always true
 # this is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
-# If true adds pronunciations indication
+
+# If true adds pronunciations indication. The combined dictionary ignores this flag due to size constraints
 PRONUNCIATIONS ?= TRUE
+
+# If true adds additional information to entries. The combined dictionary ignores this flag due to size constraints
+ADDITIONAL_INFO ?= TRUE
 ```
 
 Build with make to create all 3 dictionaries:

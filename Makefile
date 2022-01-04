@@ -15,11 +15,19 @@ SENTENCES ?= 5
 # this is due to size constraints.
 ONLY_CHECKED_SENTENCES ?= FALSE
 
-# If true adds pronunciations indication
+# If true adds pronunciations indication. The combined dictionary ignores this flag due to size constraints
 PRONUNCIATIONS ?= TRUE
 
+# If true adds additional information to entries. The combined dictionary ignores this flag due to size constraints
+ADDITIONAL_INFO ?= TRUE
+
+
 ifeq ($(PRONUNCIATIONS), TRUE)
-	PRONUNCIATIONS_FLAG ?= -p
+	FLAGS += -p
+endif
+
+ifeq ($(ADDITIONAL_INFO), TRUE)
+	FLAGS += -i
 endif
 
 ifeq ($(OS), Windows_NT)
@@ -61,24 +69,24 @@ endif
 # See also https://wiki.mobileread.com/wiki/KindleGen
 jmdict.mobi: JMdict_e.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict-frontmatter.html $(KINDLEGEN)
 ifeq ($(ONLY_CHECKED_SENTENCES), TRUE)
-	$(PYTHON3) jmdict.py -s $(SENTENCES) -d j $(PRONUNCIATIONS_FLAG)
+	$(PYTHON3) jmdict.py -s $(SENTENCES) -d j $(FLAGS)
 else
-	$(PYTHON3) jmdict.py -a -s $(SENTENCES) -d j $(PRONUNCIATIONS_FLAG)
+	$(PYTHON3) jmdict.py -a -s $(SENTENCES) -d j $(FLAGS)
 endif
-	$(KINDLEGEN) JMdict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
+	$(KINDLEGEN) jmdict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 
 jmnedict.mobi: JMnedict.xml.gz style.css JMnedict-Frontmatter.html $(KINDLEGEN)
-	$(PYTHON3) jmdict.py -d n
-	$(KINDLEGEN) JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
+	$(PYTHON3) jmdict.py -d n $(FLAGS)
+	$(KINDLEGEN) jmnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 
 #Currently the limit for sentences is around 30000. After that the file becomes too big
-combined.mobi: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict_and_JMnedict-Frontmatter.html $(KINDLEGEN)
+combined.mobi: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css combined-Frontmatter.html $(KINDLEGEN)
 	if [ $(SENTENCES) -gt 3 ]; then \
 		$(PYTHON3) jmdict.py -s 3 -d c ; \
 	else  \
 		$(PYTHON3) jmdict.py -s $(SENTENCES) -d c ; \
 	fi
-	$(KINDLEGEN) JMdict_and_JMnedict.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
+	$(KINDLEGEN) combined.opf -c$(COMPRESSION) -verbose -dont_append_source -o $@
 
 clean:
 	rm -f *.mobi *.opf entry-*.html *cover.jpg *.tar.bz2 *.gz *.csv *cover.png *.tmp *.zip

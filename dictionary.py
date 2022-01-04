@@ -32,6 +32,7 @@ from html import escape
 from kana import *
 from cover import *
 from pronunciation import format_pronunciations
+from datetime import datetime
 
 NAME_ENTRY, VOCAB_ENTRY = range(2)
 NAME_INDEX, VOCAB_INDEX = range(2)
@@ -47,7 +48,7 @@ class Reading:
         self.re_restr = re_restr
         self.pronunciation = pronunciation
 
-Sense = namedtuple('Sense', ['pos', 'dial', 'gloss', 'misc'])
+Sense = namedtuple('Sense', ['pos', 'dial', 'gloss', 'misc', 's_inf'])
 
 class Sentence:
 
@@ -147,7 +148,7 @@ def sort_function(entry):
     else:
         return f"2-{rank}-{entry.headword}"
 
-def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, default_index=VOCAB_INDEX):
+def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, default_index=VOCAB_INDEX, add_entry_info=True):
     # http://www.mobipocket.com/dev/article.asp?basefolder=prcgen&file=indexing.htm
     # http://kindlegen.s3.amazonaws.com/AmazonKindlePublishingGuidelines.pdf
     # http://www.klokan.cz/projects/stardict-lingea/tab2opf.py
@@ -171,7 +172,7 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
                 stream = section_streams[section]
             except KeyError:
                 sections.append(section)
-                filename = 'entry-%s-%s.html'%(dictionary_file_name, section)
+                filename = f"entry-{dictionary_file_name}-{section}.html"
                 stream = open(filename, 'wt', encoding='UTF-8')
                 section_streams[section] = stream
                 write_index_header(stream)
@@ -203,7 +204,7 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
             if entry.kanjis:
                 label += '【' + ';'.join([escape(kanji.keb, quote=False) for kanji in entry.kanjis]) + '】'
             
-            stream.write(' <p class=lab>' + label + '</p>\n')
+            stream.write(f"<p class=lab>{label}</p>\n")
 
             if(len(special_readings.keys()) > 0):
                 for kanji in special_readings:
@@ -213,7 +214,7 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
                         readings.append(format_pronunciations(reading))
                     label = ";".join(readings)
                     label += '【' + escape(kanji, quote=False) + '】'
-                    stream.write(' <p class=lab>' + label + '</p>\n')
+                    stream.write(f"<p class=lab>{label}</p>\n")
         else:
             label = ';'.join([reading.reb for reading in entry.readings])
             if entry.kanjis:
@@ -224,11 +225,14 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
         if(len(entry.senses) > 0):
             stream.write(' <ul>\n')
             for sense in entry.senses:
-                stream.write(' <li>')
+                stream.write('   <li>')
                 if sense.pos or sense.dial or sense.misc:
-                    stream.write('<span class=pos>' + ','.join(sense.pos + sense.dial + sense.misc) + '</span> ')
-                stream.write(escape('; '.join(sense.gloss), quote=False))
-                stream.write('</li>\n')
+                    stream.write(f"      <span class=pos>{escape(','.join(sense.pos + sense.dial + sense.misc))}</span>\n")
+                stream.write(f"      {escape('; '.join(sense.gloss), quote=False)}")
+                if len(sense.s_inf) > 0 and add_entry_info:
+                    stream.write('<br>\n')
+                    stream.write(f"      《{escape('; '.join(sense.s_inf), quote=True)}》")
+                stream.write('    </li>\n')
             stream.write(' </ul>\n')
 
         if(entry.entry_type == VOCAB_ENTRY and len(entry.sentences) > 0):
@@ -237,14 +241,14 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
             entry.sentences.sort(reverse=True, key = lambda sentence: sentence.good_sentence)
             for sentence in entry.sentences:
                 stream.write(' <div class="sen">\n')
-                stream.write('  <span>' + sentence.japanese + '</span>\n')
+                stream.write(f"  <span>{sentence.japanese}</span>\n")
                 stream.write('  <br>\n')
-                stream.write('  <span>' + sentence.english + '</span>\n')
+                stream.write(f"  <span>{sentence.english}</span>\n")
                 stream.write(' </div>\n')
             stream.write('</div>\n')
 
         for ortho in entry.orthos:
-            stream.write(' <idx:orth value="%s"' % escape(ortho.value, quote=True))
+            stream.write(f" <idx:orth value=\"{escape(ortho.value, quote=True)}\"")
             if ortho.inflgrps:
                 stream.write('>\n')
                 for inflgrp in list(ortho.inflgrps.values()):
@@ -253,7 +257,7 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
                     iforms = list(inflgrp)
                     iforms.sort()
                     for iform in iforms:
-                        stream.write('   <idx:iform value="%s"/>\n' % escape(iform, quote=True))
+                        stream.write(f"   <idx:iform value=\"{escape(iform, quote=True)}\"/>\n")
                     stream.write('  </idx:infl>\n')
                 stream.write(' </idx:orth>\n')
             else:
@@ -270,29 +274,28 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
     #create cover
     createCover(dictionary_name, title, 768, 1024)
 
-    # minify html
+    #minify html
     minifier = htmlmin.Minifier(remove_empty_space=True)
     for i in range(len(sections)):
         section = sections[i]
-        with open('entry-%s-%s.html' %(dictionary_file_name, section), 'r+', encoding='UTF-8') as f:
+        with open(f"entry-{dictionary_file_name}-{section}.html", 'r+', encoding='UTF-8') as f:
             content = f.read()
             content = minifier.minify(content)
             f.seek(0)
             f.write(content)
             f.truncate()
 
-
     # Write the OPF
-    stream = open('%s.opf' %dictionary_file_name, 'wt', encoding='UTF-8')
+    stream = open(f"{dictionary_file_name}.opf", 'wt', encoding='UTF-8')
     stream.write('<?xml version="1.0" encoding="utf-8"?>\n')
     stream.write('<package unique-identifier="uid">\n')
     stream.write('  <metadata>\n')
     stream.write('    <dc-metadata xmlns:dc="http://purl.org/metadata/dublin_core">\n')
-    stream.write('      <dc:Identifier id="uid">%s</dc:Identifier>\n' %(hex(hash(title)).split('x')[1]))
-    stream.write('      <dc:Title><h2>%s</h2></dc:Title>\n' %title)
+    stream.write(f"      <dc:Identifier id=\"uid\">{hex(hash(title)).split('x')[1]}</dc:Identifier>\n")
+    stream.write(f"      <dc:Title><h2>{title}</h2></dc:Title>\n")
     stream.write('      <dc:Language>ja</dc:Language>\n')
     stream.write('      <dc:Creator>Electronic Dictionary Research &amp; Development Group</dc:Creator>\n')
-    stream.write('      <dc:Date>2019-05-08</dc:Date>\n')
+    stream.write(f"      <dc:Date>{datetime.now().strftime('%Y-%m-%d')}</dc:Date>\n")
     stream.write('      <dc:Copyrights>2013 Electronic Dictionary Research &amp; Development Group</dc:Copyrights>\n')
     stream.write('    </dc-metadata>\n')
     stream.write('    <x-metadata>\n')
@@ -306,18 +309,18 @@ def write_index(entries, dictionary_name, title, stream, respect_re_restr=True, 
     stream.write('    </x-metadata>\n')
     stream.write('  </metadata>\n')
     stream.write('  <manifest>\n')
-    stream.write('    <item id="cover" href="%s-cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n' %dictionary_file_name)
+    stream.write(f"    <item id=\"cover\" href=\"{dictionary_file_name}-cover.jpg\" media-type=\"image/jpeg\" properties=\"cover-image\"/>\n")
     stream.write('    <item id="css" href="style.css" media-type="text/css"/>\n')
-    stream.write('    <item id="frontmatter" href="%s-frontmatter.html" media-type="text/x-oeb1-document"/>\n' %dictionary_file_name)
+    stream.write(f"    <item id=\"frontmatter\" href=\"{dictionary_file_name}-frontmatter.html\" media-type=\"text/x-oeb1-document\"/>\n")
     for i in range(len(sections)):
         section = sections[i]
-        stream.write('    <item id="entry-%u" href="entry-%s-%s.html" media-type="text/x-oeb1-document"/>\n' % (i, dictionary_file_name, escape(section, quote=True)))
+        stream.write(f"    <item id=\"entry-{i}\" href=\"entry-{dictionary_file_name}-{escape(section, quote=True)}.html\" media-type=\"text/x-oeb1-document\"/>\n")
     stream.write('  </manifest>\n')
     stream.write('\n')
     stream.write('  <spine>\n')
     stream.write('    <itemref idref="frontmatter"/>\n')
     for i in range(len(sections)):
-        stream.write('    <itemref idref="entry-%u"/>\n' % i)
+        stream.write(f"    <itemref idref=\"entry-{i}\"/>\n")
     stream.write('  </spine>\n')
     stream.write('  <tours/>\n')
     stream.write('  <guide/>\n')
