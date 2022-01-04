@@ -27,8 +27,8 @@ Write-Output "create files for JMdict"
 & "python" -u jmdict.py -s $SENTENCES -d j $FLAGS.Split(" ")
 Write-Output "create files for JMnedict"
 & "python" -u jmdict.py -s $SENTENCES -d n $FLAGS.Split(" ")
-Write-Output "create files for combined dictionary"
-& "python" -u jmdict.py -s 0 -d c
+#Write-Output "create files for combined dictionary"
+#& "python" -u jmdict.py -s 0 -d c
 
 If (!(test-path .\out))
 {
@@ -41,6 +41,6 @@ cp .\out\mobi\jmdict.mobi .\jmdict.mobi
 Write-Output "building jmnedict.mobi"
 & "$($env:APPDATA)\Amazon\kindlepreviewer.bat" "jmnedict.opf" -convert -output .\out -locale en
 cp .\out\mobi\jmnedict.mobi .\jmnedict.mobi
-Write-Output "building combined.mobi"
-& "$($env:APPDATA)\Amazon\kindlepreviewer.bat" "combined.opf" -convert -output .\out -locale en
-cp .\out\mobi\combined.mobi .\combined.mobi
+#Write-Output "building combined.mobi"
+#& "$($env:APPDATA)\Amazon\kindlepreviewer.bat" "combined.opf" -convert -output .\out -locale en
+#cp .\out\mobi\combined.mobi .\combined.mobi
