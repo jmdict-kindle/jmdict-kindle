@@ -24,11 +24,11 @@ Invoke-WebRequest -Uri "https://downloads.tatoeba.org/exports/sentences.tar.bz2"
 Invoke-WebRequest -Uri "https://downloads.tatoeba.org/exports/jpn_indices.tar.bz2" -OutFile ".\jpn_indices.tar.bz2"
 
 Write-Output "create files for JMdict"
-& python -u jmdict.py -s $SENTENCES -d j $FLAGS
+& "python" -u jmdict.py -s $SENTENCES -d j $FLAGS.Split(" ")
 Write-Output "create files for JMnedict"
-& python -u jmdict.py -s $SENTENCES -d n $FLAGS
+& "python" -u jmdict.py -s $SENTENCES -d n $FLAGS.Split(" ")
 Write-Output "create files for combined dictionary"
-& python -u jmdict.py -s 0 -d c
+& "python" -u jmdict.py -s 0 -d c
 
 If (!(test-path .\out))
 {
