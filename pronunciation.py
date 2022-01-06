@@ -114,13 +114,16 @@ class Pronunciation:
             ''.join('0' for i in range(falling_accent_position + 1, kana_count + 1))
 
         translation = row['midashigo'].translate(translate_table)
-        if f"{row['kanjiexpr']}-{translation}" not in self.dict:#prefer ACCDB_unicode.csv data
+        if f"{row['kanjiexpr']}-{translation}" not in self.dict:#prefer accents.tsv data
           self.dict[f"{row['kanjiexpr']}-{translation}"] = {
             'nopronouncepos':None,
             'nasalsoundpos':None,
             'ac':ac,
             'source':"accents.tsv"
           }
+        else:
+          self.dict[f"{row['kanjiexpr']}-{translation}"]["ac"] = ac
+          self.dict[f"{row['kanjiexpr']}-{translation}"]["source"] = "accents.tsv"
 
   def addPronunciation(self, entries):
     count = 0
