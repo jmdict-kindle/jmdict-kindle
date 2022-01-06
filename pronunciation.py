@@ -96,7 +96,7 @@ class Pronunciation:
             first_sound_character_count = 2
 
         #leading zeroes do not have to be included but can
-        #''.join('0' for i in range(1, first_sound_character_count + 1))+\
+        # for more details on pitch accent see https://en.wikipedia.org/wiki/Japanese_pitch_accent
         if accent_position_sound == 0:
           ac = \
             ''.join('0' for i in range(1, first_sound_character_count + 1))+\
