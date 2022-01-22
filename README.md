@@ -20,6 +20,8 @@ then processed with ImageMagick's
 `mogrify -colorspace gray -level 0%,111.11% -define PNG:compression-level=9`
 to look like E-Ink display.
 -->
+![Inflection lookup screenshot](screenshots/inflection.png)
+
 ![Word lookup screenshot](screenshots/word.png)
 
 ![Name lookup screenshot](screenshots/name.png)
