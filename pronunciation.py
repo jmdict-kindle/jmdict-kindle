@@ -260,4 +260,3 @@ def format_pronunciations(reading):
 
     outstr = outstr + "</span>"
     return
-
