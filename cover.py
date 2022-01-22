@@ -26,7 +26,8 @@
 
 import cairo
 from PIL import Image
- 
+
+
 def createCover(title, name, width, height):
     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
     ctx = cairo.Context(surface)
@@ -34,15 +35,15 @@ def createCover(title, name, width, height):
     ctx.set_source_rgb(0.75, 0.75, 0.75)
     ctx.rectangle(0, 0, width, height)
     ctx.fill()
-    ctx.select_font_face('Sans')
-    ctx.set_source_rgb(0.00, 0.00, 0.00) # black
+    ctx.select_font_face("Sans")
+    ctx.set_source_rgb(0.00, 0.00, 0.00)  # black
 
-    #draw text
-    ctx.set_font_size(60*height/800)
-    draw_text(ctx, 0.5*width, 0.5*height, title)
+    # draw text
+    ctx.set_font_size(60 * height / 800)
+    draw_text(ctx, 0.5 * width, 0.5 * height, title)
 
-    ctx.set_font_size(30*height/800)
-    draw_text(ctx, 0.5*width, 0.75*height, name)
+    ctx.set_font_size(30 * height / 800)
+    draw_text(ctx, 0.5 * width, 0.75 * height, name)
 
     # finish
     ctx.stroke()
@@ -52,15 +53,16 @@ def createCover(title, name, width, height):
     # Convert to grayscale JPEG
     # XXX: Kindle does not show thumbnails for PNG covers
     im = Image.open(f"{title}-cover.png")
-    im = im.convert('L')
+    im = im.convert("L")
     im.save(f"{title.replace(' ', '_')}-cover.jpg")
+
 
 # draw centered text
 def draw_text(ctx, x, y, t):
     x_bearing, y_bearing, width, height, x_advance, y_advance = ctx.text_extents(t)
 
-    x -= 0.5*width
-    y -= 0.5*height
-        
+    x -= 0.5 * width
+    y -= 0.5 * height
+
     ctx.move_to(x, y)
     ctx.show_text(t)

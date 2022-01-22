@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 #
 # Copyright 2011-2017 Jose Fonseca
 # All Rights Reserved.
@@ -41,9 +41,9 @@ MAX_ENTRIES = sys.maxsize
 
 XML_ELEMENT_START, XML_ELEMENT_END, XML_CHARACTER_DATA, XML_EOF = range(4)
 
-class XmlToken:
 
-    def __init__(self, type, name_or_data, attrs = None, line = None, column = None):
+class XmlToken:
+    def __init__(self, type, name_or_data, attrs=None, line=None, column=None):
         assert type in (XML_ELEMENT_START, XML_ELEMENT_END, XML_CHARACTER_DATA, XML_EOF)
         self.type = type
         self.name_or_data = name_or_data
@@ -53,20 +53,20 @@ class XmlToken:
 
     def __str__(self):
         if self.type == XML_ELEMENT_START:
-            return '<' + self.name_or_data + ' ...>'
+            return "<" + self.name_or_data + " ...>"
         if self.type == XML_ELEMENT_END:
-            return '</' + self.name_or_data + '>'
+            return "</" + self.name_or_data + ">"
         if self.type == XML_CHARACTER_DATA:
             return self.name_or_data
         if self.type == XML_EOF:
-            return 'end of file'
+            return "end of file"
         assert 0
 
 
 class XmlTokenizer:
     """Expat based XML tokenizer."""
 
-    def __init__(self, fp, skip_ws = True):
+    def __init__(self, fp, skip_ws=True):
         self.fp = fp
         self.tokens = []
         self.index = 0
@@ -75,14 +75,16 @@ class XmlTokenizer:
         self.entities = {}
 
         self.character_pos = 0, 0
-        self.character_data = ''
+        self.character_data = ""
 
         self.parser = xml.parsers.expat.ParserCreate()
-        self.parser.StartElementHandler  = self.handle_element_start
-        self.parser.EndElementHandler    = self.handle_element_end
+        self.parser.StartElementHandler = self.handle_element_start
+        self.parser.EndElementHandler = self.handle_element_end
         self.parser.CharacterDataHandler = self.handle_character_data
-        self.parser.EntityDeclHandler    = self.handle_entity_decl_handler
-        self.parser.SetParamEntityParsing(xml.parsers.expat.XML_PARAM_ENTITY_PARSING_NEVER)
+        self.parser.EntityDeclHandler = self.handle_entity_decl_handler
+        self.parser.SetParamEntityParsing(
+            xml.parsers.expat.XML_PARAM_ENTITY_PARSING_NEVER
+        )
 
     def handle_element_start(self, name, attributes):
         self.finish_character_data()
@@ -101,19 +103,30 @@ class XmlTokenizer:
             self.character_pos = self.pos()
         self.character_data += data
 
-    def handle_entity_decl_handler(self, entityName, is_parameter_entity, value, base, systemId, publicId, notationName):
+    def handle_entity_decl_handler(
+        self,
+        entityName,
+        is_parameter_entity,
+        value,
+        base,
+        systemId,
+        publicId,
+        notationName,
+    ):
         self.entities[value] = entityName
 
     def finish_character_data(self):
         if self.character_data:
             if not self.skip_ws or not self.character_data.isspace():
                 line, column = self.character_pos
-                token = XmlToken(XML_CHARACTER_DATA, self.character_data, None, line, column)
+                token = XmlToken(
+                    XML_CHARACTER_DATA, self.character_data, None, line, column
+                )
                 self.tokens.append(token)
-            self.character_data = ''
+            self.character_data = ""
 
     def __next__(self):
-        size = 16*1024
+        size = 16 * 1024
         while self.index >= len(self.tokens) and not self.final:
             self.tokens = []
             self.index = 0
@@ -122,7 +135,7 @@ class XmlTokenizer:
             try:
                 self.parser.Parse(data, self.final)
             except xml.parsers.expat.ExpatError as e:
-                #if e.code == xml.parsers.expat.errors.XML_ERROR_NO_ELEMENTS:
+                # if e.code == xml.parsers.expat.errors.XML_ERROR_NO_ELEMENTS:
                 if e.code == 3:
                     pass
                 else:
@@ -140,7 +153,6 @@ class XmlTokenizer:
 
 
 class XmlTokenMismatch(Exception):
-
     def __init__(self, expected, found):
         self.expected = expected
         self.found = found
@@ -185,8 +197,8 @@ class XmlParser:
             raise XmlTokenMismatch(XmlToken(XML_ELEMENT_END, name), self.token)
         self.consume()
 
-    def character_data(self, strip = True):
-        data = ''
+    def character_data(self, strip=True):
+        data = ""
         while self.token.type == XML_CHARACTER_DATA:
             data += self.token.name_or_data
             self.consume()
@@ -207,22 +219,22 @@ class XmlParser:
                 assert False
         self.element_end(name)
 
+
 class JMdictParser(XmlParser):
     # http://www.csse.monash.edu.au/~jwb/jmdict_dtd_h.html
 
-
     def __init__(self, filename):
-        XmlParser.__init__(self, gzip.open(filename, 'rb'))
+        XmlParser.__init__(self, gzip.open(filename, "rb"))
 
     def parse(self):
         entries = []
-        self.element_start('JMdict')
+        self.element_start("JMdict")
         while self.token.type == XML_ELEMENT_START:
             entry = self.parse_entry()
             entries.append(entry)
             if len(entries) >= MAX_ENTRIES:
                 return entries
-        self.element_end('JMdict')
+        self.element_end("JMdict")
         return entries
 
     def parse_entry(self):
@@ -231,22 +243,22 @@ class JMdictParser(XmlParser):
         senses = []
         orthos = []
 
-        self.element_start('entry')
+        self.element_start("entry")
         while self.token.type == XML_ELEMENT_START:
-            if self.token.name_or_data == 'k_ele':
+            if self.token.name_or_data == "k_ele":
                 kanji = self.parse_kanji()
                 kanjis.append(kanji)
                 orthos.append(Ortho(kanji.keb, kanji.rank, {}))
-            elif self.token.name_or_data == 'r_ele':
+            elif self.token.name_or_data == "r_ele":
                 reading = self.parse_reading()
                 readings.append(reading)
                 orthos.append(Ortho(reading.reb, reading.rank, {}))
-            elif self.token.name_or_data == 'sense':
+            elif self.token.name_or_data == "sense":
                 sense = self.parse_sense()
                 senses.append(sense)
             else:
                 self.skip_element()
-        self.element_end('entry')
+        self.element_end("entry")
 
         # Aggregate the POS of all senses
         posses = set()
@@ -273,15 +285,15 @@ class JMdictParser(XmlParser):
     def parse_kanji(self):
         keb = None
         rank = sys.maxsize
-        self.element_start('k_ele')
+        self.element_start("k_ele")
         while self.token.type == XML_ELEMENT_START:
-            if self.token.name_or_data == 'keb':
-                keb = self.element_character_data('keb')
-            elif self.token.name_or_data == 're_pri':
+            if self.token.name_or_data == "keb":
+                keb = self.element_character_data("keb")
+            elif self.token.name_or_data == "re_pri":
                 rank = min(rank, self.parse_rank())
             else:
                 self.skip_element()
-        self.element_end('k_ele')
+        self.element_end("k_ele")
 
         assert keb is not None
         return Kanji(keb, rank)
@@ -291,23 +303,23 @@ class JMdictParser(XmlParser):
         rank = 1
         re_restr = None
 
-        self.element_start('r_ele')
+        self.element_start("r_ele")
         while self.token.type == XML_ELEMENT_START:
-            if self.token.name_or_data == 'reb':
-                reb = self.element_character_data('reb')
-            elif self.token.name_or_data == 're_pri':
+            if self.token.name_or_data == "reb":
+                reb = self.element_character_data("reb")
+            elif self.token.name_or_data == "re_pri":
                 rank = min(rank, self.parse_rank())
-            elif self.token.name_or_data == 're_restr':
-                re_restr = self.element_character_data('re_restr')
+            elif self.token.name_or_data == "re_restr":
+                re_restr = self.element_character_data("re_restr")
             else:
                 self.skip_element()
-        self.element_end('r_ele')
+        self.element_end("r_ele")
         assert reb is not None
         return Reading(reb, rank, re_restr, None)
 
     def parse_rank(self):
-        re_pri = self.element_character_data('re_pri')
-        if re_pri in ('news1', 'ichi1', 'spec1', 'gai1'):
+        re_pri = self.element_character_data("re_pri")
+        if re_pri in ("news1", "ichi1", "spec1", "gai1"):
             return 0
         else:
             return 1
@@ -318,30 +330,30 @@ class JMdictParser(XmlParser):
         glosses = []
         misc_info = []
         sense_info = []
-        self.element_start('sense')
+        self.element_start("sense")
         while self.token.type == XML_ELEMENT_START:
-            if self.token.name_or_data == 'pos':
-                pos = self.element_character_data('pos')
+            if self.token.name_or_data == "pos":
+                pos = self.element_character_data("pos")
                 # revert back to entity
                 pos = self.tokenizer.entities[pos]
                 posses.append(pos)
-            elif self.token.name_or_data == 'dial':
-                dial = self.element_character_data('dial')
+            elif self.token.name_or_data == "dial":
+                dial = self.element_character_data("dial")
                 # revert back to entity
                 dial = self.tokenizer.entities[dial]
                 dialects.append(dial)
-            elif self.token.name_or_data == 'gloss':
-                gloss = self.element_character_data('gloss')
+            elif self.token.name_or_data == "gloss":
+                gloss = self.element_character_data("gloss")
                 glosses.append(gloss)
-            elif self.token.name_or_data == 'misc':
-                misc = self.element_character_data('misc')
+            elif self.token.name_or_data == "misc":
+                misc = self.element_character_data("misc")
                 misc_info.append(misc)
-            elif self.token.name_or_data == 's_inf':
-                info = self.element_character_data('s_inf')
+            elif self.token.name_or_data == "s_inf":
+                info = self.element_character_data("s_inf")
                 sense_info.append(info)
             else:
                 self.skip_element()
-        self.element_end('sense')
+        self.element_end("sense")
 
         sense = Sense(posses, dialects, glosses, misc_info, sense_info)
         return sense
@@ -358,13 +370,13 @@ class JMnedictParser(JMdictParser):
     def parse(self):
         entries = []
 
-        self.element_start('JMnedict')
+        self.element_start("JMnedict")
         while self.token.type == XML_ELEMENT_START:
             entry = self.parse_entry()
             entries.append(entry)
             if len(entries) >= MAX_ENTRIES:
                 return entries
-        self.element_end('JMnedict')
+        self.element_end("JMnedict")
 
         return entries
 
@@ -374,125 +386,174 @@ class JMnedictParser(JMdictParser):
         senses = []
         orthos = []
 
-        self.element_start('entry')
+        self.element_start("entry")
         while self.token.type == XML_ELEMENT_START:
-            if self.token.name_or_data == 'k_ele':
+            if self.token.name_or_data == "k_ele":
                 kanji = self.parse_kanji()
                 kanjis.append(kanji)
                 orthos.append(Ortho(kanji.keb, kanji.rank, {}))
-            elif self.token.name_or_data == 'r_ele':
+            elif self.token.name_or_data == "r_ele":
                 reading = self.parse_reading()
                 readings.append(reading)
                 orthos.append(Ortho(reading.reb, reading.rank, {}))
-            elif self.token.name_or_data == 'trans':
+            elif self.token.name_or_data == "trans":
                 sense = self.parse_translation()
                 senses.append(sense)
             else:
                 self.skip_element()
-        self.element_end('entry')
+        self.element_end("entry")
 
         return Entry(senses, orthos, kanjis, readings, entry_type=NAME_ENTRY)
-    
+
     def parse_translation(self):
         posses = []
         glosses = []
-        self.element_start('trans')
+        self.element_start("trans")
         while self.token.type == XML_ELEMENT_START:
-            if self.token.name_or_data == 'name_type':
-                pos = self.element_character_data('name_type')
+            if self.token.name_or_data == "name_type":
+                pos = self.element_character_data("name_type")
                 # revert back to entity
                 pos = self.tokenizer.entities[pos]
                 posses.append(pos)
-            elif self.token.name_or_data == 'trans_det':
-                gloss = self.element_character_data('trans_det')
+            elif self.token.name_or_data == "trans_det":
+                gloss = self.element_character_data("trans_det")
                 glosses.append(gloss)
             else:
                 self.skip_element()
-        self.element_end('trans')
+        self.element_end("trans")
 
         sense = Sense(posses, [], glosses, [], [])
         return sense
 
-def get_args():
 
+def get_args():
     class DictAction(argparse.Action):
         def __init__(self, option_strings, dest, nargs=None, **kwargs):
-             if nargs is not None:
+            if nargs is not None:
                 raise ValueError("nargs not allowed")
-             super().__init__(option_strings, dest, **kwargs)
-        def __call__(self, parser, namespace, values, option_string=None):
-            setattr(namespace, self.dest, SimpleNamespace(create_jmdict = 'j' in values, create_jmnedict = 'n' in values, create_combined = 'c' in values))
+            super().__init__(option_strings, dest, **kwargs)
 
-    arg_parser = argparse.ArgumentParser(description='Build the JMdict or JMnedict for Kindle', formatter_class=argparse.RawTextHelpFormatter)
-    arg_parser.add_argument('-s', '--sentences'
-        ,action='store'
-        ,default=0
-        ,type=int
-        ,metavar='count'
-        ,help='Sets the maximum number of sentences per entry. Default is 0'
+        def __call__(self, parser, namespace, values, option_string=None):
+            setattr(
+                namespace,
+                self.dest,
+                SimpleNamespace(
+                    create_jmdict="j" in values,
+                    create_jmnedict="n" in values,
+                    create_combined="c" in values,
+                ),
+            )
+
+    arg_parser = argparse.ArgumentParser(
+        description="Build the JMdict or JMnedict for Kindle",
+        formatter_class=argparse.RawTextHelpFormatter,
     )
-    arg_parser.add_argument('-d', '--dictionary'
-        ,action=DictAction
-        ,default='j'
-        ,type=str
-        ,metavar='jnc'
-        ,help='Defines which Dictionary to create. j for JMdict, n for JMnedict, c for Combined. Default is j. You can also create multiple at the same time: -d jn for JMdict and JMnedict'
+    arg_parser.add_argument(
+        "-s",
+        "--sentences",
+        action="store",
+        default=0,
+        type=int,
+        metavar="count",
+        help="Sets the maximum number of sentences per entry. Default is 0",
     )
-    arg_parser.add_argument('-p', '--pronunciation'
-        ,action='store_true'
-        ,default=False
-        ,help='If this flag is set pronunciations will be added to the dictionaries specified with -d'
+    arg_parser.add_argument(
+        "-d",
+        "--dictionary",
+        action=DictAction,
+        default="j",
+        type=str,
+        metavar="jnc",
+        help="Defines which Dictionary to create. j for JMdict, n for JMnedict, c for Combined. Default is j. You can also create multiple at the same time: -d jn for JMdict and JMnedict",
     )
-    arg_parser.add_argument('-a', '--all_sentences'
-        ,action='store_true'
-        ,default=False
-        ,help='If this flag is set all sentences will be aded to an entry up to the number specified in --sentences. \
-             If this flag is omitted only good and verified senetences will be added to the dictionaries specified with -d. If -s is 0 this argument has no effect'
+    arg_parser.add_argument(
+        "-p",
+        "--pronunciation",
+        action="store_true",
+        default=False,
+        help="If this flag is set pronunciations will be added to the dictionaries specified with -d",
     )
-    arg_parser.add_argument('-i', '--info'
-        ,action='store_true'
-        ,default=False
-        ,help='If this flag is set additional entry information wil be added to the dictionaries specified with -d.'
+    arg_parser.add_argument(
+        "-a",
+        "--all_sentences",
+        action="store_true",
+        default=False,
+        help="If this flag is set all sentences will be aded to an entry up to the number specified in --sentences. \
+             If this flag is omitted only good and verified senetences will be added to the dictionaries specified with -d. If -s is 0 this argument has no effect",
+    )
+    arg_parser.add_argument(
+        "-i",
+        "--info",
+        action="store_true",
+        default=False,
+        help="If this flag is set additional entry information wil be added to the dictionaries specified with -d.",
     )
     return arg_parser.parse_args()
+
 
 def main():
     args = get_args()
 
-    #Create files
-    if(args.dictionary.create_jmdict or args.dictionary.create_combined):
-        sys.stderr.write('Parsing JMdict_e.gz...\n')
-        parser = JMdictParser('JMdict_e.gz')
+    # Create files
+    if args.dictionary.create_jmdict or args.dictionary.create_combined:
+        sys.stderr.write("Parsing JMdict_e.gz...\n")
+        parser = JMdictParser("JMdict_e.gz")
         jmdict_entries = parser.parse()
-        if(args.pronunciation):
-            sys.stderr.write('Adding pronunciations...\n')
+        if args.pronunciation:
+            sys.stderr.write("Adding pronunciations...\n")
             ac = Pronunciation()
             count = ac.addPronunciation(jmdict_entries)
             sys.stderr.write(f"added {count} pronunciations\n")
         sys.stderr.write(f"Created {len(jmdict_entries)} entries\n")
-            
-        if(args.sentences > 0):
-            sys.stderr.write('Adding sentences...\n')
-            examples = ExampleSentences("jpn_indices.tar.bz2", "sentences.tar.bz2", jmdict_entries)
-            sys.stderr.write(f"Sentences added: {str(examples.addExamples(not args.all_sentences, args.sentences))}\n")
 
-    if(args.dictionary.create_jmdict):
-        sys.stderr.write('Creating files for JMdict...\n')
-        write_index(jmdict_entries, "jmdict", "JMdict Japanese-English Dictionary", sys.stdout, default_index=VOCAB_INDEX, add_entry_info=args.info)
+        if args.sentences > 0:
+            sys.stderr.write("Adding sentences...\n")
+            examples = ExampleSentences(
+                "jpn_indices.tar.bz2", "sentences.tar.bz2", jmdict_entries
+            )
+            sys.stderr.write(
+                f"Sentences added: {str(examples.addExamples(not args.all_sentences, args.sentences))}\n"
+            )
 
-    if(args.dictionary.create_jmnedict or args.dictionary.create_combined):
-        sys.stderr.write('Parsing JMnedict.xml.gz...\n')
-        parser = JMnedictParser('JMnedict.xml.gz')
+    if args.dictionary.create_jmdict:
+        sys.stderr.write("Creating files for JMdict...\n")
+        write_index(
+            jmdict_entries,
+            "jmdict",
+            "JMdict Japanese-English Dictionary",
+            sys.stdout,
+            default_index=VOCAB_INDEX,
+            add_entry_info=args.info,
+        )
+
+    if args.dictionary.create_jmnedict or args.dictionary.create_combined:
+        sys.stderr.write("Parsing JMnedict.xml.gz...\n")
+        parser = JMnedictParser("JMnedict.xml.gz")
         jmnedict_entries = parser.parse()
         sys.stderr.write(f"Created {len(jmnedict_entries)} entries\n")
 
-    if(args.dictionary.create_jmnedict):
-        sys.stderr.write('Creating files for JMnedict...\n')
-        write_index(jmnedict_entries, "jmnedict", "JMnedict Japanese Names", sys.stdout, default_index=NAME_INDEX, add_entry_info=args.info)
+    if args.dictionary.create_jmnedict:
+        sys.stderr.write("Creating files for JMnedict...\n")
+        write_index(
+            jmnedict_entries,
+            "jmnedict",
+            "JMnedict Japanese Names",
+            sys.stdout,
+            default_index=NAME_INDEX,
+            add_entry_info=args.info,
+        )
 
-    if(args.dictionary.create_combined):
-        sys.stderr.write('Creating files for combined dictionary\n')
-        write_index(jmdict_entries+jmnedict_entries, "combined", "JMdict Japanese-English Dictionary and JMnedict Japanese Names", sys.stdout, default_index=None, add_entry_info=args.info)
+    if args.dictionary.create_combined:
+        sys.stderr.write("Creating files for combined dictionary\n")
+        write_index(
+            jmdict_entries + jmnedict_entries,
+            "combined",
+            "JMdict Japanese-English Dictionary and JMnedict Japanese Names",
+            sys.stdout,
+            default_index=None,
+            add_entry_info=args.info,
+        )
+
 
 if __name__ == "__main__":
     main()
