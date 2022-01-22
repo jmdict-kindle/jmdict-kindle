@@ -259,4 +259,4 @@ def format_pronunciations(reading):
             state = LOW_STATE
 
     outstr = outstr + "</span>"
-    return
+    return outstr
