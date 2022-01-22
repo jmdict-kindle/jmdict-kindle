@@ -87,6 +87,23 @@ Kindle iOS App
 
 The steps for iOS App are [similar](https://learnoutlive.com/add-german-english-dictionary-to-kindle-on-your-ipad-or-iphone-ios/) the Android App above.  **Unfortunately the Kindle iOS App [seems to suffer from the same limitations regarding inflections](https://github.com/jrfonseca/jmdict-kindle/issues/15).**
 
+Pitch accent information
+====================
+
+The pitch accent information is encoded in the following way:
+* <ins>Underline</ins> for __Low__
+* No Formatting for __High__
+* ꜜ for a sudden __Drop__ in pitch
+* ° for a __Nasal__ sound
+* If no formatting whatsoever is present then we do not have pitch information for that particular entry
+
+Examples: 
+* <ins>じ</ins>たい means L-H-H
+* <ins>ね</ins>が°ꜜ<ins>い</ins> means L-Hꜜ-L
+* <ins>ぜ</ins>んしん means L-H-H-H
+* <ins>ひ</ins>とꜜ means L-Hꜜ-(L) _[The (L) means the next sound after ひと will be low. E.g. ひとが (L-H-L)]_
+
+For more information see [Japanese pitch accent - Wikipedia](https://en.wikipedia.org/wiki/Japanese_pitch_accent)
 
 Building from source
 ====================
@@ -166,7 +183,8 @@ Credits
 * The [Tatoeba](https://tatoeba.org/) project
 * John Mettraux for his [EDICT2 Japanese-English Kindle dictionary](https://github.com/jmettraux/edict2-kindle)
 * Choplair-network for their [Nihongo conjugator](http://www.choplair.org/?Nihongo%20conjugator)
-* javdejong for the [pronunciation](https://github.com/javdejong/nhk-pronunciation)
+* javdejong for the [pronunciation data and the parser](https://github.com/javdejong/nhk-pronunciation)
+* mifunetoshiro for the [additional pronunciation data](https://github.com/mifunetoshiro/kanjium/blob/master/data/source_files/raw/accents.txt)
 
 
 Alternatives
