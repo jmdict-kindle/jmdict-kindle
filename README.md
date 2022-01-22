@@ -139,6 +139,14 @@ make jmnedict.mobi
 make combined.mobi
 ```
 
+Create a Pull Request
+=====
+Before making a pull request please ensure the formatting of your python code is correct. To do this please install [black](https://pypi.org/project/black/) and run
+
+```powershell
+black .
+```
+
 To do
 =====
 
