@@ -45,29 +45,23 @@ else
 endif
 endif
 
-all: jmdict.mobi jmnedict.mobi combined.mobi
-
-JMdict_e.gz:
-	wget -nv -N http://ftp.edrdg.org/pub/Nihongo/$@
-
-JMnedict.xml.gz:
-	wget -nv -N http://ftp.edrdg.org/pub/Nihongo/$@
-
-sentences.tar.bz2:
-	wget -nv -N https://downloads.tatoeba.org/exports/$@
-
-jpn_indices.tar.bz2:
-	wget -nv -N https://downloads.tatoeba.org/exports/$@
-
 ifeq ($(OS), Windows_NT)
+#do not build combined on windows. The size will be too large since we cannot specify compression in kindle previewer
+all: jmdict.mobi jmnedict.mobi
+
 # See also http://kindlepreviewer3.s3.amazonaws.com/UserGuide320_EN.pdf
 kindlegen:
 	echo "Kindle Previewer has to be added to PATH (C:/Users/<Username>/AppData/Roaming/Amazon) for this script to run"
 else
 ifeq ($(ISWSL), TRUE)
+#do not build combined on windows. The size will be too large since we cannot specify compression in kindle previewer
+all: jmdict.mobi jmnedict.mobi
+
 kindlegen:
 	echo "Kindle Previewer has to be added to PATH (C:/Users/<Username>/AppData/Roaming/Amazon) for this script to run"
 else
+all: jmdict.mobi jmnedict.mobi combined.mobi
+
 cache:
 	mkdir $@
 	
@@ -81,6 +75,18 @@ kindlegen: cache/kindlegen_linux_2.6_i386_v2_9.tar.gz
 	touch $@
 endif
 endif
+
+JMdict_e.gz:
+	wget -nv -N http://ftp.edrdg.org/pub/Nihongo/$@
+
+JMnedict.xml.gz:
+	wget -nv -N http://ftp.edrdg.org/pub/Nihongo/$@
+
+sentences.tar.bz2:
+	wget -nv -N https://downloads.tatoeba.org/exports/$@
+
+jpn_indices.tar.bz2:
+	wget -nv -N https://downloads.tatoeba.org/exports/$@
 
 jmdict.opf: JMdict_e.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict-frontmatter.html
 ifeq ($(ONLY_CHECKED_SENTENCES), TRUE)

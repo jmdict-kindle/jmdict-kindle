@@ -153,7 +153,7 @@ PRONUNCIATIONS ?= TRUE
 ADDITIONAL_INFO ?= TRUE
 ```
 
-Build with make to create all 3 dictionaries:
+Build with make to create all 3 dictionaries (_Note the combined dictionary will not build with Kindle Previewer due to size constraints_):
 ```
 make
 ```
