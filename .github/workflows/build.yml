@@ -41,6 +41,7 @@ jobs:
         path: '*.mobi'
   
   build_windows:
+    needs: black
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
