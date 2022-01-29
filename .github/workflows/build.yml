@@ -8,26 +8,67 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: install python depenencies
-      run: pip install Pycairo Pillow htmlmin
-    - name: download Kindle Previewer
-      run: Invoke-WebRequest -Uri "https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe" -OutFile ".\KindlePreviewerInstaller.exe"
-    - name: install Kindle Previewer
-      run: Start-Process -FilePath ".\KindlePreviewerInstaller.exe" -ArgumentList "/S" -Wait
+    - name: apt-update
+      run: sudo apt-get update -qq
+    - name: apt-install
+      run: sudo apt-get install -qq -y --no-install-recommends python3-cairo python3-pil python3-htmlmin
     - name: make
-      run: .\build.ps1
+      run: make ISWSL=FALSE
+      env:
+        MAKEFLAGS: -j2
+        PYTHON3: /usr/bin/python3
     - name: upload-artifact
       uses: actions/upload-artifact@v2
       with:
         name: mobi
+        path: '*.mobi'
+  
+  build_windows:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    #-----------------------------
+    #Setup Windows and WSL
+    #-----------------------------
+    - uses: Vampire/setup-wsl@v1
+      with:
+        distribution: Ubuntu-18.04
+        set-as-default: 'true'
+        use-cache: 'true'
+        additional-packages:
+          make
+          python3-cairo
+          python3-pil
+          python3-htmlmin
+    #-----------------------------
+    #donwload and install KindlePreviewer
+    #-----------------------------
+    - name: download Kindle Previewer
+      run: Invoke-WebRequest -Uri "https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe" -OutFile ".\KindlePreviewerInstaller.exe"
+    - name: install Kindle Previewer
+      run: Start-Process -FilePath ".\KindlePreviewerInstaller.exe" -ArgumentList "/S" -Wait
+    - name: Add Kindle Previewer to PATH
+      run: echo "$env:APPDATA\Amazon" >> $env:GITHUB_PATH
+    #-----------------------------
+    #Make the dictionaries on Windows
+    #-----------------------------
+    - name: make windows
+      shell: wsl-bash {0}
+      run: make ISWSL=TRUE
+      env:
+        MAKEFLAGS: -j2
+        PYTHON3: /usr/bin/python3
+    - name: upload-artifact windows
+      uses: actions/upload-artifact@v2
+      with:
+        name: mobi_windows
         path: '*.mobi'
 
   # See https://github.com/actions/upload-release-asset

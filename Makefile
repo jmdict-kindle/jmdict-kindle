@@ -21,6 +21,7 @@ PRONUNCIATIONS ?= TRUE
 # If true adds additional information to entries. The combined dictionary ignores this flag due to size constraints
 ADDITIONAL_INFO ?= TRUE
 
+ISWSL ?= FALSE
 
 ifeq ($(PRONUNCIATIONS), TRUE)
 	FLAGS += -p
@@ -32,10 +33,16 @@ endif
 
 ifeq ($(OS), Windows_NT)
 	PYTHON3 ?= python
-	KINDLEGEN ?= kindlepreviewer.bat
+	KINDLEGEN := kindlepreviewer.bat
+else
+ifeq ($(ISWSL), TRUE)
+	PYTHON3 ?= python3
+#run with cmd because batch file
+	KINDLEGEN := cmd.exe /c kindlepreviewer.bat
 else
 	PYTHON3 ?= python3
-	KINDLEGEN ?= ./kindlegen
+	KINDLEGEN := ./kindlegen
+endif
 endif
 
 all: jmdict.mobi jmnedict.mobi combined.mobi
@@ -55,10 +62,11 @@ jpn_indices.tar.bz2:
 ifeq ($(OS), Windows_NT)
 # See also http://kindlepreviewer3.s3.amazonaws.com/UserGuide320_EN.pdf
 kindlegen:
-	if ! command -v $(KINDLEGEN) &> /dev/null \
-	then \
-		$error("Please install Kindle Previewer before executing this script and make sure C:/Users/<Username>/AppData/Roaming/Amazon is added to PATH") \
-	fi
+	echo "Kindle Previewer has to be added to PATH (C:/Users/<Username>/AppData/Roaming/Amazon) for this script to run"
+else
+ifeq ($(ISWSL), TRUE)
+kindlegen:
+	echo "Kindle Previewer has to be added to PATH (C:/Users/<Username>/AppData/Roaming/Amazon) for this script to run"
 else
 cache:
 	mkdir $@
@@ -71,6 +79,7 @@ cache/kindlegen_linux_2.6_i386_v2_9.tar.gz: cache
 kindlegen: cache/kindlegen_linux_2.6_i386_v2_9.tar.gz
 	tar -xzf $< $@
 	touch $@
+endif
 endif
 
 jmdict.opf: JMdict_e.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css JMdict-frontmatter.html
@@ -85,11 +94,27 @@ jmnedict.opf: JMnedict.xml.gz style.css JMnedict-Frontmatter.html
 
 combined.opf: JMdict_e.gz JMnedict.xml.gz sentences.tar.bz2 jpn_indices.tar.bz2 style.css Combined-Frontmatter.html
 #Currently the combined dictionary wont build with sentences and pronunciations on windows with Kindle Previewer due to size constraints
+ifeq ($(OS), Windows_NT)
 	if [ $(SENTENCES) -gt 0 ]; then \
 		$(PYTHON3) jmdict.py -s 0 -d c ; \
 	else  \
 		$(PYTHON3) jmdict.py -s $(SENTENCES) -d c ; \
 	fi
+else
+ifeq ($(ISWSL), TRUE)
+	if [ $(SENTENCES) -gt 0 ]; then \
+		$(PYTHON3) jmdict.py -s 0 -d c ; \
+	else  \
+		$(PYTHON3) jmdict.py -s $(SENTENCES) -d c ; \
+	fi
+else
+	if [ $(SENTENCES) -gt 2 ]; then \
+		$(PYTHON3) jmdict.py -s 2 -d c ; \
+	else  \
+		$(PYTHON3) jmdict.py -s $(SENTENCES) -d c ; \
+	fi
+endif
+endif
 
 %.mobi: %.opf kindlegen 
 ifeq ($(OS), Windows_NT)
@@ -97,7 +122,13 @@ ifeq ($(OS), Windows_NT)
 	$(KINDLEGEN) $< -convert -output ./out -locale en
 	cp ./out/mobi/$@ ./$@
 else
+ifeq ($(ISWSL), TRUE)
+	mkdir -p out
+	$(KINDLEGEN) $< -convert -output ./out -locale en
+	cp ./out/mobi/$@ ./$@
+else
 	$(KINDLEGEN) $< -c$(COMPRESSION) -verbose -dont_append_source -o $@
+endif
 endif
 
 clean:
