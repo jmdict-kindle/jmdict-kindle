@@ -111,7 +111,14 @@ Building from source
 
 Requirements:
 
-* Linux or Windows with Cygwin (might also work on macOS with a few changes)
+* Linux, Windows with Cygwin or WSL (might also work on macOS with a few changes)
+* Kindle Previewer if building on Windows or WSL [Kindle Previewer](https://kdp.amazon.com/en_US/help/topic/G202131170)
+
+  * Kindle Previewer has to be added to PATH. If normally installed add it be executing (for this change to take effect, please close all cmd and powershell windows):
+  ```powershell
+  Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Environment' -Name PATH -Value ((Get-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Environment' -Name PATH).path + ";$env:APPDATA\Amazon")
+  ```
+
 * Python version 3
 
   * [Pycairo](http://www.cairographics.org/pycairo)
@@ -155,6 +162,17 @@ or use any of the following commands to create a specific one:
 make jmdict.mobi
 make jmnedict.mobi
 make combined.mobi
+```
+
+If you build in on WSL the commans are as follows:
+```
+make ISWSL=TRUE
+```
+or use any of the following commands to create a specific one:
+```
+make jmdict.mobi ISWSL=TRUE
+make jmnedict.mobi ISWSL=TRUE
+make combined.mobi ISWSL=TRUE
 ```
 
 Create a Pull Request
