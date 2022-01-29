@@ -164,7 +164,7 @@ make jmnedict.mobi
 make combined.mobi
 ```
 
-If you build in on WSL the commans are as follows:
+If you build in on WSL the commands are as follows:
 ```
 make ISWSL=TRUE
 ```
