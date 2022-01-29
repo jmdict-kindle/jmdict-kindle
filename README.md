@@ -21,11 +21,9 @@ then processed with ImageMagick's
 to look like E-Ink display.
 -->
 
-![Inflection lookup screenshot](screenshots/infl.png)
-
-![Word lookup screenshot](screenshots/word.png)
-
-![Name lookup screenshot](screenshots/name.png)
+| ![Inflection lookup screenshot](screenshots/inflection.png) | ![Sentence lookup screenshot](screenshots/sentences.png) |
+|-------------------------------------------------------------|----------------------------------------------------------|
+| ![Word lookup screenshot](screenshots/word.png)             | ![Name lookup screenshot](screenshots/name.png)          |
 
 Supported Devices
 =================
@@ -53,9 +51,9 @@ _e-Ink_ Kindle
 
 There are in total 3 dictionaries:
 
-* `jmdict.mobi`: Contains only data from the JMedict database, with additional examples. It does not contain proper names.
-* `jmnedict.mobi`: Contains only Japanese proper names from the JMnedict databse.
-* `combined.mobi`: Contains the data from both of the above dictionaries
+* `jmdict.mobi`: Contains data from the JMedict database, with additional examples. It does not contain proper names.
+* `jmnedict.mobi`: Contains Japanese proper names from the JMnedict databse.
+* `combined.mobi`: Contains the data from both of the above dictionaries. _Please note that a lot of features are missing from the combined dictionary (sentences, pronunciation, ...) due to size constraints. Therefore, it is not suggested to use this dictionary_.
 
 To install any of the dictionaries (you can also install all three of them) into your device follow these steps:
 
@@ -128,7 +126,8 @@ Inside of the makefile you can change the max number of sentences per entry, com
 # Compression currently is not officially supported by Kindle Previewer according to the documentation
 COMPRESSION ?= 1
 
-# Sets the max sentences per entry
+# Sets the max sentences per entry only for the jmdict.mobi.
+# It is ignored by combined.mobi due to size restrictions.
 # If there are too many sentences for the combined dictionary,
 # it will not build (exceeds 650MB size limit). The amount is limited to 0 in this makefile for the combined.mobi
 SENTENCES ?= 5
@@ -156,6 +155,14 @@ or use any of the following commands to create a specific one:
 make jmdict.mobi
 make jmnedict.mobi
 make combined.mobi
+```
+
+Create a Pull Request
+=====
+Before making a pull request please ensure the formatting of your python code is correct. To do this please install [black](https://pypi.org/project/black/) and run
+
+```powershell
+black .
 ```
 
 To do

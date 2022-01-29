@@ -7,7 +7,19 @@ on:
   - cron: '0 0 1 * *' # monthly
 
 jobs:
+
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Check code Style
+        uses: psf/black@stable
+        with:
+          options: "--check"
+          src: "."
+
   build:
+    needs: black
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
