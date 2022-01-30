@@ -17,6 +17,7 @@ jobs:
         with:
           options: "--check"
           src: "."
+          version: "22.1.0"
 
   build:
     needs: black
