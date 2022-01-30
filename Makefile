@@ -37,8 +37,8 @@ ifeq ($(OS), Windows_NT)
 else
 ifeq ($(ISWSL), TRUE)
 	PYTHON3 ?= python3
-#run with cmd because batch file
-	KINDLEGEN := cmd.exe /c kindlepreviewer.bat
+#run with powershell because batch file
+	KINDLEGEN := powershell.exe -command kindlepreviewer.bat
 else
 	PYTHON3 ?= python3
 	KINDLEGEN := ./kindlegen

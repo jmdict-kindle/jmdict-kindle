@@ -78,6 +78,10 @@ jobs:
       env:
         MAKEFLAGS: -j2
         PYTHON3: /usr/bin/python3
+    - name: Print conversion logs
+      if: always()
+      shell: wsl-bash {0}
+      run: more ./out/*.csv ./out/logs/*.csv ./out/mobi/*.csv 2>/dev/null | cat
     - name: upload-artifact windows
       uses: actions/upload-artifact@v2
       with:
