@@ -11,13 +11,13 @@ jobs:
   black:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Check code Style
         uses: psf/black@stable
         with:
           options: "--check"
           src: "."
-          version: "22.1.0"
+          version: "22.3.0"
 
   build:
     needs: black
