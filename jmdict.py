@@ -280,14 +280,16 @@ class JMdictParser(XmlParser):
                         sys.stderr.write(f"error: {ex.args[0]}\n")
                     else:
                         if infl_dict:
-                            # If the flag inflections_as_readings is True, we add each inflection as a new Ortho. 
+                            # If the flag inflections_as_readings is True, we add each inflection as a new Ortho.
                             # This way they will be indexed as alternate readings and so they will be found in devices that do not support inflections.
                             # otherwise, we assign the inflections to the current ortho
                             if self.inflections_as_readings:
                                 for infl in infl_dict.values():
-                                    orthos_with_inflections.append(Ortho(infl, ortho.rank, {}))                                               
+                                    orthos_with_inflections.append(
+                                        Ortho(infl, ortho.rank, {})
+                                    )
                             else:
-                                ortho.inflgrps[pos] = list(infl_dict.values())                 
+                                ortho.inflgrps[pos] = list(infl_dict.values())
         # Reassing
         orthos = orthos_with_inflections
 
@@ -520,7 +522,9 @@ def main():
         sys.stderr.write("Parsing JMdict_e.gz...\n")
         parser = JMdictParser("JMdict_e.gz")
         if args.inflections_as_readings:
-            sys.stderr.write("Inflections will be added as readings (Android and iOS Kindle apps workaround)...\n")
+            sys.stderr.write(
+                "Inflections will be added as readings (Android and iOS Kindle apps workaround)...\n"
+            )
             parser.inflections_as_readings = args.inflections_as_readings
         jmdict_entries = parser.parse()
         if args.pronunciation:
