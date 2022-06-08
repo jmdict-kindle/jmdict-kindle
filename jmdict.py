@@ -225,6 +225,7 @@ class JMdictParser(XmlParser):
 
     def __init__(self, filename):
         XmlParser.__init__(self, gzip.open(filename, "rb"))
+        self.inflections_as_readings = False
 
     def parse(self):
         entries = []
@@ -266,7 +267,10 @@ class JMdictParser(XmlParser):
             for pos in sense.pos:
                 posses.add(pos)
 
+        orthos_with_inflections = []
         for ortho in orthos:
+            # Add current ortho
+            orthos_with_inflections.append(ortho)
             # Don't try to inflect katakana words
             if not is_katakana(ortho.value):
                 for pos in posses:
@@ -276,7 +280,16 @@ class JMdictParser(XmlParser):
                         sys.stderr.write(f"error: {ex.args[0]}\n")
                     else:
                         if infl_dict:
-                            ortho.inflgrps[pos] = list(infl_dict.values())
+                            # If the flag inflections_as_readings is True, we add each inflection as a new Ortho. 
+                            # This way they will be indexed as alternate readings and so they will be found in devices that do not support inflections.
+                            # otherwise, we assign the inflections to the current ortho
+                            if self.inflections_as_readings:
+                                for infl in infl_dict.values():
+                                    orthos_with_inflections.append(Ortho(infl, ortho.rank, {}))                                               
+                            else:
+                                ortho.inflgrps[pos] = list(infl_dict.values())                 
+        # Reassing
+        orthos = orthos_with_inflections
 
         entry = Entry(senses, orthos, kanjis, readings)
 
@@ -488,6 +501,14 @@ def get_args():
         default=False,
         help="If this flag is set additional entry information wil be added to the dictionaries specified with -d.",
     )
+    arg_parser.add_argument(
+        "-f",
+        "--inflections_as_readings",
+        action="store_true",
+        default=False,
+        help="If this flag is set, inflections will be added as readings instead of inflection rules. This is a workaround for Android and iOS Kindle apps",
+    )
+
     return arg_parser.parse_args()
 
 
@@ -498,6 +519,9 @@ def main():
     if args.dictionary.create_jmdict or args.dictionary.create_combined:
         sys.stderr.write("Parsing JMdict_e.gz...\n")
         parser = JMdictParser("JMdict_e.gz")
+        if args.inflections_as_readings:
+            sys.stderr.write("Inflections will be added as readings (Android and iOS Kindle apps workaround)...\n")
+            parser.inflections_as_readings = args.inflections_as_readings
         jmdict_entries = parser.parse()
         if args.pronunciation:
             sys.stderr.write("Adding pronunciations...\n")
