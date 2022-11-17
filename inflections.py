@@ -109,7 +109,7 @@ def inflect(dict_form, pos):
             _check(dict_form, pos, "ぐ")
             root = dict_form[:-1]
             infl["nominal"] = root + "ぎ"
-            infl["past"] = root + "いた"
+            infl["past"] = root + "いだ"
             infl["negative"] = root + "がない"
             infl["participle"] = root + "いで"
             infl["potential"] = root + "げる"
