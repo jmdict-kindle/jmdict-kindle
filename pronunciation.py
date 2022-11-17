@@ -261,8 +261,8 @@ def format_pronunciations(reading):
             state = LOW_STATE
             mora.append(i + 1)
 
-    if len(mora) > 0:
+    if len(mora) == 0:
         mora.append(0)
-    separator = ";"
-    outstr = outstr + f"</span> [{separator.join(mora)}]"
+    separator = "; "
+    outstr = outstr + f"</span> [{separator.join(str(x) for x in mora)}]"
     return outstr
