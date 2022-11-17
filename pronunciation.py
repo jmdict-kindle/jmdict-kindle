@@ -244,7 +244,7 @@ def format_pronunciations(reading):
             if a == 0:
                 outstr = outstr + '</span><span class="l">'
                 state = LOW_STATE
-                mora = i
+                mora = i + 1
         else:
             if a > 0:
                 outstr = outstr + '</span><span class="h">'
@@ -259,7 +259,7 @@ def format_pronunciations(reading):
         if a == 2:
             outstr = outstr + '</span><span class="l">&#42780;'
             state = LOW_STATE
-            mora = i
+            mora = i + 1
 
     outstr = outstr + f"</span> [{mora}]"
     return outstr
