@@ -261,5 +261,5 @@ def format_pronunciations(reading):
             state = LOW_STATE
             mora = i
 
-    outstr = outstr + f'</span> [{mora}]'
+    outstr = outstr + f"</span> [{mora}]"
     return outstr
