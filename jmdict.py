@@ -435,16 +435,6 @@ class JMnedictParser(JMdictParser):
         return sense
 
 
-def add_freq_data(jmdict_entries, freq_data):
-    for entry in jmdict_entries:
-        more_common_kanji = ""
-        freq = -1
-        for kanji in entry.kanjis:
-            current_kanji = kanji.keb
-            for reading in entry.readings:
-                pass
-
-
 def get_args():
     class DictAction(argparse.Action):
         def __init__(self, option_strings, dest, nargs=None, **kwargs):
