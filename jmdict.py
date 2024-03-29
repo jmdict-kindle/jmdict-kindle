@@ -231,7 +231,8 @@ class JMdictParser(XmlParser):
         self.element_start("JMdict")
         while self.token.type == XML_ELEMENT_START:
             entry = self.parse_entry()
-            entries.append(entry)
+            for kanji in entry.kanjis:
+                entries.append(entry)
             if len(entries) >= MAX_ENTRIES:
                 return entries
         self.element_end("JMdict")
@@ -248,7 +249,8 @@ class JMdictParser(XmlParser):
             if self.token.name_or_data == "k_ele":
                 kanji = self.parse_kanji()
                 kanjis.append(kanji)
-                orthos.append(Ortho(kanji.keb, kanji.rank, {}))
+                if kanji.rank == 0:
+                    orthos.append(Ortho(kanji.keb, kanji.rank, {}))
             elif self.token.name_or_data == "r_ele":
                 reading = self.parse_reading()
                 readings.append(reading)
@@ -289,8 +291,8 @@ class JMdictParser(XmlParser):
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == "keb":
                 keb = self.element_character_data("keb")
-            elif self.token.name_or_data == "re_pri":
-                rank = min(rank, self.parse_rank())
+            elif self.token.name_or_data == "ke_pri":
+                rank = min(rank, self.parse_kanji_rank())
             else:
                 self.skip_element()
         self.element_end("k_ele")
@@ -308,7 +310,7 @@ class JMdictParser(XmlParser):
             if self.token.name_or_data == "reb":
                 reb = self.element_character_data("reb")
             elif self.token.name_or_data == "re_pri":
-                rank = min(rank, self.parse_rank())
+                rank = min(rank, self.parse_reading_rank())
             elif self.token.name_or_data == "re_restr":
                 re_restr = self.element_character_data("re_restr")
             else:
@@ -317,7 +319,14 @@ class JMdictParser(XmlParser):
         assert reb is not None
         return Reading(reb, rank, re_restr, None)
 
-    def parse_rank(self):
+    def parse_kanji_rank(self):
+        ke_pri = self.element_character_data("ke_pri")
+        if ke_pri in ("news1", "ichi1", "spec1", "gai1"):
+            return 0
+        else:
+            return 1
+
+    def parse_reading_rank(self):
         re_pri = self.element_character_data("re_pri")
         if re_pri in ("news1", "ichi1", "spec1", "gai1"):
             return 0
@@ -424,6 +433,16 @@ class JMnedictParser(JMdictParser):
 
         sense = Sense(posses, [], glosses, [], [])
         return sense
+
+
+def add_freq_data(jmdict_entries, freq_data):
+    for entry in jmdict_entries:
+        more_common_kanji = ""
+        freq = -1
+        for kanji in entry.kanjis:
+            current_kanji = kanji.keb
+            for reading in entry.readings:
+                pass
 
 
 def get_args():
