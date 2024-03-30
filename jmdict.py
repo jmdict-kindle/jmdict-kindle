@@ -231,8 +231,7 @@ class JMdictParser(XmlParser):
         self.element_start("JMdict")
         while self.token.type == XML_ELEMENT_START:
             entry = self.parse_entry()
-            for kanji in entry.kanjis:
-                entries.append(entry)
+            entries.append(entry)
             if len(entries) >= MAX_ENTRIES:
                 return entries
         self.element_end("JMdict")
