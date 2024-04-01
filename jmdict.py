@@ -379,7 +379,11 @@ class JMdictParser(XmlParser):
                 if not is_kana(ortho[0]) and ortho[1] == 0:
                     common_kanjis.append(ortho[0])
         for entry in entries:
-            entry.orthos = [ortho for ortho in entry.orthos if ortho[1] == 0 or not ortho[0] in common_kanjis]
+            entry.orthos = [
+                ortho
+                for ortho in entry.orthos
+                if ortho[1] == 0 or not ortho[0] in common_kanjis
+            ]
         return entries
 
 
