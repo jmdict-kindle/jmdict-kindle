@@ -235,6 +235,7 @@ class JMdictParser(XmlParser):
             if len(entries) >= MAX_ENTRIES:
                 return entries
         self.element_end("JMdict")
+        entries = self.remove_orthos_for_uncommon_kanji(entries)
         return entries
 
     def parse_entry(self):
@@ -248,8 +249,7 @@ class JMdictParser(XmlParser):
             if self.token.name_or_data == "k_ele":
                 kanji = self.parse_kanji()
                 kanjis.append(kanji)
-                if kanji.rank == 0:
-                    orthos.append(Ortho(kanji.keb, kanji.rank, {}))
+                orthos.append(Ortho(kanji.keb, kanji.rank, {}))
             elif self.token.name_or_data == "r_ele":
                 reading = self.parse_reading()
                 readings.append(reading)
@@ -371,6 +371,16 @@ class JMdictParser(XmlParser):
         data = self.character_data()
         self.element_end(name)
         return data
+
+    def remove_orthos_for_uncommon_kanji(self, entries):
+        common_kanjis = []
+        for entry in entries:
+            for ortho in entry.orthos:
+                if not is_kana(ortho[0]) and ortho[1] == 0:
+                    common_kanjis.append(ortho[0])
+        for entry in entries:
+            entry.orthos = [ortho for ortho in entry.orthos if ortho[1] == 0 or not ortho[0] in common_kanjis]
+        return entries
 
 
 class JMnedictParser(JMdictParser):
