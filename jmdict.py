@@ -235,6 +235,7 @@ class JMdictParser(XmlParser):
             if len(entries) >= MAX_ENTRIES:
                 return entries
         self.element_end("JMdict")
+        entries = self.remove_orthos_for_uncommon_kanji(entries)
         return entries
 
     def parse_entry(self):
@@ -289,8 +290,8 @@ class JMdictParser(XmlParser):
         while self.token.type == XML_ELEMENT_START:
             if self.token.name_or_data == "keb":
                 keb = self.element_character_data("keb")
-            elif self.token.name_or_data == "re_pri":
-                rank = min(rank, self.parse_rank())
+            elif self.token.name_or_data == "ke_pri":
+                rank = min(rank, self.parse_kanji_rank())
             else:
                 self.skip_element()
         self.element_end("k_ele")
@@ -308,7 +309,7 @@ class JMdictParser(XmlParser):
             if self.token.name_or_data == "reb":
                 reb = self.element_character_data("reb")
             elif self.token.name_or_data == "re_pri":
-                rank = min(rank, self.parse_rank())
+                rank = min(rank, self.parse_reading_rank())
             elif self.token.name_or_data == "re_restr":
                 re_restr = self.element_character_data("re_restr")
             else:
@@ -317,7 +318,14 @@ class JMdictParser(XmlParser):
         assert reb is not None
         return Reading(reb, rank, re_restr, None)
 
-    def parse_rank(self):
+    def parse_kanji_rank(self):
+        ke_pri = self.element_character_data("ke_pri")
+        if ke_pri in ("news1", "ichi1", "spec1", "gai1"):
+            return 0
+        else:
+            return 1
+
+    def parse_reading_rank(self):
         re_pri = self.element_character_data("re_pri")
         if re_pri in ("news1", "ichi1", "spec1", "gai1"):
             return 0
@@ -363,6 +371,20 @@ class JMdictParser(XmlParser):
         data = self.character_data()
         self.element_end(name)
         return data
+
+    def remove_orthos_for_uncommon_kanji(self, entries):
+        common_kanjis = []
+        for entry in entries:
+            for ortho in entry.orthos:
+                if not is_kana(ortho[0]) and ortho[1] == 0:
+                    common_kanjis.append(ortho[0])
+        for entry in entries:
+            entry.orthos = [
+                ortho
+                for ortho in entry.orthos
+                if ortho[1] == 0 or not ortho[0] in common_kanjis
+            ]
+        return entries
 
 
 class JMnedictParser(JMdictParser):
