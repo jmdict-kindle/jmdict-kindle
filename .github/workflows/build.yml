@@ -96,46 +96,18 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4
     - uses: actions/download-artifact@v4
       id: download
       with:
         name: mobi
         path: artifacts
     - run: ls -lR ${{ steps.download.outputs.download-path }}
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: create release
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
-        draft: true
-        prerelease: false
-    - name: Upload jmdict.mobi
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.download.outputs.download-path }}/jmdict.mobi
-        asset_name: jmdict.mobi
-        asset_content_type: application/x-mobipocket-ebook
-    - name: Upload jmnedict.mobi
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.download.outputs.download-path }}/jmnedict.mobi
-        asset_name: jmnedict.mobi
-        asset_content_type: application/x-mobipocket-ebook
-    - name: Upload combined.mobi
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.download.outputs.download-path }}/combined.mobi
-        asset_name: combined.mobi
-        asset_content_type: application/x-mobipocket-ebook
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: >
+        gh release create --draft --title "${{ github.ref_name }}" --generate-notes "${{ github.ref_name }}"
+        ${{ steps.download.outputs.download-path }}/jmdict.mobi
+        ${{ steps.download.outputs.download-path }}/jmnedict.mobi
+        ${{ steps.download.outputs.download-path }}/combined.mobi
