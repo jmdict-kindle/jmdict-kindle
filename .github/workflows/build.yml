@@ -11,7 +11,7 @@ jobs:
   black:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Check code Style
         uses: psf/black@stable
         with:
@@ -23,7 +23,7 @@ jobs:
     needs: black
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 1
     - name: apt-update
@@ -36,7 +36,7 @@ jobs:
         MAKEFLAGS: -j2
         PYTHON3: /usr/bin/python3
     - name: upload-artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: mobi
         path: '*.mobi'
@@ -45,13 +45,13 @@ jobs:
     needs: black
     runs-on: windows-2019
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 1
     #-----------------------------
     #Setup Windows and WSL
     #-----------------------------
-    - uses: Vampire/setup-wsl@v1
+    - uses: Vampire/setup-wsl@v3
       with:
         distribution: Ubuntu-18.04
         set-as-default: 'true'
@@ -84,7 +84,7 @@ jobs:
       shell: wsl-bash {0}
       run: more ./out/*.csv ./out/logs/*.csv ./out/mobi/*.csv 2>/dev/null | cat
     - name: upload-artifact windows
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: mobi_windows
         path: '*.mobi'
@@ -96,7 +96,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       id: download
       with:
         name: mobi
