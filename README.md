@@ -33,7 +33,8 @@ well with other _e-ink_ Kindle devices
 
 The dictionary will *not* work well on _Kindle Fire_ or _Kindle Android App_,
 or any Android based Kindle, because the Kindle software on those platforms
-does not support inflection lookups.
+does not support inflection lookups. **Note:** As a workaround, we have added a parameter that allows to build an special version of the dictionary with the inflected forms indexed as alternate readings, they will not work fully as inflections,
+but at least they will be found and the main word should be shown.
 
 
 Download
@@ -42,6 +43,7 @@ Download
 You can download the latest version of the dictionary from
 [here](https://github.com/jrfonseca/jmdict-kindle/releases).
 
+Workaround version for apps or devices not supporting inflections (i.e. Android app): [workaround](https://github.com/xelloss1012/jmdict-kindle/releases/)
 
 Install
 =======
@@ -70,7 +72,7 @@ To install any of the dictionaries (you can also install all three of them) into
 Kindle Android App
 ------------------
 
-**NOTE: Unfortunately the Kindle Android App does not support dictionary inflections, yielding verbs lookup practically impossible. No known workaround.**
+**NOTE: Unfortunately the Kindle Android App does not support dictionary inflections, yielding verbs lookup practically impossible.** As a workaround, we have added a parameter that allows to build an special version of the dictionary whith the inflected forms indexed as alternate readings, they will not work fully as inflections, but at least they will be found and the main word should be shown.
 
 * rename `jmdict.mobi` or any of the other two dictionaries as `B005FNK020_EBOK.prc`
 
@@ -151,6 +153,11 @@ PRONUNCIATIONS ?= TRUE
 
 # If true adds additional information to entries. The combined dictionary ignores this flag due to size constraints
 ADDITIONAL_INFO ?= TRUE
+
+# If true, inflections will be indexed as readings instead of adding then as inflection rules. 
+# This is a workaround for inflected forms to be found in the Android or iOS Kindle Apps, since they do not support inflection rules.
+# It should be false when building for Kindle devices, since inflections are supposed to work fine in this devices.
+INFLECTIONS_AS_READINGS ?= FALSE
 ```
 
 Build with make to create all 3 dictionaries (_Note the combined dictionary will not build with Kindle Previewer due to size constraints_):
