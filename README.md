@@ -107,7 +107,7 @@ For more information see [Japanese pitch accent - Wikipedia](https://en.wikipedi
 Building from source
 ====================
 
-[![Build](https://github.com/jrfonseca/jmdict-kindle/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/jrfonseca/jmdict-kindle/actions/workflows/build.yml)
+[![Build](https://github.com/jrfonseca/jmdict-kindle/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/jrfonseca/jmdict-kindle/actions/workflows/build.yml)
 
 Requirements:
 
@@ -201,7 +201,7 @@ Credits
 * John Mettraux for his [EDICT2 Japanese-English Kindle dictionary](https://github.com/jmettraux/edict2-kindle)
 * Choplair-network for their [Nihongo conjugator](http://www.choplair.org/?Nihongo%20conjugator)
 * javdejong for the [pronunciation data and the parser](https://github.com/javdejong/nhk-pronunciation)
-* mifunetoshiro for the [additional pronunciation data](https://github.com/mifunetoshiro/kanjium/blob/master/data/source_files/raw/accents.txt)
+* mifunetoshiro for the [additional pronunciation data](https://github.com/mifunetoshiro/kanjium/blob/main/data/source_files/raw/accents.txt)
 
 
 Alternatives
