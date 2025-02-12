@@ -21,6 +21,11 @@ PRONUNCIATIONS ?= TRUE
 # If true adds additional information to entries. The combined dictionary ignores this flag due to size constraints
 ADDITIONAL_INFO ?= TRUE
 
+# If true, inflections will be indexed as readings instead of adding then as inflection rules. 
+# This is a workaround for inflected forms to be found in the Android or iOS Kindle Apps, since they do not support inflection rules.
+# It should be false when building for Kindle devices, since inflections are supposed to work fine in this devices.
+INFLECTIONS_AS_READINGS ?= FALSE
+
 ISWSL ?= FALSE
 
 ifeq ($(PRONUNCIATIONS), TRUE)
@@ -29,6 +34,10 @@ endif
 
 ifeq ($(ADDITIONAL_INFO), TRUE)
 	FLAGS += -i
+endif
+
+ifeq ($(INFLECTIONS_AS_READINGS), TRUE)
+	FLAGS += -f
 endif
 
 ifeq ($(OS), Windows_NT)
