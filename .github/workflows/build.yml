@@ -43,7 +43,7 @@ jobs:
   
   build_windows:
     needs: black
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
       with:
@@ -51,9 +51,9 @@ jobs:
     #-----------------------------
     #Setup Windows and WSL
     #-----------------------------
-    - uses: Vampire/setup-wsl@v3
+    - uses: Vampire/setup-wsl@v6
       with:
-        distribution: Ubuntu-18.04
+        distribution: Ubuntu-24.04
         set-as-default: 'true'
         use-cache: 'true'
         additional-packages:
