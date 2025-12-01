@@ -51,7 +51,7 @@ def inflect(dict_form, pos):
     infl = {}
 
     if pos == "adj-i":
-        _check(dict_form, pos, "い")
+        _check(dict_form, pos, "い", "ぃ", "ー")
 
         radical = dict_form[:-1]
 
