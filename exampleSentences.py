@@ -88,7 +88,7 @@ class ExampleSentences:
                 for section in sections:
                     split = section.split(" ")
                     keyword = split[-1]
-                    match_group = re.match(".+?(?=\W|$|~)", keyword)
+                    match_group = re.match(r".+?(?=\W|$|~)", keyword)
                     if match_group:
                         keywords.append([match_group.group(0), True])
             else:
@@ -99,7 +99,7 @@ class ExampleSentences:
                         else:
                             good_keyword = False
                         # only take the word after the word there can be ()[]{}~|
-                        match_group = re.match(".+?(?=\W|$|~)", keyword)
+                        match_group = re.match(r".+?(?=\W|$|~)", keyword)
                         if match_group:
                             keywords.append([match_group.group(0), good_keyword])
 
