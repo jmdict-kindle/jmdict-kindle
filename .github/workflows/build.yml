@@ -68,8 +68,6 @@ jobs:
       run: Invoke-WebRequest -Uri "https://d2bzeorukaqrvt.cloudfront.net/KindlePreviewerInstaller.exe" -OutFile ".\KindlePreviewerInstaller.exe"
     - name: install Kindle Previewer
       run: Start-Process -FilePath ".\KindlePreviewerInstaller.exe" -ArgumentList "/S" -Wait
-    - name: Add Kindle Previewer to PATH
-      run: echo "$env:APPDATA\Amazon" >> $env:GITHUB_PATH
     #-----------------------------
     #Make the dictionaries on Windows
     #-----------------------------

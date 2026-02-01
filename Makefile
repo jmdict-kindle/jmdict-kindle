@@ -38,7 +38,7 @@ else
 ifeq ($(ISWSL), TRUE)
 	PYTHON3 ?= python3
 #run with powershell because batch file
-	KINDLEGEN := powershell.exe -command kindlepreviewer.bat
+	KINDLEGEN := "$(shell wslpath -u "$(shell powershell.exe -c 'Write-Output "$$Env:LocalAppData\Amazon\Kindle Previewer 3\Kindle Previewer 3.exe"')")"
 else
 	PYTHON3 ?= python3
 	KINDLEGEN := ./kindlegen
@@ -49,16 +49,13 @@ ifeq ($(OS), Windows_NT)
 #do not build combined on windows. The size will be too large since we cannot specify compression in kindle previewer
 all: jmdict.mobi jmnedict.mobi
 
-# See also http://kindlepreviewer3.s3.amazonaws.com/UserGuide320_EN.pdf
 kindlegen:
-	echo "Kindle Previewer has to be added to PATH (C:/Users/<Username>/AppData/Roaming/Amazon) for this script to run"
 else
 ifeq ($(ISWSL), TRUE)
 #do not build combined on windows. The size will be too large since we cannot specify compression in kindle previewer
 all: jmdict.mobi jmnedict.mobi
 
 kindlegen:
-	echo "Kindle Previewer has to be added to PATH (C:/Users/<Username>/AppData/Roaming/Amazon) for this script to run"
 else
 all: jmdict.mobi jmnedict.mobi combined.mobi
 
