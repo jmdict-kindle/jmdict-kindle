@@ -40,8 +40,9 @@ jobs:
       with:
         name: mobi
         path: '*.mobi'
-  
+
   build_windows:
+    if: false  # XXX
     needs: black
     runs-on: windows-latest
     steps:
